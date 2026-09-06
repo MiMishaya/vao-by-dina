@@ -7,7 +7,7 @@ document.write(`
 <header>
   <div class="header-left">
     <div class="header-home">
-      <a href="index.html">
+      <a href="home.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 11.5 12 4l9 7.5"/>
           <path d="M5 10v10h14V10"/>

@@ -1,530 +1,160 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VAO - La propreté qui se voit, la fraîcheur qui se ressent</title>
-<link rel="stylesheet" href="header.css">
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { overflow-x: hidden; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    background: #fff;
-    color: #333;
-    overflow-x: hidden;
-  }
-  img { max-width: 100%; display: block; }
-  a { color: inherit; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAO 20 Taona - Loading</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  /* ============== HERO ============== */
-  .hero { position: relative; width: 100%; overflow: hidden; background: #000; aspect-ratio: 6000 / 2518; }
-  .hero img.hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    html, body {
+      height: 100%;
+    }
 
-  .hero-dots {
-    position: absolute;
-    bottom: 1.2rem;
-    left: 0; right: 0;
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  .hero-dots span {
-    width: 8px; height: 8px; border-radius: 4px;
-    background: rgba(255,255,255,0.55);
-    cursor: pointer;
-    transition: width 0.3s ease, background 0.3s ease;
-  }
-  .hero-dots span.active { width: 22px; background: #fff; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #6d28d9 0%, #db2777 50%, #f97316 100%);
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      padding-top: max(1.5rem, env(safe-area-inset-top));
+      padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+      padding-left: max(1.5rem, env(safe-area-inset-left));
+      padding-right: max(1.5rem, env(safe-area-inset-right));
+    }
 
-  /* ============== ABOUT / SDOI ============== */
-  .about-section {
-    position: relative;
-    padding: 3.5rem 2rem;
-  }
-  .about-section::after {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0;
-    width: 6px;
-    background: linear-gradient(180deg, #7c3aed 0%, #ec4899 50%, #f2a324 100%);
-  }
-  .about-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 3rem;
-    align-items: center;
-  }
-  .about-logo img { width: 100%; max-width: 280px; }
-  .about-heading {
-    color: #f2a324;
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .about-title {
-    font-size: 1.5rem;
-    color: #2a3a63;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    line-height: 1.3;
-  }
-  .about-text {
-    font-size: 0.95rem;
-    color: #666;
-    line-height: 1.8;
-  }
+    /* Toute la scène (image + chargement) reste groupée : l'image n'est jamais rognée */
+    .scene {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-  /* ============== BRAND STRIP ============== */
-  .brand-section { padding: 0 2rem 3.5rem; }
-  .brand-container { max-width: 1200px; margin: 0 auto; }
-  .brand-heading {
-    color: #f2a324;
-    font-size: 1.15rem;
-    font-weight: 700;
-    font-style: italic;
-    margin-bottom: 1.5rem;
-  }
-  .brand-strip { overflow-x: auto; padding-bottom: 0.5rem; }
-  .brand-strip img { min-width: 900px; width: 100%; }
+    .hero-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.35));
+    }
 
-  /* ============== STATS ============== */
-  .stats-section { background: #f4f4f6; padding: 3.5rem 2rem; }
-  .stats-container { max-width: 1200px; margin: 0 auto; }
-  .stats-image { width: 100%; }
+    .loading-block {
+      width: 100%;
+      max-width: 480px;
+      margin-top: clamp(1rem, 4vh, 2rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(0.6rem, 2vh, 1rem);
+    }
 
-  /* ============== TESTIMONIALS ============== */
-  .testimonials-section { padding: 3.5rem 2rem; }
-  .testimonials-container { max-width: 1200px; margin: 0 auto; }
-  .testimonials-title {
-    color: #f2a324;
-    font-size: 1.2rem;
-    font-weight: 700;
-    font-style: italic;
-    margin-bottom: 2rem;
-  }
-  .testimonials-shell { position: relative; display: flex; align-items: center; gap: 0.5rem; }
-  .testimonials-track {
-    position: relative;
-    flex: 1;
-    min-width: 0;
-    height: 540px;
-    perspective: 1400px;
-  }
-  .testimonial-card {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 320px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-    cursor: pointer;
-    transition: transform 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s ease;
-    will-change: transform, opacity;
-  }
-  .testimonial-card img { width: 100%; display: block; }
-  .testimonial-arrow {
-    flex-shrink: 0;
-    background: #f4f4f6;
-    border: none;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    font-size: 1.3rem;
-    color: #999;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .testimonial-arrow:hover { background: #ececec; color: #555; }
+    .loading-text {
+      font-size: clamp(18px, 4.5vw, 32px);
+      color: #fff;
+      font-weight: 300;
+      text-align: center;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+      letter-spacing: 1.5px;
+      animation: fadeIn 0.8s ease-out backwards;
+    }
 
-  /* ============== RECOMMENDED PRODUCTS ============== */
-  .recommended-section { background: #f4f4f6; padding: 3.5rem 2rem; }
-  .recommended-container { max-width: 1200px; margin: 0 auto; }
-  .recommended-title {
-    color: #f2a324;
-    font-size: 1.2rem;
-    font-weight: 700;
-    font-style: italic;
-    margin-bottom: 2rem;
-  }
-  .recommended-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-  .product-card {
-    border-radius: 8px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .product-card.blue { background: #16326b; }
-  .product-card.yellow { background: linear-gradient(160deg, #f5a623 0%, #f2c123 100%); }
-  .product-card.pink { background: linear-gradient(160deg, #e0357c 0%, #ec4899 100%); }
-  .product-card-image {
-    flex: 1;
-    padding: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 220px;
-  }
-  .product-card-image img { max-height: 200px; width: auto; margin: 0 auto; }
-  .product-card-content {
-    background: rgba(255,255,255,0.95);
-    padding: 1.2rem 1.5rem;
-    text-align: center;
-  }
-  .product-card-title {
-    font-size: 1.1rem;
-    color: #2a3a63;
-    margin-bottom: 0.8rem;
-    font-weight: 700;
-  }
-  .btn {
-    background: linear-gradient(135deg, #16326b 0%, #2f6fed 100%);
-    color: white;
-    border: none;
-    padding: 0.6rem 1.8rem;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-  .btn:hover { opacity: 0.9; }
-  .recommended-more {
-    text-align: right;
-    margin-top: 1rem;
-    font-size: 0.85rem;
-    font-style: italic;
-    color: #555;
-  }
-  .recommended-more a { text-decoration: none; color: inherit; }
+    .progress-section {
+      width: 100%;
+      animation: fadeIn 1s ease-out 0.3s backwards;
+    }
 
-  /* ============== CTA FORMULAIRES ============== */
-  .cta-section { padding: 3.5rem 2rem; }
-  .cta-container { max-width: 1200px; margin: 0 auto; }
-  .cta-title {
-    color: #f2a324;
-    font-size: 1.2rem;
-    font-weight: 700;
-    font-style: italic;
-    margin-bottom: 2rem;
-  }
-  .cta-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-  .cta-card {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    aspect-ratio: 1 / 1;
-    text-decoration: none;
-    display: block;
-  }
-  .cta-card img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
-  .cta-card-overlay {
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    padding: 1.2rem 1.3rem;
-    color: white;
-  }
-  .cta-card.orange .cta-card-overlay { background: linear-gradient(0deg, rgba(242,163,36,0.96) 0%, rgba(242,163,36,0.82) 70%, rgba(242,163,36,0) 100%); }
-  .cta-card.pink .cta-card-overlay { background: linear-gradient(0deg, rgba(224,53,124,0.96) 0%, rgba(224,53,124,0.82) 70%, rgba(224,53,124,0) 100%); }
-  .cta-card.blue .cta-card-overlay { background: linear-gradient(0deg, rgba(27,45,90,0.96) 0%, rgba(27,45,90,0.82) 70%, rgba(27,45,90,0) 100%); }
-  .cta-card-title {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 0.6rem;
-    letter-spacing: 0.5px;
-  }
-  .cta-card-text { font-size: 0.8rem; line-height: 1.5; margin-bottom: 0.6rem; opacity: 0.95; }
-  .cta-card-link { font-size: 0.8rem; font-weight: 700; text-decoration: underline; }
+    .progress-bar-bg {
+      width: 100%;
+      height: clamp(8px, 1.6vw, 12px);
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
 
-  /* ============== FOOTER ============== */
-  footer { background: #f4f4f6; padding: 3rem 2rem 1.5rem; }
-  .footer-container { max-width: 1200px; margin: 0 auto; }
-  .footer-tagline {
-    text-align: center;
-    color: #777;
-    font-size: 0.9rem;
-    max-width: 700px;
-    margin: 0 auto 2.5rem;
-  }
-  .footer-main {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr 1fr 1fr auto;
-    gap: 1.5rem;
-    align-items: center;
-    font-size: 0.85rem;
-    color: #555;
-  }
-  .footer-main img { height: 40px; }
-  .footer-sdoi img { height: 32px; }
-  footer h5 { font-size: 0.85rem; font-weight: 700; color: #2a3a63; margin-bottom: 0.3rem; }
-  .footer-vao-logo { justify-self: end; }
-  .footer-vao-logo img { height: 50px; }
-  .footer-social {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #ddd;
-    font-size: 0.85rem;
-    color: #555;
-  }
-  .footer-social a { display: flex; align-items: center; gap: 0.4rem; color: #555; text-decoration: none; white-space: nowrap; }
-  .footer-social a:hover { color: #1877F2; }
-  .fb-icon { width: 18px; height: 18px; flex-shrink: 0; }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #fff 0%, #fbbf24 50%, #f97316 100%);
+      border-radius: 8px;
+      width: 0%;
+      animation: progressFill 3s ease-in-out forwards;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
 
-  /* ============== RESPONSIVE ============== */
-  @media (max-width: 900px) {
-    .about-container { grid-template-columns: 1fr; text-align: center; }
-    .about-logo img { margin: 0 auto; }
-    .recommended-grid { grid-template-columns: 1fr; }
-    .cta-grid { grid-template-columns: 1fr; }
-    .footer-main { grid-template-columns: 1fr 1fr; text-align: left; }
-    .footer-vao-logo { justify-self: start; grid-column: 1 / -1; }
-  }
-  @media (max-width: 640px) {
-    .footer-main { grid-template-columns: 1fr; text-align: center; }
-    .footer-vao-logo { justify-self: center; }
-  }
+    @keyframes progressFill {
+      0% { width: 0%; }
+      100% { width: 85%; }
+    }
 
-  @media (max-width: 900px) {
-    .testimonials-track { height: 420px; }
-    .testimonial-card { width: 240px; }
-  }
-  @media (max-width: 480px) {
-    .testimonials-track { height: 320px; }
-    .testimonial-card { width: 180px; }
-    .testimonial-arrow { width: 32px; height: 32px; font-size: 1.1rem; }
-  }
-</style>
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Tablettes (iPad, etc.) */
+    @media (max-width: 1024px) {
+      .scene {
+        max-width: 700px;
+      }
+    }
+
+    /* Téléphones */
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+
+      .loading-block {
+        margin-top: 1rem;
+        gap: 0.6rem;
+      }
+    }
+
+    /* Mobiles en mode paysage (peu de hauteur) */
+    @media (max-height: 480px) and (orientation: landscape) {
+      body {
+        align-items: flex-start;
+      }
+
+      .scene {
+        max-width: 480px;
+      }
+
+      .loading-block {
+        margin-top: 0.75rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div class="hero" id="home">
-  <img class="hero-bg" src="img/header/Web project 02 Header only-06.png" alt="La propreté qui se voit, la fraîcheur qui se ressent">
-  <div class="hero-dots"></div>
-</div>
+  <div class="scene">
+    <img class="hero-image" src="img/Render element 02/Element_002-Loading Product Page.png" alt="VAO 20 taona">
 
-<script src="hero-carousel.js"></script>
-<script src="header.js"></script>
-
-<!-- ABOUT / SDOI -->
-<section class="about-section" id="about">
-  <div class="about-container">
-    <div class="about-logo">
-      <img src="img/Render element 02/Element-03.png" alt="SDOI - Savons et Détergents de l'Océan Indien">
-    </div>
-    <div>
-      <div class="about-heading">Une identité ancrée</div>
-      <h2 class="about-title">Plus de 20 ans au service de l'hygiène à Madagascar.</h2>
-      <p class="about-text">Depuis plus de 20 ans, SDOI contribue au développement de l'industrie de l'hygiène à Madagascar. L'entreprise conçoit, fabrique et commercialise localement des savons et détergents alliant qualité, efficacité et accessibilité. Engagée dans le « Vita Malagasy », SDOI place l'innovation et la production locale au cœur de sa stratégie, tout en participant durablement au développement économique du pays.</p>
-    </div>
-  </div>
-</section>
-
-<!-- BRAND STRIP -->
-<section class="brand-section">
-  <div class="brand-container">
-    <div class="brand-heading">Des savons pensés pour le quotidien des Malagasy</div>
-    <div class="brand-strip">
-      <img src="img/temoignage/Web project 02 élement-09.png" alt="VAO Line, VAO Bébé, VAO Lux, VAO Citron, VAO Lemon, VAO Magic, VAO Hôtel, VAO Antiseptique, Savon de ménage Blanc, Jaune, Or, Marron">
-    </div>
-  </div>
-</section>
-
-<!-- STATS -->
-<section class="stats-section">
-  <div class="stats-container">
-    <img class="stats-image" src="img/Render element 02/Element-09.png" alt="10 Marques, 20 ans D'existence, 200 Collaborateurs, + 50 Distributeurs nationaux, + 60 Références de produits, + 500 Épiceries partenaires">
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="testimonials-section">
-  <div class="testimonials-container">
-    <div class="testimonials-title">Parce qu'ils ont placé leur confiance en nous</div>
-    <div class="testimonials-shell">
-      <button type="button" class="testimonial-arrow" id="testi-prev" aria-label="Précédent">‹</button>
-      <div class="testimonials-track" id="testi-track">
-        <div class="testimonial-card"><img src="img/temoignage/Web project 02 élement-08.png" alt="Distributeur - Haja, Caissier"></div>
-        <div class="testimonial-card"><img src="img/temoignage/Web project 02 élement-02.png" alt="Grossiste - Razery, Vendeuse"></div>
-        <div class="testimonial-card"><img src="img/temoignage/Web project 02 élement-03.png" alt="Client - Robert, père de famille"></div>
-        <div class="testimonial-card"><img src="img/temoignage/Web project 02 élement-04.png" alt="Épicerie - Mme Harisoa, Vendeuse"></div>
-        <div class="testimonial-card"><img src="img/temoignage/Web project 02 élement_Témoignage.png" alt="Client - Fara, Mpanasa lamba"></div>
-        <div class="testimonial-card"><img src="img/temoignage/Web project 02 élement-05.png" alt="Client - Noro, Renim-pianakaviana"></div>
-        <div class="testimonial-card"><img src="img/temoignage/Web project 02 élement-06.png" alt="Client - Fara, Mécanicien"></div>
-        <div class="testimonial-card"><img src="img/temoignage/Web project 02 élement-07.png" alt="Client - Fara, Entrepreneuse"></div>
-      </div>
-      <button type="button" class="testimonial-arrow" id="testi-next" aria-label="Suivant">›</button>
-    </div>
-  </div>
-</section>
-
-<!-- RECOMMENDED PRODUCTS -->
-<section class="recommended-section">
-  <div class="recommended-container">
-    <h2 class="recommended-title">Produits recommandés</h2>
-    <div class="recommended-grid">
-      <div class="product-card blue">
-        <div class="product-card-image"><img src="img/savon/Web project Savon élement_001.png" alt="VAO Line"></div>
-        <div class="product-card-content">
-          <h4 class="product-card-title">VAO Line</h4>
-          <a href="gammes.html#detergent"><button type="button" class="btn">Decouvrir</button></a>
-        </div>
-      </div>
-      <div class="product-card yellow">
-        <div class="product-card-image"><img src="img/savon/Web project Savon élement_004.png" alt="VAO Citron"></div>
-        <div class="product-card-content">
-          <h4 class="product-card-title">VAO Citron</h4>
-          <a href="gammes.html#savonbar"><button type="button" class="btn">Decouvrir</button></a>
-        </div>
-      </div>
-      <div class="product-card pink">
-        <div class="product-card-image"><img src="img/savon/Web project Savon élement_015.png" alt="VAO Lux"></div>
-        <div class="product-card-content">
-          <h4 class="product-card-title">VAO Lux</h4>
-          <a href="gammes.html#toilette"><button type="button" class="btn">Decouvrir</button></a>
+    <div class="loading-block">
+      <div class="loading-text">Nos produits</div>
+      <div class="progress-section">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar-fill"></div>
         </div>
       </div>
     </div>
-    <div class="recommended-more"><a href="gammes.html">Tout voir...</a></div>
   </div>
-</section>
 
-<!-- CTA FORMULAIRES -->
-<section class="cta-section">
-  <div class="cta-container">
-    <div class="cta-title">Accédez à nos formulaires</div>
-    <div class="cta-grid">
-      <a class="cta-card orange" href="formulaire01.html">
-        <img src="img/temoin/Web project 02 élement photos_Témoignage.png" alt="Devenir revendeur VAO">
-        <div class="cta-card-overlay">
-          <div class="cta-card-title">DEVENIR REVENDEUR</div>
-          <div class="cta-card-text">Vous souhaitez distribuer nos produits ? N'hésitez pas à remplir notre formulaire pour élargir votre offre de produits et développer vos revenus.</div>
-          <div class="cta-card-link">Cliquez ici</div>
-        </div>
-      </a>
-      <a class="cta-card pink" href="formulaire02.html#echantillon">
-        <img src="img/temoin/Web project 02 élement photos-02.png" alt="Demande d'échantillon VAO">
-        <div class="cta-card-overlay">
-          <div class="cta-card-title">DEMANDE D'ÉCHANTILLON</div>
-          <div class="cta-card-text">Vous souhaitez découvrir nos produits ? Faites votre demande d'échantillon en remplissant simplement le formulaire.</div>
-          <div class="cta-card-link">Cliquez ici</div>
-        </div>
-      </a>
-      <a class="cta-card blue" href="formulaire02.html#candidature">
-        <img src="img/temoin/Web project 02 élement photos-03.png" alt="Candidature spontanée SDOI">
-        <div class="cta-card-overlay">
-          <div class="cta-card-title">CANDIDATURE SPONTANÉE - SDOI</div>
-          <div class="cta-card-text">Vous souhaitez rejoindre nos équipes ? Envoyez-nous votre candidature spontanée et partagez avec nous votre profil et vos motivations.</div>
-          <div class="cta-card-link">Cliquez ici</div>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer id="contact">
-  <div class="footer-container">
-    <p class="footer-tagline">Notre équipe dédiée est à votre service et vous apporter les solutions adaptées à vos besoins.</p>
-    <div class="footer-main">
-      <div class="footer-sdoi">
-        <img src="img/Render element 02/Element-03.png" alt="SDOI">
-      </div>
-      <div>
-        <h5>Notre siège</h5>
-        <p>En face ex-abattoir - Aranta Mahajanga</p>
-      </div>
-      <div>
-        <h5>Service client</h5>
-        <p><a style="text-decoration: none;" href="tel:+261321122595">+261 32 11 225 95</a></p>
-      </div>
-      <div>
-        <h5>Contact</h5>
-        <p><a style="text-decoration: none;" href="mailto:contact@vao.mg">contact@vao.mg</a></p>
-      </div>
-      <div class="footer-vao-logo">
-        <img src="img/Render element 02/Element-04.png" alt="VAO">
-      </div>
-    </div>
-    <div class="footer-social">
-      <a href="https://www.facebook.com/vaomg" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Savony Vao</a>
-      <a href="https://www.facebook.com/sdoivaoline" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Vao Line</a>
-      <a href="https://www.facebook.com/profile.php?id=61593476278606" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Max</a>
-    </div>
-  </div>
-</footer>
-
-<script>
-  (function () {
-    var track = document.getElementById('testi-track');
-    var prev = document.getElementById('testi-prev');
-    var next = document.getElementById('testi-next');
-    if (!track || !prev || !next) return;
-    var cards = Array.prototype.slice.call(track.children);
-    var total = cards.length;
-    var active = Math.floor(total / 2);
-
-    function layout() {
-      cards.forEach(function (card, i) {
-        var diff = i - active;
-        if (diff > total / 2) diff -= total;
-        if (diff < -total / 2) diff += total;
-        var abs = Math.abs(diff);
-        if (abs > 2) {
-          card.style.opacity = '0';
-          card.style.pointerEvents = 'none';
-          card.style.zIndex = '0';
-          return;
-        }
-        var scale = 1 - abs * 0.18;
-        var spacing = window.innerWidth <= 480 ? 110 : (window.innerWidth <= 900 ? 160 : 220);
-        var translateX = diff * spacing;
-        var rotate = diff * -18;
-        var opacity = 1 - abs * 0.35;
-        card.style.zIndex = String(100 - abs);
-        card.style.opacity = String(Math.max(opacity, 0));
-        card.style.pointerEvents = 'auto';
-        card.style.transform = 'translate(-50%,-50%) translateX(' + translateX + 'px) scale(' + scale + ') rotateY(' + rotate + 'deg)';
-      });
+  <script>
+    var redirected = false;
+    function goToIndex() {
+      if (redirected) return;
+      redirected = true;
+      window.location.href = 'home.html';
     }
-
-    cards.forEach(function (card, i) {
-      card.addEventListener('click', function () {
-        active = i;
-        layout();
-      });
-    });
-
-    prev.addEventListener('click', function () {
-      active = (active - 1 + total) % total;
-      layout();
-    });
-    next.addEventListener('click', function () {
-      active = (active + 1) % total;
-      layout();
-    });
-
-    window.addEventListener('resize', layout);
-
-    layout();
-  })();
-</script>
+    document.getElementById('progress-bar-fill').addEventListener('animationend', goToIndex);
+    setTimeout(goToIndex, 3000);
+  </script>
 
 </body>
 </html>
