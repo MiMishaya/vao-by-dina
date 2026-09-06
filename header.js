@@ -7,7 +7,7 @@ document.write(`
 <header>
   <div class="header-left">
     <div class="header-home">
-      <a href="home.html">
+      <a href="index.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 11.5 12 4l9 7.5"/>
           <path d="M5 10v10h14V10"/>
@@ -19,13 +19,13 @@ document.write(`
       <div class="nav-dropdown">
         <button type="button" class="dropdown-toggle" id="gamme-toggle" aria-expanded="false">Notre gamme ▼</button>
         <div class="nav-dropdown-panel" id="gamme-panel">
-          <a href="gammes.html">Tous les produits</a>
-          <a href="gammes.html#detergent">Détergent en poudre</a>
-          <a href="gammes.html#detergent">Détergent en barre</a>
-          <a href="gammes.html#toilette">Savon de toilette</a>
-          <a href="gammes.html#savonbar">Savon en barre</a>
-          <a href="gammes.html#savonbar">Savon translucide</a>
-          <a href="gammes.html#menage">Savon de ménage</a>
+          <a href="loading.html?to=gammes.html">Tous les produits</a>
+          <a href="loading.html?to=gammes.html%23detergent">Détergent en poudre</a>
+          <a href="loading.html?to=gammes.html%23detergent">Détergent en barre</a>
+          <a href="loading.html?to=gammes.html%23toilette">Savon de toilette</a>
+          <a href="loading.html?to=gammes.html%23savonbar">Savon en barre</a>
+          <a href="loading.html?to=gammes.html%23savonbar">Savon translucide</a>
+          <a href="loading.html?to=gammes.html%23menage">Savon de ménage</a>
         </div>
       </div>
       <div class="nav-dropdown">
