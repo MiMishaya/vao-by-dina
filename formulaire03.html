@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAO - Demande d'échantillon</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: white; }
+    
+    /* HEADER */
+    header { 
+      background: white; 
+      padding: 1rem 2rem; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .header-left { display: flex; align-items: center; gap: 2.5rem; }
+    .header-logo { width: 28px; height: 28px; background: white; border: 2px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
+    
+    .header-nav { display: flex; gap: 2rem; font-size: 14px; }
+    .header-nav span { color: white; background: #333; padding: 0.3rem 0.8rem; border-radius: 3px; cursor: pointer; }
+    .header-nav a { color: #666; text-decoration: none; }
+    
+    .header-right { display: flex; align-items: center; gap: 1rem; }
+    .search-bar { display: flex; gap: 0.3rem; }
+    .search-bar input { width: 120px; height: 24px; border: 1px solid #ddd; border-radius: 3px; padding: 0.3rem; font-size: 12px; }
+    .search-bar button { width: 24px; height: 24px; background: #f0a000; border: none; border-radius: 3px; cursor: pointer; color: white; font-size: 12px; }
+    
+    /* HERO */
+    .hero {
+      background: linear-gradient(to right, rgba(0,0,0,0.2), transparent), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400"><rect fill="%23228B22" width="1200" height="400"/><path d="M0,200 Q150,100 300,200 T600,200 T900,200 T1200,200" stroke="%23146d1f" stroke-width="3" fill="none" opacity="0.3"/></svg>');
+      background-size: cover;
+      min-height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4rem;
+      color: #e8d5a4;
+      position: relative;
+    }
+    
+    .hero-text { flex: 1; }
+    .hero-title { font-size: 56px; font-weight: 300; line-height: 1.1; margin-bottom: 0.3rem; }
+    .hero-subtitle { font-size: 18px; font-weight: 300; }
+    
+    .hero-product { width: 300px; text-align: center; }
+    .product-package { width: 200px; height: 180px; background: linear-gradient(135deg, #b8e6ff 0%, #90d4e8 100%); border-radius: 8px; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 140px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+    
+    /* FORM SECTION */
+    .form-section { background: #f5e6ef; padding: 2rem; }
+    
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    .tab {
+      padding: 0.7rem 1.5rem;
+      cursor: pointer;
+      color: #999;
+      position: relative;
+    }
+    
+    .tab.active {
+      color: white;
+      background: #d41f8c;
+      border-radius: 25px;
+      padding: 0.7rem 2rem;
+    }
+    
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 2rem;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .form-image {
+      width: 100%;
+      height: 550px;
+      background: linear-gradient(135deg, #e8c7a0 0%, #d4a574 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 240px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .carousel-nav {
+      position: absolute;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    
+    .carousel-nav button {
+      background: rgba(255,255,255,0.7);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      pointer-events: all;
+    }
+    
+    .form-content { display: flex; flex-direction: column; gap: 1.2rem; }
+    
+    .form-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #222;
+      margin-top: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .form-row.full { grid-column: 1 / -1; }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    
+    .form-group label {
+      font-size: 12px;
+      color: #333;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.6rem;
+      border: none;
+      background: #f0f0f0;
+      font-size: 12px;
+      border-radius: 3px;
+      font-family: inherit;
+    }
+    
+    .checkbox-row {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      font-size: 12px;
+    }
+    
+    .checkbox-row label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+    
+    .checkbox-row input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+    
+    .form-group textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+    
+    .submit-btn {
+      background: #d41f8c;
+      color: white;
+      border: none;
+      padding: 0.6rem 2rem;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      width: fit-content;
+    }
+    
+    .submit-btn:hover { background: #b01870; }
+    
+    /* PRODUCTS */
+    .products-section {
+      background: #f5e6ef;
+      padding: 2rem;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #999;
+    }
+    
+    .product-badge {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* FOOTER */
+    footer {
+      background: #f5f5f5;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 2rem;
+      font-size: 12px;
+      color: #666;
+      border-top: 1px solid #eee;
+    }
+    
+    footer h4 { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 0.5rem; }
+    footer a { color: #666; text-decoration: none; }
+    
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      font-size: 12px;
+    }
+    
+    .footer-social a { display: flex; align-items: center; gap: 0.4rem; color: #555; text-decoration: none; white-space: nowrap; }
+    .footer-social a:hover { color: #1877F2; }
+    .fb-icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+    @media (max-width: 768px) {
+      .form-wrapper { grid-template-columns: 1fr; }
+      .hero { flex-direction: column; gap: 2rem; }
+      footer { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="header-logo">⌂</div>
+    <div class="header-nav">
+      <span>Notre gamme ▼</span>
+      <a href="#">À Propos</a>
+    </div>
+  </div>
+  <div style="flex: 1; text-align: center; font-size: 24px; font-weight: bold;">
+    <span style="color: #1e90ff; font-size: 32px;">VAO</span>
+  </div>
+  <div class="header-right">
+    <div class="search-bar">
+      <input type="text" placeholder="">
+      <button>🔍</button>
+      <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb); border-radius: 3px;"></div>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-text">
+    <div class="hero-title">Votre linge,</div>
+    <div class="hero-subtitle">propre comme au<br><strong style="font-size: 32px; font-weight: 400;">premier jour</strong></div>
+  </div>
+  <div class="hero-product">
+    <div class="product-package">📦</div>
+  </div>
+</div>
+
+<div class="form-section">
+  <div class="tabs">
+    <div class="tab">DEVENIR REVENDEUR</div>
+    <div class="tab active">DEMANDE D'ÉCHANTILLON</div>
+    <div class="tab">CANDIDATURE SPONTANÉE – SDOI</div>
+  </div>
+  
+  <div class="form-wrapper">
+    <div class="form-image">
+      👨
+      <div class="carousel-nav">
+        <button>❮</button>
+        <button>❯</button>
+      </div>
+    </div>
+    
+    <div class="form-content">
+      <div class="form-section-title">1. Informations personnelles</div>
+      <div class="form-row">
+        <div class="form-group"><label>Nom</label><input type="text"></div>
+        <div class="form-group"><label>Prénom</label><input type="text"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>E-mail</label><input type="email"></div>
+        <div class="form-group"><label>Téléphone</label><input type="tel"></div>
+      </div>
+      
+      <div class="form-section-title">2. Informations professionnelles</div>
+      <div class="form-group full"><label>Nom de l'entreprise / magasin</label><input type="text"></div>
+      <div class="form-group full">
+        <label>Type d'activité</label>
+        <div class="checkbox-row">
+          <label><input type="checkbox"> Grossiste</label>
+          <label><input type="checkbox"> Détaillant</label>
+          <label><input type="checkbox"> Supermarché</label>
+          <label><input type="checkbox"> Autre :</label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Raison sociale</label><input type="text"></div>
+        <div class="form-group"><label>Ville / Région</label><input type="text"></div>
+      </div>
+      <div class="form-group full"><label>Adresse complète</label><input type="text"></div>
+      
+      <div class="form-section-title">3. Demande d'échantillon</div>
+      <div class="form-group full">
+        <label>Produits souhaités</label>
+        <div class="checkbox-row">
+          <label><input type="checkbox"> Savon de ménage</label>
+          <label><input type="checkbox"> Savon de toilette</label>
+          <label><input type="checkbox"> Détergent poudre</label>
+          <label><input type="checkbox"> Détergent barre</label>
+          <label><input type="checkbox"> Autre :</label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Quantité souhaité</label>
+          <div class="checkbox-row">
+            <label><input type="checkbox"> Test (petit volume)</label>
+            <label><input type="checkbox"> Evaluation commerciale</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Objectif de la demande</label>
+          <div class="checkbox-row">
+            <label><input type="checkbox"> Test (petit volume)</label>
+            <label><input type="checkbox"> Evaluation commerciale</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-section-title">4. Potentiel commercial (important pour qualification)</div>
+      <div class="form-row">
+        <div class="form-group"><label>Volume estimé mensuel</label><input type="text"></div>
+        <div class="form-group"><label>Zone de distribution prévue</label><input type="text"></div>
+      </div>
+      
+      <div class="form-section-title">5. Message complémentaire</div>
+      <div class="form-group full"><textarea></textarea></div>
+      
+      <button class="submit-btn">Envoyer</button>
+    </div>
+  </div>
+</div>
+
+<div class="products-section">
+    <div class="product-badge"><img src="img/temoignage/Web project 02 élement-10.png" alt="Savon de Marseille VAO"></div>
+  </div>
+
+<footer>
+  <div>
+    <h4>SDOI</h4>
+    <p>Service d'Outreach du Groupe Santé</p>
+    <p>Notre siège</p>
+    <p>En face ex-abattoir - Aranta Mahajanga</p>
+  </div>
+  <div>
+    <h4>Service client</h4>
+    <p>+261 32 11 225 95</p>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <p>contact@vao.mg</p>
+  </div>
+  <div style="text-align: center;">
+    <div style="font-size: 48px; margin-bottom: 1rem;">🧼</div>
+    <p style="font-weight: 600;">VAO</p>
+    <div class="footer-social">
+      <a href="https://www.facebook.com/vaomg" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Savony Vao</a>
+      <a href="https://www.facebook.com/sdoivaoline" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Vao Line</a>
+      <a href="https://www.facebook.com/profile.php?id=61593476278606" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Max</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

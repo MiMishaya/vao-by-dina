@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAO - Demande d'Échantillon &amp; Candidature</title>
+  <link rel="stylesheet" href="header.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { overflow-x: hidden; }
+    .visually-hidden {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: white; overflow-x: hidden; }
+    img { max-width: 100%; display: block; }
+
+    body.theme-echantillon { --theme-bg: #3a1830; --theme-accent: #e0357c; --theme-accent-hover: #c22a68; }
+    body.theme-candidature { --theme-bg: #141c33; --theme-accent: #2b57e0; --theme-accent-hover: #1f44b8; }
+
+    /* HERO */
+    .hero { position: relative; width: 100%; overflow: hidden; background: #000; aspect-ratio: 6000 / 2518; }
+    .hero img.hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .hero-dots {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .hero-dots span {
+      width: 8px; height: 8px; border-radius: 4px;
+      background: rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+    .hero-dots span.active { width: 22px; background: #fff; }
+
+    /* THEME SECTION */
+    .theme-section { background: var(--theme-bg); padding: 2rem 2rem 2.5rem; transition: background 0.25s ease; }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 0.9rem 1.5rem;
+      cursor: pointer;
+      color: rgba(255,255,255,0.6);
+      background: transparent;
+      border: none;
+      white-space: nowrap;
+      text-decoration: none;
+      font: inherit;
+    }
+
+    .tab.active {
+      color: var(--theme-bg);
+      background: #ffffff;
+      border-radius: 4px;
+      padding: 0.9rem 1.8rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+
+    .form-shell {
+      position: relative;
+      max-width: 1150px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .side-arrow {
+      background: rgba(255,255,255,0.6);
+      border: none;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      color: #333;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+
+    .side-arrow:hover { background: rgba(255,255,255,0.85); }
+
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .form-wrapper[hidden] { display: none; }
+
+    .form-image {
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .form-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      position: absolute; inset: 0;
+    }
+
+    .form-content { display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; max-height: 560px; min-width: 0; }
+
+    .form-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #222;
+      margin-top: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .form-group {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      min-width: 0;
+    }
+
+    .form-group > label,
+    .form-group > span:first-child {
+      flex: 0 0 180px;
+      font-size: 12px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.6rem 0.7rem;
+      border: none;
+      background: #eef0f5;
+      font-size: 12px;
+      border-radius: 4px;
+      font-family: inherit;
+      width: 100%;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .form-group .checkbox-row { flex: 1; min-width: 0; }
+
+    .form-group textarea { min-height: 70px; resize: vertical; }
+
+    .checkbox-row {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      font-size: 12px;
+      align-items: center;
+    }
+
+    .checkbox-row label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    .inline-other {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 12px;
+      color: #333;
+      flex: 1;
+      min-width: 140px;
+    }
+    .inline-other input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      padding: 0.4rem 0.6rem;
+      border: none;
+      background: #eef0f5;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: inherit;
+    }
+
+    .file-upload {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 12px;
+      color: #0066cc;
+      cursor: pointer;
+      padding: 0.8rem;
+      background: #eef0f5;
+      border-radius: 4px;
+    }
+
+    .file-upload svg { width: 16px; height: 16px; }
+
+    .submit-btn {
+      background: var(--theme-accent);
+      color: white;
+      border: none;
+      padding: 0.7rem 2.4rem;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      width: fit-content;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover { background: var(--theme-accent-hover); }
+
+    /* PRODUCTS */
+    .products-section {
+      padding: 2.5rem 2rem 0.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 2rem;
+      flex-wrap: wrap;
+      row-gap: 1.5rem;
+    }
+
+    .product-badge {
+      font-weight: 700;
+      font-size: 15px;
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .product-badge .script {
+      font-family: 'Brush Script MT', cursive;
+      font-size: 20px;
+      display: block;
+    }
+
+    .product-badge.plain {
+      font-weight: 600;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    .product-badge.plain .name {
+      font-style: normal;
+      font-size: 16px;
+      display: block;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #f5f5f7;
+      padding: 2.5rem 2rem;
+      border-top: 1px solid #eee;
+    }
+
+    .footer-tagline {
+      text-align: center;
+      color: #555;
+      font-size: 13px;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    .footer-main {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      max-width: 1150px;
+      margin: 0 auto;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .footer-main img { height: 34px; margin-bottom: 0.4rem; }
+    footer h4 { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 0.3rem; }
+    footer a { color: #666; text-decoration: none; }
+    .footer-vao-logo { justify-self: end; }
+    .footer-vao-logo img { height: 44px; }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      font-size: 12px;
+      color: #555;
+    }
+
+    .footer-social a { display: flex; align-items: center; gap: 0.4rem; color: #555; text-decoration: none; white-space: nowrap; }
+    .footer-social a:hover { color: #1877F2; }
+    .fb-icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+    @media (max-width: 900px) {
+      .form-wrapper { grid-template-columns: 1fr; }
+      .form-image { min-height: 260px; }
+      .form-content { max-height: none; }
+      .side-arrow { display: none; }
+      .footer-main { grid-template-columns: 1fr 1fr; }
+      .footer-vao-logo { justify-self: start; grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 640px) {
+      .theme-section { padding: 1.5rem 1rem 2rem; }
+      .form-wrapper { padding: 1.2rem; gap: 1.2rem; }
+      .form-group { flex-direction: column; align-items: stretch; gap: 0.3rem; }
+      .form-group > label,
+      .form-group > span:first-child { flex: none; }
+      .tabs { gap: 0.75rem; font-size: 11px; }
+      .tab, .tab.active { padding: 0.7rem 1rem; }
+      .footer-main { grid-template-columns: 1fr; text-align: center; }
+      .footer-vao-logo { justify-self: center; }
+      .products-section { gap: 1.2rem; }
+    }
+  </style>
+</head>
+<body class="theme-echantillon">
+
+<div class="hero">
+  <img class="hero-bg" src="img/header/Web project 02 Header only-04.png" alt="Mousse généreuse pour une propreté éclatante">
+  <div class="hero-dots"></div>
+</div>
+
+<script src="hero-carousel.js"></script>
+
+<script src="header.js"></script>
+
+<section class="theme-section">
+  <div class="tabs">
+    <a class="tab" href="formulaire01.html">DEVENIR REVENDEUR</a>
+    <button type="button" class="tab active" id="tab-echantillon" aria-pressed="true">DEMANDE D'ÉCHANTILLON</button>
+    <button type="button" class="tab" id="tab-candidature" aria-pressed="false">CANDIDATURE SPONTANÉE – SDOI</button>
+  </div>
+
+  <div class="form-shell">
+    <a class="side-arrow" id="arrow-prev" href="formulaire01.html" aria-label="Précédent">❮❮</a>
+
+    <div class="form-wrapper" id="panel-echantillon">
+      <div class="form-image">
+        <img src="img/temoin/Web project 02 élement photos-02.png" alt="Demande d'échantillon VAO">
+      </div>
+
+      <div class="form-content">
+        <div class="form-section-title">1. Informations personnelles</div>
+        <div class="form-row">
+          <div class="form-group"><label for="e-nom">Nom :</label><input id="e-nom" type="text"></div>
+          <div class="form-group"><label for="e-prenom">Prénom :</label><input id="e-prenom" type="text"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="e-email">E-mail :</label><input id="e-email" type="email"></div>
+          <div class="form-group"><label for="e-telephone">Téléphone :</label><input id="e-telephone" type="tel"></div>
+        </div>
+
+        <div class="form-section-title">2. Informations professionnelles</div>
+        <div class="form-group full"><label for="e-entreprise">Nom de l'entreprise / magasin :</label><input id="e-entreprise" type="text"></div>
+        <div class="form-group full">
+          <span>Type d'activité :</span>
+          <div class="checkbox-row">
+            <label><input type="checkbox"> Grossiste</label>
+            <label><input type="checkbox"> Détaillant</label>
+            <label><input type="checkbox"> Supermarché</label>
+            <span class="inline-other"><input type="checkbox"> Autre : <input type="text" aria-label="Autre"></span>
+          </div>
+        </div>
+        <div class="form-group full"><label for="e-raison">Raison sociale :</label><input id="e-raison" type="text"></div>
+        <div class="form-row">
+          <div class="form-group"><label for="e-ville">Ville / Région :</label><input id="e-ville" type="text"></div>
+          <div class="form-group"><label for="e-adresse">Adresse complète :</label><input id="e-adresse" type="text"></div>
+        </div>
+
+        <div class="form-section-title">3. Demande d'échantillon</div>
+        <div class="form-group full">
+          <span>Produits souhaités :</span>
+          <div class="checkbox-row">
+            <label><input type="checkbox"> Savon de ménage</label>
+            <label><input type="checkbox"> Savon de toilette</label>
+            <label><input type="checkbox"> Détergent poudre</label>
+            <label><input type="checkbox"> Détergent barre</label>
+            <span class="inline-other"><input type="checkbox"> Autre : <input type="text" aria-label="Autre"></span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <span>Quantité souhaitée :</span>
+          <div class="checkbox-row">
+            <label><input type="checkbox"> Test (petit volume)</label>
+            <label><input type="checkbox"> Évaluation commerciale</label>
+            <span class="inline-other"><input type="checkbox"> Autre : <input type="text" aria-label="Autre"></span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <span>Objectif de la demande :</span>
+          <div class="checkbox-row">
+            <label><input type="checkbox"> Test (petit volume)</label>
+            <label><input type="checkbox"> Évaluation commerciale</label>
+            <span class="inline-other"><input type="checkbox"> Autre : <input type="text" aria-label="Autre"></span>
+          </div>
+        </div>
+
+        <div class="form-section-title">4. Potentiel commercial (important pour qualification)</div>
+        <div class="form-group full"><label for="e-volume">Volume estimé mensuel :</label><input id="e-volume" type="text"></div>
+        <div class="form-group full"><label for="e-zone">Zone de distribution prévue :</label><input id="e-zone" type="text"></div>
+
+        <div class="form-section-title">5. Message complémentaire</div>
+        <div class="form-group full"><label for="e-message" class="visually-hidden">Message complémentaire</label><textarea id="e-message"></textarea></div>
+
+        <button type="submit" class="submit-btn">Envoyer</button>
+      </div>
+    </div>
+
+    <div class="form-wrapper" id="panel-candidature" hidden>
+      <div class="form-image">
+        <img src="img/temoin/Web project 02 élement photos-03.png" alt="Candidature spontanée SDOI">
+      </div>
+
+      <div class="form-content">
+        <div class="form-section-title">1. Informations personnelles</div>
+        <div class="form-row">
+          <div class="form-group"><label for="c-nom">Nom *</label><input id="c-nom" type="text" required></div>
+          <div class="form-group"><label for="c-prenom">Prénom *</label><input id="c-prenom" type="text" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="c-email">E-mail *</label><input id="c-email" type="email" required></div>
+          <div class="form-group"><label for="c-telephone">Téléphone *</label><input id="c-telephone" type="tel" required></div>
+        </div>
+        <div class="form-group full"><label for="c-adresse">Adresse :</label><input id="c-adresse" type="text"></div>
+        <div class="form-row">
+          <div class="form-group"><label for="c-ville">Ville :</label><input id="c-ville" type="text"></div>
+          <div class="form-group"><label for="c-pays">Pays :</label><input id="c-pays" type="text"></div>
+        </div>
+
+        <div class="form-section-title">2. Profil professionnel</div>
+        <div class="form-group full"><label for="c-poste">Poste souhaité :</label><input id="c-poste" type="text"></div>
+        <div class="form-group full"><label for="c-domaine">Domaine d'expertise :</label><input id="c-domaine" type="text"></div>
+        <div class="form-group full"><label for="c-experience">Années d'expérience :</label><input id="c-experience" type="text"></div>
+        <div class="form-group full"><label for="c-dispo">Disponibilité :</label><input id="c-dispo" type="text"></div>
+
+        <div class="form-section-title">3. Motivation</div>
+        <div class="form-group full"><label for="c-motivation">Pourquoi souhaitez-vous rejoindre SDOI ?</label><textarea id="c-motivation"></textarea></div>
+
+        <div class="form-section-title">4. Pièces jointes</div>
+        <div class="form-group full"><span>Veuillez joindre les documents suivants :</span></div>
+        <div class="checkbox-row">
+          <label><input type="checkbox"> CV</label>
+          <label><input type="checkbox"> Lettre de motivation</label>
+          <label><input type="checkbox"> Autres</label>
+        </div>
+        <label class="file-upload" for="c-file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v14m-6-6 6-6 6 6M4 21h16"/>
+          </svg>
+          Importer un fichier
+        </label>
+        <input id="c-file" type="file" hidden>
+
+        <button type="submit" class="submit-btn">Envoyer</button>
+      </div>
+    </div>
+
+    <a class="side-arrow" id="arrow-next" href="formulaire02.html#candidature" aria-label="Suivant">❯❯</a>
+  </div>
+
+  <div class="products-section">
+    <div class="product-badge"><img src="img/temoignage/Web project 02 élement-10.png" alt="Savon de Marseille VAO"></div>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-tagline">Notre équipe dédiée est là pour vous accompagner et vous apporter les solutions adaptées à vos besoins.</p>
+  <div class="footer-main">
+    <div>
+      <img src="img/Render element 02/Element-03.png" alt="SDOI">
+    </div>
+    <div>
+      <h4>Notre siège</h4>
+      <p>En face ex-abattoir - Aranta Mahajanga</p>
+    </div>
+    <div>
+      <h4>Service client</h4>
+      <p>+261 32 11 225 95</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <p>contact@vao.mg</p>
+    </div>
+    <div class="footer-vao-logo">
+      <img src="img/Render element 02/Element-04.png" alt="VAO">
+    </div>
+  </div>
+  <div class="footer-social">
+      <a href="https://www.facebook.com/vaomg" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Savony Vao</a>
+      <a href="https://www.facebook.com/sdoivaoline" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Vao Line</a>
+      <a href="https://www.facebook.com/profile.php?id=61593476278606" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Max</a>
+    </div>
+</footer>
+
+<script>
+  var tabEchantillon = document.getElementById('tab-echantillon');
+  var tabCandidature = document.getElementById('tab-candidature');
+  var panelEchantillon = document.getElementById('panel-echantillon');
+  var panelCandidature = document.getElementById('panel-candidature');
+  var arrowPrev = document.getElementById('arrow-prev');
+  var arrowNext = document.getElementById('arrow-next');
+
+  function activate(name) {
+    var isEchantillon = name === 'echantillon';
+    document.body.className = isEchantillon ? 'theme-echantillon' : 'theme-candidature';
+    tabEchantillon.classList.toggle('active', isEchantillon);
+    tabCandidature.classList.toggle('active', !isEchantillon);
+    tabEchantillon.setAttribute('aria-pressed', String(isEchantillon));
+    tabCandidature.setAttribute('aria-pressed', String(!isEchantillon));
+    panelEchantillon.hidden = !isEchantillon;
+    panelCandidature.hidden = isEchantillon;
+
+    if (isEchantillon) {
+      arrowPrev.href = 'formulaire01.html';
+      arrowPrev.setAttribute('aria-label', 'Précédent : Devenir revendeur');
+      arrowNext.href = '#candidature';
+      arrowNext.setAttribute('aria-label', 'Suivant : Candidature spontanée');
+    } else {
+      arrowPrev.href = '#echantillon';
+      arrowPrev.setAttribute('aria-label', 'Précédent : Demande d\'échantillon');
+      arrowNext.href = 'formulaire01.html';
+      arrowNext.setAttribute('aria-label', 'Suivant : Devenir revendeur');
+    }
+  }
+
+  tabEchantillon.addEventListener('click', function () { activate('echantillon'); });
+  tabCandidature.addEventListener('click', function () { activate('candidature'); });
+
+  arrowPrev.addEventListener('click', function (e) {
+    if (arrowPrev.getAttribute('href') === '#echantillon') { e.preventDefault(); activate('echantillon'); }
+  });
+  arrowNext.addEventListener('click', function (e) {
+    if (arrowNext.getAttribute('href') === '#candidature') { e.preventDefault(); activate('candidature'); }
+  });
+
+  activate(window.location.hash === '#candidature' ? 'candidature' : 'echantillon');
+</script>
+
+</body>
+</html>

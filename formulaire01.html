@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAO - Devenir Revendeur</title>
+  <link rel="stylesheet" href="header.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { overflow-x: hidden; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: white; overflow-x: hidden; }
+    img { max-width: 100%; display: block; }
+
+    /* HERO */
+    .hero { position: relative; width: 100%; overflow: hidden; background: #000; aspect-ratio: 6000 / 2518; }
+    .hero img.hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .hero-dots {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .hero-dots span {
+      width: 8px; height: 8px; border-radius: 4px;
+      background: rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+    .hero-dots span.active { width: 22px; background: #fff; }
+
+    /* ORANGE SECTION */
+    .orange-section { background: #f2a324; padding: 2rem 2rem 2.5rem; }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 0.9rem 1.5rem;
+      cursor: pointer;
+      color: rgba(255,255,255,0.75);
+      background: transparent;
+      border: none;
+      white-space: nowrap;
+      text-decoration: none;
+      font: inherit;
+    }
+
+    .tab.active {
+      color: #f2a324;
+      background: #ffffff;
+      border-radius: 4px;
+      padding: 0.9rem 1.8rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .form-shell {
+      position: relative;
+      max-width: 1150px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .side-arrow {
+      background: rgba(255,255,255,0.6);
+      border: none;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      color: #333;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+
+    .side-arrow:hover { background: rgba(255,255,255,0.85); }
+
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .form-image {
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .form-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      position: absolute; inset: 0;
+    }
+
+    .form-content { display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; max-height: 560px; min-width: 0; }
+
+    .form-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #222;
+      margin-top: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .form-group {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      min-width: 0;
+    }
+
+    .form-group > label,
+    .form-group > span:first-child {
+      flex: 0 0 180px;
+      font-size: 12px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.6rem 0.7rem;
+      border: none;
+      background: #eef0f5;
+      font-size: 12px;
+      border-radius: 4px;
+      font-family: inherit;
+      width: 100%;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .form-group .checkbox-row { flex: 1; min-width: 0; }
+
+    .checkbox-row {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      font-size: 12px;
+      align-items: center;
+    }
+
+    .checkbox-row label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    .file-upload {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 12px;
+      color: #0066cc;
+      cursor: pointer;
+      padding: 0.8rem;
+      background: #eef0f5;
+      border-radius: 4px;
+    }
+
+    .file-upload svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .submit-btn {
+      background: #f2a324;
+      color: white;
+      border: none;
+      padding: 0.7rem 2.4rem;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      width: fit-content;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover { background: #d8900f; }
+
+    /* PRODUCTS */
+    .products-section {
+      padding: 2.5rem 2rem 0.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 2rem;
+      flex-wrap: wrap;
+      row-gap: 1.5rem;
+    }
+
+    .product-badge {
+      font-weight: 700;
+      font-size: 15px;
+      color: #1a1a2e;
+      text-align: center;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .product-badge .script {
+      font-family: 'Brush Script MT', cursive;
+      font-size: 20px;
+      display: block;
+    }
+
+    .product-badge img { height: 56px; width: auto; object-fit: contain; }
+
+    .product-badge.plain {
+      font-weight: 600;
+      font-size: 13px;
+      font-style: italic;
+      color: #222;
+    }
+
+    .product-badge.plain .name {
+      font-style: normal;
+      font-size: 16px;
+      display: block;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #f5f5f7;
+      padding: 2.5rem 2rem;
+      border-top: 1px solid #eee;
+    }
+
+    .footer-tagline {
+      text-align: center;
+      color: #555;
+      font-size: 13px;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    .footer-main {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      max-width: 1150px;
+      margin: 0 auto;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .footer-main img { height: 34px; margin-bottom: 0.4rem; }
+    footer h4 { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 0.3rem; }
+    footer a { color: #666; text-decoration: none; }
+    .footer-vao-logo { justify-self: end; }
+    .footer-vao-logo img { height: 44px; }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      font-size: 12px;
+      color: #555;
+    }
+
+    .footer-social a { display: flex; align-items: center; gap: 0.4rem; color: #555; text-decoration: none; white-space: nowrap; }
+    .footer-social a:hover { color: #1877F2; }
+    .fb-icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+    @media (max-width: 900px) {
+      .form-wrapper { grid-template-columns: 1fr; }
+      .form-image { min-height: 260px; }
+      .form-content { max-height: none; }
+      .side-arrow { display: none; }
+      .footer-main { grid-template-columns: 1fr 1fr; }
+      .footer-vao-logo { justify-self: start; grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 640px) {
+      .orange-section { padding: 1.5rem 1rem 2rem; }
+      .form-wrapper { padding: 1.2rem; gap: 1.2rem; }
+      .form-group { flex-direction: column; align-items: stretch; gap: 0.3rem; }
+      .form-group > label,
+      .form-group > span:first-child { flex: none; }
+      .tabs { gap: 0.75rem; font-size: 11px; }
+      .tab, .tab.active { padding: 0.7rem 1rem; }
+      .footer-main { grid-template-columns: 1fr; text-align: center; }
+      .footer-vao-logo { justify-self: center; }
+      .products-section { gap: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <img class="hero-bg" src="img/header/Web project 02 Header only-04.png" alt="Mousse généreuse pour une propreté éclatante">
+  <div class="hero-dots"></div>
+</div>
+
+<script src="hero-carousel.js"></script>
+
+<script src="header.js"></script>
+
+<section class="orange-section">
+  <div class="tabs">
+    <div class="tab active">DEVENIR REVENDEUR</div>
+    <a class="tab" href="formulaire02.html#echantillon">DEMANDE D'ÉCHANTILLON</a>
+    <a class="tab" href="formulaire02.html#candidature">CANDIDATURE SPONTANÉE – SDOI</a>
+  </div>
+
+  <div class="form-shell">
+    <a class="side-arrow" href="formulaire02.html#candidature" aria-label="Précédent : Candidature spontanée">❮❮</a>
+
+    <div class="form-wrapper">
+      <div class="form-image">
+        <img src="img/temoin/Web project 02 élement photos_Témoignage.png" alt="Devenir revendeur VAO">
+      </div>
+
+      <div class="form-content">
+        <div class="form-section-title">1. Informations personnelles</div>
+        <div class="form-row">
+          <div class="form-group"><label for="f-raison-sociale">Nom complet ou Raison sociale :</label><input id="f-raison-sociale" type="text"></div>
+          <div class="form-group"><label for="f-responsable">Nom du responsable :</label><input id="f-responsable" type="text"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="f-email">E-mail :</label><input id="f-email" type="email"></div>
+          <div class="form-group"><label for="f-telephone">Téléphone :</label><input id="f-telephone" type="tel"></div>
+        </div>
+
+        <div class="form-section-title">2. Localisation</div>
+        <div class="form-group full"><label for="f-adresse">Adresse exacte :</label><input id="f-adresse" type="text"></div>
+        <div class="form-row">
+          <div class="form-group"><label for="f-ville">Ville :</label><input id="f-ville" type="text"></div>
+          <div class="form-group"><label for="f-pays">Pays :</label><input id="f-pays" type="text"></div>
+        </div>
+
+        <div class="form-section-title">3. Informations sur l'activité</div>
+        <div class="form-group full">
+          <span>Type d'activités :</span>
+          <div class="checkbox-row">
+            <label><input type="checkbox"> Libre-service</label>
+            <label><input type="checkbox"> Épicerie</label>
+            <label><input type="checkbox"> Grossiste</label>
+          </div>
+        </div>
+        <div class="form-group full"><label for="f-magasin">Nom du magasin :</label><input id="f-magasin" type="text"></div>
+        <div class="form-group full"><label for="f-experience">Année d'expérience :</label><input id="f-experience" type="text"></div>
+        <div class="form-group full"><label for="f-produits">Produits d'intérêt :</label><input id="f-produits" type="text"></div>
+        <div class="form-group full"><label for="f-stockage">Capacité de stockage :</label><input id="f-stockage" type="text"></div>
+        <div class="form-group full"><label for="f-volume">Volume estimé mensuel :</label><input id="f-volume" type="text"></div>
+
+        <div class="form-section-title">4. Informations légales</div>
+        <div class="form-group full"><label for="f-rcs">N° RCS :</label><input id="f-rcs" type="text"></div>
+        <div class="form-group full"><label for="f-nif">N° NIF :</label><input id="f-nif" type="text"></div>
+        <div class="form-group full"><label for="f-stat">N° STAT :</label><input id="f-stat" type="text"></div>
+
+        <div class="form-section-title">5. Pièces à fournir</div>
+        <div class="form-group full"><span>Veuillez joindre les documents suivants :</span></div>
+        <div class="checkbox-row">
+          <label><input type="checkbox"> Copie NIF</label>
+          <label><input type="checkbox"> Copie STAT</label>
+          <label><input type="checkbox"> Copie RCS</label>
+        </div>
+        <label class="file-upload" for="f-file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v14m-6-6 6-6 6 6M4 21h16"/>
+          </svg>
+          Importer un fichier
+        </label>
+        <input id="f-file" type="file" hidden>
+
+        <button type="submit" class="submit-btn">Envoyer</button>
+      </div>
+    </div>
+
+    <a class="side-arrow" href="formulaire02.html#echantillon" aria-label="Suivant : Demande d'échantillon">❯❯</a>
+  </div>
+
+  <div class="products-section">
+    
+    <div class="product-badge"><img src="img/temoignage/Web project 02 élement-10.png" alt="Savon de Marseille VAO"></div>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-tagline">Notre équipe dédiée est là pour vous accompagner et vous apporter les solutions adaptées à vos besoins.</p>
+  <div class="footer-main">
+    <div>
+      <img src="img/Render element 02/Element-03.png" alt="SDOI">
+    </div>
+    <div>
+      <h4>Notre siège</h4>
+      <p>En face ex-abattoir - Aranta Mahajanga</p>
+    </div>
+    <div>
+      <h4>Service client</h4>
+      <p>+261 32 11 225 95</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <p>contact@vao.mg</p>
+    </div>
+    <div class="footer-vao-logo">
+      <img src="img/Render element 02/Element-04.png" alt="VAO">
+    </div>
+  </div>
+  <div class="footer-social">
+      <a href="https://www.facebook.com/vaomg" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Savony Vao</a>
+      <a href="https://www.facebook.com/sdoivaoline" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Vao Line</a>
+      <a href="https://www.facebook.com/profile.php?id=61593476278606" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Max</a>
+    </div>
+</footer>
+
+</body>
+</html>

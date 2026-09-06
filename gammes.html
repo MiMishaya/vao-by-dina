@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAO - Tous nos gammes</title>
+  <link rel="stylesheet" href="header.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { overflow-x: hidden; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #000; overflow-x: hidden; }
+    img { max-width: 100%; display: block; }
+
+    /* HERO */
+    .hero { position: relative; width: 100%; overflow: hidden; background: #000; aspect-ratio: 6000 / 2518; }
+    .hero img.hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .hero-dots {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .hero-dots span {
+      width: 8px; height: 8px; border-radius: 4px;
+      background: rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+    .hero-dots span.active { width: 22px; background: #fff; }
+
+    /* GAMMES */
+    .gammes-section { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+
+    .gammes-title {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #f2a324;
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+
+    .category { margin-bottom: 2.5rem; }
+
+    .category-title {
+      font-size: 15px;
+      font-weight: 700;
+      font-style: italic;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    .category-title.c-savonbar { color: #f2a324; }
+    .category-title.c-toilette { color: #f2a324; }
+    .category-title.c-menage { color: #fff; }
+
+    .prod-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .prod-card {
+      flex: 1;
+      background: #f4f4f6;
+      border-radius: 6px;
+      padding: 1.2rem 1rem 1rem;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .prod-card .prod-thumb {
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.8rem;
+    }
+    .prod-card .prod-thumb img { max-height: 130px; width: auto; object-fit: contain; margin: 0 auto; }
+
+    .prod-name {
+      font-weight: 700;
+      font-style: italic;
+      font-size: 15px;
+      color: #1a2b4a;
+      margin-bottom: 0.2rem;
+    }
+    .prod-meta { font-size: 11px; color: #888; line-height: 1.3; }
+
+    .row-plus {
+      flex: 0 0 44px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      cursor: pointer;
+      user-select: none;
+      border: none;
+      transition: transform 0.25s ease;
+    }
+    .row-plus.blue { background: #2f6fed; }
+    .row-plus.yellow { background: #f2c123; }
+    .row-plus.orange { background: #f2a324; }
+    .row-plus.brown { background: #7a4a2b; }
+    .row-plus.open { transform: rotate(45deg); }
+    .row-plus-spacer { flex: 0 0 44px; width: 44px; }
+
+    .extra-rows { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
+    .extra-rows.open { max-height: 2000px; }
+
+    /* LOGO STRIP */
+    .brand-strip {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1.6rem;
+      padding: 1.5rem 2rem 2.5rem;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .brand-strip span {
+      font-weight: 700;
+      font-style: italic;
+      font-size: 12px;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #111;
+      padding: 2.5rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .footer-tagline {
+      text-align: center;
+      color: #bbb;
+      font-size: 13px;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    .footer-main {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      max-width: 1150px;
+      margin: 0 auto;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .footer-main img { height: 34px; margin-bottom: 0.4rem; }
+    footer h4 { font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+    footer a { color: #aaa; text-decoration: none; }
+    .footer-vao-logo { justify-self: end; }
+    .footer-vao-logo img { height: 44px; filter: brightness(0) invert(1); }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      font-size: 12px;
+      color: #ccc;
+    }
+    .footer-social a { display: flex; align-items: center; gap: 0.4rem; color: #ccc; text-decoration: none; white-space: nowrap; }
+    .footer-social a:hover { color: #1877F2; }
+    .fb-icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+    @media (max-width: 900px) {
+      .prod-row { flex-wrap: wrap; }
+      .prod-card { flex: 1 1 calc(50% - 0.75rem); }
+      .footer-main { grid-template-columns: 1fr 1fr; }
+      .footer-vao-logo { justify-self: start; grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 640px) {
+      .prod-card { flex: 1 1 100%; }
+      .row-plus { align-self: center; }
+      .footer-main { grid-template-columns: 1fr; text-align: center; }
+      .footer-vao-logo { justify-self: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <img class="hero-bg" src="img/header/Web project 02 Header only_Header 01.png" alt="Puissance contre les taches, fraîcheur sur votre linge">
+  <div class="hero-dots"></div>
+</div>
+
+<script src="hero-carousel.js"></script>
+<script src="header.js"></script>
+
+<section class="gammes-section">
+  <h1 class="gammes-title">Tous nos gammes</h1>
+
+  <!-- DÉTERGENT -->
+  <div class="category" id="detergent">
+    <div class="category-title">Détergent</div>
+    <div class="prod-row">
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_001.png" alt="VAO Line"></div>
+        <div class="prod-name">VAO Line</div>
+        <div class="prod-meta">30g / unité<br>48 sachets / 150 sachets</div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_002.png" alt="VAO Magic"></div>
+        <div class="prod-name">VAO Magic</div>
+        <div class="prod-meta">140g / unité<br>24 morceaux</div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_003.png" alt="VAO Lemon"></div>
+        <div class="prod-name">VAO Lemon</div>
+        <div class="prod-meta">30g / unité<br>48 sachets / 150 sachets</div>
+      </div>
+      <button type="button" class="row-plus orange">+</button>
+    </div>
+    <div class="extra-rows">
+      <div class="prod-row">
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_001.png" alt="VAO Line"></div>
+          <div class="prod-name">VAO Line</div>
+          <div class="prod-meta">30g / unité<br>48 sachets / 150 sachets</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_002.png" alt="VAO Magic"></div>
+          <div class="prod-name">VAO Magic</div>
+          <div class="prod-meta">140g / unité<br>24 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_003.png" alt="VAO Lemon"></div>
+          <div class="prod-name">VAO Lemon</div>
+          <div class="prod-meta">30g / unité<br>48 sachets / 150 sachets</div>
+        </div>
+        <div class="row-plus-spacer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVON BAR -->
+  <div class="category" id="savonbar">
+    <div class="category-title c-savonbar">Savon Bar</div>
+    <div class="prod-row">
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_004.png" alt="VAO Citron"></div>
+        <div class="prod-name">VAO Citron</div>
+        <div class="prod-meta">1kg / unité<br>6 morceaux</div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_005.png" alt="VAO Lemon"></div>
+        <div class="prod-name">VAO Lemon</div>
+        <div class="prod-meta">1kg / unité<br>6 morceaux</div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_006.png" alt="VAO Line"></div>
+        <div class="prod-name">VAO Line</div>
+        <div class="prod-meta">800g / unité<br>6 morceaux</div>
+      </div>
+      <button type="button" class="row-plus orange">+</button>
+    </div>
+    <div class="extra-rows">
+      <div class="prod-row">
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_004.png" alt="VAO Citron"></div>
+          <div class="prod-name">VAO Citron</div>
+          <div class="prod-meta">1kg / unité<br>6 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_005.png" alt="VAO Lemon"></div>
+          <div class="prod-name">VAO Lemon</div>
+          <div class="prod-meta">1kg / unité<br>6 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_006.png" alt="VAO Line"></div>
+          <div class="prod-name">VAO Line</div>
+          <div class="prod-meta">800g / unité<br>6 morceaux</div>
+        </div>
+        <div class="row-plus-spacer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVON DE TOILETTE -->
+  <div class="category" id="toilette">
+    <div class="category-title c-toilette">Savon de toilette</div>
+    <div class="prod-row">
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_007.png" alt="VAO Bébé"></div>
+        <div class="prod-name">VAO Bébé</div>
+        <div class="prod-meta">70g / unité<br>24 morceaux</div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_008.png" alt="U1"></div>
+        <div class="prod-name">U1</div>
+        <div class="prod-meta">80g / unité<br>36 morceaux</div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_009.png" alt="SM"></div>
+        <div class="prod-name">SM</div>
+        <div class="prod-meta">180g / unité<br>12 morceaux</div>
+      </div>
+      <button type="button" class="row-plus blue">+</button>
+    </div>
+    <div class="extra-rows">
+      <div class="prod-row">
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_010.png" alt="VAO Antiseptique"></div>
+          <div class="prod-name">VAO</div>
+          <div class="prod-meta">70g / unité<br>24 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_011.png" alt="VAO Germicide"></div>
+          <div class="prod-name">VAO</div>
+          <div class="prod-meta">70g / unité<br>24 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_012.png" alt="VAO Hôtel"></div>
+          <div class="prod-name">VAO Hôtel</div>
+          <div class="prod-meta">20g / unité<br>24 morceaux</div>
+        </div>
+        <div class="row-plus-spacer"></div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_013.png" alt="VAO Lux"></div>
+          <div class="prod-name">VAO Lux</div>
+          <div class="prod-meta">70g / unité<br>24 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_014.png" alt="VAO Lux"></div>
+          <div class="prod-name">VAO Lux</div>
+          <div class="prod-meta">70g / unité<br>24 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_015.png" alt="VAO Lux"></div>
+          <div class="prod-name">VAO Lux</div>
+          <div class="prod-meta">70g / unité<br>24 morceaux</div>
+        </div>
+        <div class="row-plus-spacer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVON DE MÉNAGE -->
+  <div class="category" id="menage">
+    <div class="category-title c-menage">Savon de ménage</div>
+    <div class="prod-row">
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_016.png" alt="U30+"></div>
+        <div class="prod-name">U30+</div>
+        <div class="prod-meta">180g / unité<br>36 morceaux</div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_017.png" alt="V3+"></div>
+        <div class="prod-name">V3+</div>
+        <div class="prod-meta">110g / unité<br>30 morceaux</div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-thumb"><img src="img/savon/Web project Savon élement_018.png" alt="O20+"></div>
+        <div class="prod-name">O20+</div>
+        <div class="prod-meta">110g / unité<br>24 morceaux</div>
+      </div>
+      <button type="button" class="row-plus blue">+</button>
+    </div>
+    <div class="extra-rows">
+      <div class="prod-row">
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_019.png" alt="Z27"></div>
+          <div class="prod-name">Z27</div>
+          <div class="prod-meta">125g / unité<br>36 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_020.png" alt="U30"></div>
+          <div class="prod-name">U30</div>
+          <div class="prod-meta">180g / unité<br>36 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_021.png" alt="UP3"></div>
+          <div class="prod-name">UP3</div>
+          <div class="prod-meta">60g / unité<br>30 morceaux</div>
+        </div>
+        <div class="row-plus-spacer"></div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_022.png" alt="O27"></div>
+          <div class="prod-name">O27</div>
+          <div class="prod-meta">110g / unité<br>36 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_023.png" alt="O30"></div>
+          <div class="prod-name">O30</div>
+          <div class="prod-meta">120g / unité<br>24 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_024.png" alt="Z27"></div>
+          <div class="prod-name">Z27</div>
+          <div class="prod-meta">110g / unité<br>24 morceaux</div>
+        </div>
+        <div class="row-plus-spacer"></div>
+      </div>
+      <div class="prod-row">
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_025.png" alt="UR20"></div>
+          <div class="prod-name">UR20</div>
+          <div class="prod-meta">80g / unité<br>36 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_026.png" alt="V3"></div>
+          <div class="prod-name">V3</div>
+          <div class="prod-meta">110g / unité<br>30 morceaux</div>
+        </div>
+        <div class="prod-card">
+          <div class="prod-thumb"><img src="img/savon/Web project Savon élement_027.png" alt="U27"></div>
+          <div class="prod-name">U27</div>
+          <div class="prod-meta">150g / unité<br>36 morceaux</div>
+        </div>
+        <div class="row-plus-spacer"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="brand-strip">
+  <div class="product-badge"><img src="img/temoignage/Web project 02 élement-09.png" alt="Savon de Marseille VAO"></div>
+</div>
+
+<footer>
+  <p class="footer-tagline">Notre équipe dédiée est là pour vous accompagner et vous apporter les solutions adaptées à vos besoins.</p>
+  <div class="footer-main">
+    <div>
+      <img src="img/Render element 02/Element-03.png" alt="SDOI">
+    </div>
+    <div>
+      <h4>Notre siège</h4>
+      <p>En face ex-abattoir - Aranta Mahajanga</p>
+    </div>
+    <div>
+      <h4>Service client</h4>
+      <p>+261 32 11 225 95</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <p>contact@vao.mg</p>
+    </div>
+    <div class="footer-vao-logo">
+      <img src="img/Render element 02/Element-04.png" alt="VAO">
+    </div>
+  </div>
+  <div class="footer-social">
+      <a href="https://www.facebook.com/vaomg" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Savony Vao</a>
+      <a href="https://www.facebook.com/sdoivaoline" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Vao Line</a>
+      <a href="https://www.facebook.com/profile.php?id=61593476278606" target="_blank" rel="noopener noreferrer"><svg class="fb-icon" viewBox="0 0 24 24" fill="black"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Max</a>
+    </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.row-plus').forEach(function (btn) {
+    var row = btn.closest('.prod-row');
+    var extra = row ? row.nextElementSibling : null;
+    if (!extra || !extra.classList.contains('extra-rows')) return;
+    btn.addEventListener('click', function () {
+      extra.classList.toggle('open');
+      btn.classList.toggle('open');
+    });
+  });
+</script>
+
+</body>
+</html>
