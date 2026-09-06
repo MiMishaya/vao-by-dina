@@ -139,11 +139,22 @@
       <div class="loading-text">Nos produits</div>
       <div class="progress-section">
         <div class="progress-bar-bg">
-          <div class="progress-bar-fill"></div>
+          <div class="progress-bar-fill" id="progress-bar-fill"></div>
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    var redirected = false;
+    function goToIndex() {
+      if (redirected) return;
+      redirected = true;
+      window.location.href = 'index.html';
+    }
+    document.getElementById('progress-bar-fill').addEventListener('animationend', goToIndex);
+    setTimeout(goToIndex, 3500);
+  </script>
 
 </body>
 </html>

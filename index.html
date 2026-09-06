@@ -300,6 +300,16 @@
     .footer-main { grid-template-columns: 1fr; text-align: center; }
     .footer-vao-logo { justify-self: center; }
   }
+
+  @media (max-width: 900px) {
+    .testimonials-track { height: 420px; }
+    .testimonial-card { width: 240px; }
+  }
+  @media (max-width: 480px) {
+    .testimonials-track { height: 320px; }
+    .testimonial-card { width: 180px; }
+    .testimonial-arrow { width: 32px; height: 32px; font-size: 1.1rem; }
+  }
 </style>
 </head>
 <body>
@@ -483,7 +493,8 @@
           return;
         }
         var scale = 1 - abs * 0.18;
-        var translateX = diff * 220;
+        var spacing = window.innerWidth <= 480 ? 110 : (window.innerWidth <= 900 ? 160 : 220);
+        var translateX = diff * spacing;
         var rotate = diff * -18;
         var opacity = 1 - abs * 0.35;
         card.style.zIndex = String(100 - abs);
@@ -508,6 +519,8 @@
       active = (active + 1) % total;
       layout();
     });
+
+    window.addEventListener('resize', layout);
 
     layout();
   })();
