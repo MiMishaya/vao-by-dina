@@ -49,6 +49,13 @@
     width: 6px;
     background: linear-gradient(180deg, #7c3aed 0%, #ec4899 50%, #f2a324 100%);
   }
+  .about-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, #7c3aed 0%, #ec4899 50%, #f2a324 100%);
+  }
   .about-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -89,8 +96,29 @@
     font-style: italic;
     margin-bottom: 1.5rem;
   }
-  .brand-strip { overflow-x: auto; padding-bottom: 0.5rem; }
-  .brand-strip img { min-width: 900px; width: 100%; }
+  .brand-strip {
+    overflow: hidden;
+    padding-bottom: 0.5rem;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .brand-track {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    width: max-content;
+    animation: brand-scroll 28s linear infinite;
+  }
+  .brand-strip:hover .brand-track { animation-play-state: paused; }
+  .brand-track img { height: 56px; width: auto; flex-shrink: 0; }
+  @keyframes brand-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brand-track { animation: none; }
+    .brand-strip { overflow-x: auto; }
+  }
 
   /* ============== STATS ============== */
   .stats-section { background: #f4f4f6; padding: 3.5rem 2rem; }
@@ -293,12 +321,15 @@
     .about-logo img { margin: 0 auto; }
     .recommended-grid { grid-template-columns: 1fr; }
     .cta-grid { grid-template-columns: 1fr; }
-    .footer-main { grid-template-columns: 1fr 1fr; text-align: left; }
-    .footer-vao-logo { justify-self: start; grid-column: 1 / -1; }
+  }
+  @media (max-width: 900px) and (min-width: 641px) {
+    .footer-main { gap: 1rem; font-size: 0.78rem; }
   }
   @media (max-width: 640px) {
     .footer-main { grid-template-columns: 1fr; text-align: center; }
     .footer-vao-logo { justify-self: center; }
+    .footer-sdoi img { margin: 0 auto; }
+    .about-logo img { max-width: 220px; }
   }
 
   @media (max-width: 900px) {
@@ -341,7 +372,32 @@
   <div class="brand-container">
     <div class="brand-heading">Des savons pensés pour le quotidien des Malagasy</div>
     <div class="brand-strip">
-      <img src="img/temoignage/Web project 02 élement-09.png" alt="VAO Line, VAO Bébé, VAO Lux, VAO Citron, VAO Lemon, VAO Magic, VAO Hôtel, VAO Antiseptique, Savon de ménage Blanc, Jaune, Or, Marron">
+      <div class="brand-track">
+        <img src="img/Render element 02/Web project Element 03_004 VLN.png" alt="VAO Line">
+        <img src="img/Render element 02/Web project Element 03_005 VBB.png" alt="VAO Bébé">
+        <img src="img/Render element 02/Web project Element 03_006 VLX.png" alt="VAO Lux">
+        <img src="img/Render element 02/Web project Element 03_007 VCTR.png" alt="VAO Citron">
+        <img src="img/Render element 02/Web project Element 03_008 VLM.png" alt="VAO Lemon">
+        <img src="img/Render element 02/Web project Element 03_009 VMG.png" alt="VAO Magic">
+        <img src="img/Render element 02/Web project Element 03_010 VHT.png" alt="VAO Hôtel">
+        <img src="img/Render element 02/Web project Element 03_011 VATQ.png" alt="VAO Antiseptique">
+        <img src="img/Render element 02/Web project Element 03_012 Sblanc.png" alt="Savon de ménage Blanc">
+        <img src="img/Render element 02/Web project Element 03_013 SJaune.png" alt="Savon de ménage Jaune">
+        <img src="img/Render element 02/Web project Element 03_014 SOR.png" alt="Savon de ménage Or">
+        <img src="img/Render element 02/Web project Element 03_015 SMarron.png" alt="Savon de ménage Marron">
+        <img src="img/Render element 02/Web project Element 03_004 VLN.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_005 VBB.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_006 VLX.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_007 VCTR.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_008 VLM.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_009 VMG.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_010 VHT.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_011 VATQ.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_012 Sblanc.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_013 SJaune.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_014 SOR.png" alt="" aria-hidden="true">
+        <img src="img/Render element 02/Web project Element 03_015 SMarron.png" alt="" aria-hidden="true">
+      </div>
     </div>
   </div>
 </section>

@@ -61,20 +61,34 @@ header {
 .nav-dropdown-panel.align-right { left: auto; right: 0; }
 
 .header-logo { flex: 1; text-align: center; min-width: 100px; }
-.header-logo img { height: 34px; margin: 0 auto; }
+.header-logo img { height: 70px; margin: 0 auto; }
 
 .header-right { display: flex; align-items: center; gap: 0.6rem; }
-.search-bar { display: flex; align-items: center; gap: 0.4rem; }
-.search-bar input {
-  width: 130px; height: 30px; border: 1px solid #ddd; border-radius: 4px;
-  padding: 0 0.6rem; font-size: 12px; min-width: 0;
+.site-search { position: relative; display: flex; align-items: center; }
+.search-inline-input {
+  position: absolute;
+  top: 50%;
+  right: 36px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 30px;
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+  font-size: 13px;
+  min-width: 0;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  pointer-events: none;
+  transition: width 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
 }
-.search-bar button {
-  width: 30px; height: 30px; background: #f0a000; border: none; border-radius: 4px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px;
-  flex-shrink: 0;
+.site-search.open .search-inline-input {
+  width: 170px;
+  opacity: 1;
+  padding: 0 0.6rem;
+  pointer-events: auto;
 }
-.search-bar button img { width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1); }
 .site-menu { position: relative; }
 .header-menu-icon {
   width: 30px; height: 30px; background: #f0a000; border: none; border-radius: 4px;
@@ -83,12 +97,61 @@ header {
 }
 .header-menu-icon img { width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1); }
 
-@media (max-width: 640px) {
-  header { flex-direction: column; align-items: stretch; padding: 0.7rem; gap: 0.6rem; }
-  .header-left { gap: 0.6rem; width: 100%; }
-  .header-nav { gap: 0.6rem; font-size: 12px; }
-  .header-logo { width: 100%; min-width: 0; }
-  .header-logo img { height: 24px; margin: 0 auto; }
-  .header-right { width: 100%; justify-content: center; }
-  .search-bar input { width: 140px; }
+/* Mobile burger menu (hidden on desktop, replaces header-nav + search + site-menu below 860px) */
+.mobile-menu { position: relative; display: none; }
+.burger-icon { flex-direction: column; gap: 4px; }
+.burger-icon span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  background: #fff;
+  border-radius: 1px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.burger-icon[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.burger-icon[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.burger-icon[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.mobile-nav-section { display: block; }
+.mobile-nav-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  padding: 0.65rem 1.3rem;
+  cursor: pointer;
+}
+.mobile-nav-toggle:hover { color: #f2a324; }
+.mobile-nav-caret { font-size: 11px; transition: transform 0.2s ease; }
+.mobile-nav-toggle[aria-expanded="true"] .mobile-nav-caret { transform: rotate(180deg); }
+.mobile-nav-submenu { display: none; flex-direction: column; background: rgba(242,163,36,0.08); }
+.mobile-nav-submenu.open { display: flex; }
+.mobile-nav-submenu a { padding-left: 2.2rem; font-size: 12.5px; }
+
+@media (max-width: 860px) {
+  header { padding: 0.8rem 1rem; justify-content: flex-start; }
+  .header-home { display: none; }
+  .header-nav { display: none; }
+  .header-logo { flex: 0 1 auto; text-align: left; min-width: 0; }
+  .header-logo img { height: 26px; margin: 0; }
+  .header-right { margin-left: auto; }
+  .site-menu { display: none; }
+  .mobile-menu { display: block; }
+  .header-menu-icon { width: 36px; height: 36px; }
+  .search-inline-input { height: 36px; right: 42px; }
+  .site-search.open .search-inline-input { width: 140px; }
+
+  .nav-dropdown-panel.align-right {
+    right: 0;
+    left: auto;
+    min-width: 260px;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 5rem);
+    overflow-y: auto;
+  }
 }

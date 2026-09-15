@@ -116,13 +116,28 @@
 
     /* LOGO STRIP */
     .brand-strip {
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      flex-wrap: wrap;
-      gap: 1.6rem;
-      padding: 1.5rem 2rem 2.5rem;
+      overflow: hidden;
+      padding: 1.5rem 0 2.5rem;
       border-top: 1px solid rgba(255,255,255,0.15);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+    .brand-track {
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      width: max-content;
+      animation: brand-scroll 28s linear infinite;
+    }
+    .brand-strip:hover .brand-track { animation-play-state: paused; }
+    .brand-track img { height: 56px; width: auto; flex-shrink: 0; }
+    @keyframes brand-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .brand-track { animation: none; }
+      .brand-strip { overflow-x: auto; }
     }
     .brand-strip span {
       font-weight: 700;
@@ -179,8 +194,10 @@
     @media (max-width: 900px) {
       .prod-row { flex-wrap: wrap; }
       .prod-card { flex: 1 1 calc(50% - 0.75rem); }
-      .footer-main { grid-template-columns: 1fr 1fr; }
-      .footer-vao-logo { justify-self: start; grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 900px) and (min-width: 641px) {
+      .footer-main { gap: 1rem; font-size: 11px; }
     }
 
     @media (max-width: 640px) {
@@ -188,6 +205,7 @@
       .row-plus { align-self: center; }
       .footer-main { grid-template-columns: 1fr; text-align: center; }
       .footer-vao-logo { justify-self: center; }
+      .footer-main img { margin-left: auto; margin-right: auto; }
     }
   </style>
 </head>
@@ -432,7 +450,32 @@
 </section>
 
 <div class="brand-strip">
-  <div class="product-badge"><img src="img/temoignage/Web project 02 élement-09.png" alt="Savon de Marseille VAO"></div>
+  <div class="brand-track">
+    <img src="img/Render element 02/Web project Element 03_004 VLN.png" alt="VAO Line">
+    <img src="img/Render element 02/Web project Element 03_005 VBB.png" alt="VAO Bébé">
+    <img src="img/Render element 02/Web project Element 03_006 VLX.png" alt="VAO Lux">
+    <img src="img/Render element 02/Web project Element 03_007 VCTR.png" alt="VAO Citron">
+    <img src="img/Render element 02/Web project Element 03_008 VLM.png" alt="VAO Lemon">
+    <img src="img/Render element 02/Web project Element 03_009 VMG.png" alt="VAO Magic">
+    <img src="img/Render element 02/Web project Element 03_010 VHT.png" alt="VAO Hôtel">
+    <img src="img/Render element 02/Web project Element 03_011 VATQ.png" alt="VAO Antiseptique">
+    <img src="img/Render element 02/Web project Element 03_012 Sblanc.png" alt="Savon de ménage Blanc">
+    <img src="img/Render element 02/Web project Element 03_013 SJaune.png" alt="Savon de ménage Jaune">
+    <img src="img/Render element 02/Web project Element 03_014 SOR.png" alt="Savon de ménage Or">
+    <img src="img/Render element 02/Web project Element 03_015 SMarron.png" alt="Savon de ménage Marron">
+    <img src="img/Render element 02/Web project Element 03_004 VLN.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_005 VBB.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_006 VLX.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_007 VCTR.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_008 VLM.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_009 VMG.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_010 VHT.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_011 VATQ.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_012 Sblanc.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_013 SJaune.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_014 SOR.png" alt="" aria-hidden="true">
+    <img src="img/Render element 02/Web project Element 03_015 SMarron.png" alt="" aria-hidden="true">
+  </div>
 </div>
 
 <footer>

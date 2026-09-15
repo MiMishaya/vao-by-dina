@@ -333,8 +333,10 @@
       .form-image { min-height: 260px; }
       .form-content { max-height: none; }
       .side-arrow { display: none; }
-      .footer-main { grid-template-columns: 1fr 1fr; }
-      .footer-vao-logo { justify-self: start; grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 900px) and (min-width: 641px) {
+      .footer-main { gap: 1rem; font-size: 11px; }
     }
 
     @media (max-width: 640px) {
@@ -347,6 +349,7 @@
       .tab, .tab.active { padding: 0.7rem 1rem; }
       .footer-main { grid-template-columns: 1fr; text-align: center; }
       .footer-vao-logo { justify-self: center; }
+      .footer-main img { margin-left: auto; margin-right: auto; }
       .products-section { gap: 1.2rem; }
     }
   </style>

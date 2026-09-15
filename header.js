@@ -42,9 +42,9 @@ document.write(`
     <img src="img/Render element 02/Element_004-Formulaire 01.png" alt="VAO">
   </div>
   <div class="header-right">
-    <div class="search-bar">
-      <input type="text" placeholder="">
-      <button type="button" aria-label="Rechercher">
+    <div class="site-search" id="site-search">
+      <input type="text" class="search-inline-input" id="search-panel-input" placeholder="Rechercher">
+      <button type="button" class="header-menu-icon" id="search-toggle" aria-expanded="false" aria-label="Rechercher">
         <img src="img/Render element 02/Element-05.png" alt="">
       </button>
     </div>
@@ -56,6 +56,38 @@ document.write(`
         <a href="formulaire01.html">Devenir revendeur</a>
         <a href="formulaire02.html#echantillon">Demande d'échantillon</a>
         <a href="formulaire02.html#candidature">Candidature spontanée</a>
+      </div>
+    </div>
+    <div class="mobile-menu">
+      <button type="button" class="header-menu-icon burger-icon" id="mobile-menu-toggle" aria-expanded="false" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-dropdown-panel align-right" id="mobile-menu-panel">
+        <a href="index.html">Accueil</a>
+        <div class="mobile-nav-section">
+          <button type="button" class="mobile-nav-toggle" id="mnav-gamme-toggle" aria-expanded="false">
+            Notre gamme <span class="mobile-nav-caret">▾</span>
+          </button>
+          <div class="mobile-nav-submenu" id="mnav-gamme-submenu">
+            <a href="loading.html?to=gammes.html">Tous les produits</a>
+            <a href="loading.html?to=gammes.html%23detergent">Détergent en poudre</a>
+            <a href="loading.html?to=gammes.html%23detergent">Détergent en barre</a>
+            <a href="loading.html?to=gammes.html%23toilette">Savon de toilette</a>
+            <a href="loading.html?to=gammes.html%23savonbar">Savon en barre</a>
+            <a href="loading.html?to=gammes.html%23savonbar">Savon translucide</a>
+            <a href="loading.html?to=gammes.html%23menage">Savon de ménage</a>
+          </div>
+        </div>
+        <div class="mobile-nav-section">
+          <button type="button" class="mobile-nav-toggle" id="mnav-formulaire-toggle" aria-expanded="false">
+            Formulaires <span class="mobile-nav-caret">▾</span>
+          </button>
+          <div class="mobile-nav-submenu" id="mnav-formulaire-submenu">
+            <a href="formulaire01.html">Devenir revendeur</a>
+            <a href="formulaire02.html#echantillon">Demande d'échantillon</a>
+            <a href="formulaire02.html#candidature">Candidature spontanée</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -85,7 +117,48 @@ document.write(`
     });
   }
 
+  function wireMobileSubmenu(toggleId, submenuId) {
+    var toggle = document.getElementById(toggleId);
+    var submenu = document.getElementById(submenuId);
+    if (!toggle || !submenu) return;
+
+    toggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = submenu.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+
+  function wireInlineSearch(wrapId, toggleId, inputId) {
+    var wrap = document.getElementById(wrapId);
+    var toggle = document.getElementById(toggleId);
+    var input = document.getElementById(inputId);
+    if (!wrap || !toggle || !input) return;
+
+    toggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = wrap.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        setTimeout(function () { input.focus(); }, 0);
+      } else {
+        input.blur();
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!wrap.contains(e.target)) {
+        wrap.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   wireDropdown('gamme-toggle', 'gamme-panel');
   wireDropdown('formulaire-toggle', 'formulaire-panel');
   wireDropdown('site-menu-toggle', 'site-menu-panel');
+  wireDropdown('mobile-menu-toggle', 'mobile-menu-panel');
+  wireInlineSearch('site-search', 'search-toggle', 'search-panel-input');
+  wireMobileSubmenu('mnav-gamme-toggle', 'mnav-gamme-submenu');
+  wireMobileSubmenu('mnav-formulaire-toggle', 'mnav-formulaire-submenu');
 })();
