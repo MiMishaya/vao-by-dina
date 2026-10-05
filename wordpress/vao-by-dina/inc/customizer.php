@@ -16,6 +16,7 @@ function vao_customizer_sections() {
 		'vao_accueil'     => "Page d'accueil",
 		'vao_formulaires' => 'Formulaires',
 		'vao_chargement'  => 'Écran de chargement',
+		'vao_mg'          => 'Images en malagasy (facultatif)',
 	);
 }
 
@@ -24,6 +25,32 @@ function vao_customizer_sections() {
  * Types : text, textarea, url, email, image.
  */
 function vao_customizer_fields() {
+	static $fields = null;
+	if ( null !== $fields ) {
+		return $fields;
+	}
+	$fields = vao_customizer_base_fields();
+
+	// Pour chaque image : une version malagasy facultative (images contenant du texte).
+	foreach ( $fields as $key => $field ) {
+		if ( 'image' === $field[2] ) {
+			$fields[ $key . '_mg' ] = array( 'vao_mg', $field[1] . ' — version malagasy', 'image', '' );
+		}
+	}
+	return $fields;
+}
+
+/**
+ * Réglages qui ne se traduisent pas (coordonnées, liens, noms propres).
+ */
+function vao_mod_is_translatable( $key ) {
+	$fields = vao_customizer_fields();
+	return isset( $fields[ $key ] )
+		&& in_array( $fields[ $key ][2], array( 'text', 'textarea' ), true )
+		&& ! in_array( $key, array( 'telephone', 'fb1_nom', 'fb2_nom', 'fb3_nom' ), true );
+}
+
+function vao_customizer_base_fields() {
 	return array(
 		// Logos et coordonnées.
 		'logo_header'          => array( 'vao_general', "Logo de l'en-tête", 'image', vao_img( 'Render element 02/Element_004-Formulaire 01.png' ) ),
@@ -79,7 +106,9 @@ function vao_customizer_fields() {
 }
 
 /**
- * Valeur d'un réglage. Une image vidée reprend l'image d'origine du thème.
+ * Valeur d'un réglage, dans la langue courante.
+ * Textes : traduits via Langues > Traductions des chaînes.
+ * Images : version malagasy si elle est définie ; une image vidée reprend l'image d'origine.
  */
 function vao_mod( $key ) {
 	$fields = vao_customizer_fields();
@@ -88,10 +117,17 @@ function vao_mod( $key ) {
 	}
 	list( , , $type, $default ) = $fields[ $key ];
 	$value = get_theme_mod( 'vao_' . $key, $default );
-	if ( 'image' === $type && ! $value ) {
-		return $default;
+
+	if ( 'image' === $type ) {
+		if ( vao_is_mg() && isset( $fields[ $key . '_mg' ] ) ) {
+			$mg = get_theme_mod( 'vao_' . $key . '_mg', '' );
+			if ( $mg ) {
+				return $mg;
+			}
+		}
+		return $value ? $value : $default;
 	}
-	return $value;
+	return vao_mod_is_translatable( $key ) ? vao_t( $value ) : $value;
 }
 
 function vao_customize_register( $wp_customize ) {

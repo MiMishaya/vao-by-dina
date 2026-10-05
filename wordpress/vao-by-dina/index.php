@@ -8,10 +8,10 @@ get_header();
 
 <main class="generic-content">
 	<?php if ( is_search() ) : ?>
-		<h1>Résultats pour « <?php echo esc_html( get_search_query() ); ?> »</h1>
+		<h1><?php echo esc_html( sprintf( vao_t( 'Résultats pour « %s »' ), get_search_query() ) ); ?></h1>
 	<?php elseif ( is_404() ) : ?>
-		<h1>Page introuvable</h1>
-		<p><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Retour à l'accueil</a></p>
+		<h1><?php vao_e( 'Page introuvable' ); ?></h1>
+		<p><a href="<?php echo esc_url( vao_url( 'accueil' ) ); ?>"><?php vao_e( "Retour à l'accueil" ); ?></a></p>
 	<?php endif; ?>
 
 	<?php if ( have_posts() ) : ?>
@@ -28,7 +28,7 @@ get_header();
 		<?php endwhile; ?>
 		<?php the_posts_pagination(); ?>
 	<?php elseif ( is_search() ) : ?>
-		<p>Aucun résultat. Découvrez <a href="<?php echo esc_url( vao_url( 'gammes' ) ); ?>">tous nos produits</a>.</p>
+		<p><?php vao_e( 'Aucun résultat.' ); ?> <a href="<?php echo esc_url( vao_url( 'gammes' ) ); ?>"><?php vao_e( 'Découvrez tous nos produits' ); ?></a></p>
 	<?php endif; ?>
 </main>
 

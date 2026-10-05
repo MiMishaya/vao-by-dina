@@ -25,27 +25,36 @@ function vao_img( $path ) {
 }
 
 /**
- * Pages du site : slug => array( titre, modèle ).
+ * Pages du site : slug français => array( titre, modèle, titre malagasy, slug malagasy ).
  */
 function vao_pages() {
 	return array(
-		'accueil'           => array( 'Accueil', '' ),
-		'gammes'            => array( 'Tous nos gammes', 'template-gammes.php' ),
-		'devenir-revendeur' => array( 'Devenir revendeur', 'template-revendeur.php' ),
-		'formulaires'       => array( "Demande d'échantillon & Candidature", 'template-formulaires.php' ),
-		'chargement'        => array( 'Chargement', 'template-chargement.php' ),
+		'accueil'           => array( 'Accueil', '', 'Fandraisana', 'fandraisana' ),
+		'gammes'            => array( 'Tous nos gammes', 'template-gammes.php', 'Ny vokatray rehetra', 'vokatra' ),
+		'devenir-revendeur' => array( 'Devenir revendeur', 'template-revendeur.php', 'Ho mpivarotra', 'ho-mpivarotra' ),
+		'formulaires'       => array( "Demande d'échantillon & Candidature", 'template-formulaires.php', 'Fangatahana santionany sy asa', 'fangatahana' ),
+		'chargement'        => array( 'Chargement', 'template-chargement.php', 'Miandry', 'miandry' ),
 	);
 }
 
 /**
- * URL d'une page du site par son slug, avec ancre optionnelle.
+ * URL d'une page du site par son slug français, avec ancre optionnelle.
+ * Avec Polylang, renvoie la version de la page dans la langue courante (ou $lang).
  */
-function vao_url( $slug, $fragment = '' ) {
+function vao_url( $slug, $fragment = '', $lang = '' ) {
+	$lang = $lang ? $lang : vao_lang();
+
 	if ( 'accueil' === $slug ) {
-		$url = home_url( '/' );
+		$url = ( $lang && function_exists( 'pll_home_url' ) ) ? pll_home_url( $lang ) : home_url( '/' );
 	} else {
 		$page = get_page_by_path( $slug );
-		$url  = $page ? get_permalink( $page ) : home_url( '/' . $slug . '/' );
+		if ( $page && $lang && function_exists( 'pll_get_post' ) ) {
+			$translated = pll_get_post( $page->ID, $lang );
+			if ( $translated ) {
+				$page = get_post( $translated );
+			}
+		}
+		$url = $page ? get_permalink( $page ) : home_url( '/' . $slug . '/' );
 	}
 	return $fragment ? $url . '#' . $fragment : $url;
 }
@@ -85,18 +94,29 @@ function vao_view() {
 
 /**
  * Éléments publiés d'un type de contenu, dans l'ordre choisi dans l'admin (champ « Ordre »).
+ * Types traduits (bannière, témoignages) : éléments de la langue courante, ou à défaut
+ * ceux de la langue par défaut (le site reste complet tant que la traduction n'est pas faite).
  */
 function vao_items( $post_type, $args = array() ) {
-	return get_posts(
-		array_merge(
-			array(
-				'post_type'   => $post_type,
-				'numberposts' => -1,
-				'orderby'     => array( 'menu_order' => 'ASC', 'date' => 'ASC' ),
-			),
-			$args
-		)
+	$args = array_merge(
+		array(
+			'post_type'   => $post_type,
+			'numberposts' => -1,
+			'orderby'     => array( 'menu_order' => 'ASC', 'date' => 'ASC' ),
+		),
+		$args
 	);
+
+	$lang = vao_lang();
+	if ( ! $lang || ! in_array( $post_type, vao_translated_types(), true ) ) {
+		return get_posts( $args );
+	}
+
+	$items = get_posts( array_merge( $args, array( 'lang' => $lang ) ) );
+	if ( ! $items && function_exists( 'pll_default_language' ) && pll_default_language() !== $lang ) {
+		$items = get_posts( array_merge( $args, array( 'lang' => pll_default_language() ) ) );
+	}
+	return $items;
 }
 
 /**
@@ -171,7 +191,7 @@ function vao_print_links( $links ) {
 		if ( 0 === strpos( $url, $gammes ) ) {
 			$url = vao_via_loading( $url );
 		}
-		printf( '<a href="%s">%s</a>', esc_url( $url ), esc_html( $title ) );
+		printf( '<a href="%s">%s</a>', esc_url( $url ), esc_html( vao_t( $title ) ) );
 	}
 }
 

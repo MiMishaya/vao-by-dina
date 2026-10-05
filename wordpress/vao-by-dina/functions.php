@@ -3,6 +3,7 @@
  * VAO by Dina - fonctions du thème.
  *
  * inc/helpers.php     : fonctions utilitaires (URL, images, menus)
+ * inc/i18n.php        : site bilingue français / malagasy (extension Polylang)
  * inc/content.php     : types de contenu (Produits, Témoignages, Bannière, Logos de marques)
  * inc/customizer.php  : réglages modifiables dans Apparence > Personnaliser
  * inc/install.php     : création des pages, du contenu et des menus à l'activation
@@ -16,6 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'VAO_VERSION', '1.1.0' );
 
 require get_template_directory() . '/inc/helpers.php';
+require get_template_directory() . '/inc/i18n.php';
 require get_template_directory() . '/inc/content.php';
 require get_template_directory() . '/inc/customizer.php';
 require get_template_directory() . '/inc/install.php';
@@ -60,7 +62,20 @@ function vao_assets() {
 		wp_enqueue_script( "vao-$view", "$uri/js/$view.js", array(), VAO_VERSION, true );
 	}
 	if ( 'formulaires' === $view ) {
-		wp_localize_script( 'vao-formulaires', 'VAO_FORMS', array( 'revendeurUrl' => vao_url( 'devenir-revendeur' ) ) );
+		wp_localize_script(
+			'vao-formulaires',
+			'VAO_FORMS',
+			array(
+				'revendeurUrl' => vao_url( 'devenir-revendeur' ),
+				'labels'       => array(
+					'prev'        => vao_t( 'Précédent' ),
+					'next'        => vao_t( 'Suivant' ),
+					'revendeur'   => vao_t( 'Devenir revendeur' ),
+					'echantillon' => vao_t( "Demande d'échantillon" ),
+					'candidature' => vao_t( 'Candidature spontanée' ),
+				),
+			)
+		);
 	}
 }
 add_action( 'wp_enqueue_scripts', 'vao_assets' );

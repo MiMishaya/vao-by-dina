@@ -32,6 +32,7 @@ function vao_form_recipient() {
 function vao_form_fields( $type ) {
 	echo '<input type="hidden" name="action" value="vao_form">';
 	echo '<input type="hidden" name="vao_form" value="' . esc_attr( $type ) . '">';
+	echo '<input type="hidden" name="vao_lang" value="' . esc_attr( vao_lang() ) . '">';
 	wp_nonce_field( 'vao_form_' . $type, '_vao_nonce' );
 	// Piège anti-robots : doit rester vide.
 	echo '<input type="text" name="vao_website" value="" tabindex="-1" autocomplete="off" class="visually-hidden" aria-hidden="true">';
@@ -45,12 +46,11 @@ function vao_form_notice( $type ) {
 		return;
 	}
 	if ( 'ok' === $_GET['envoi'] ) {
-		echo '<div class="form-notice ok" role="status">Merci, votre demande a bien été envoyée.</div>';
+		echo '<div class="form-notice ok" role="status">' . esc_html( vao_t( 'Merci, votre demande a bien été envoyée.' ) ) . '</div>';
 	} else {
-		printf(
-			'<div class="form-notice erreur" role="alert">Une erreur est survenue lors de l\'envoi. Merci de réessayer ou de nous écrire à %s.</div>',
-			esc_html( vao_mod( 'email' ) )
-		);
+		echo '<div class="form-notice erreur" role="alert">'
+			. esc_html( sprintf( vao_t( "Une erreur est survenue lors de l'envoi. Merci de réessayer ou de nous écrire à %s." ), vao_mod( 'email' ) ) )
+			. '</div>';
 	}
 }
 
@@ -63,7 +63,8 @@ function vao_handle_form() {
 		wp_die( 'Requête invalide.', '', array( 'response' => 400 ) );
 	}
 	list( $subject, $slug, $fragment ) = $forms[ $type ];
-	$redirect = add_query_arg( array( 'form' => $type ), vao_url( $slug ) );
+	$lang     = isset( $_POST['vao_lang'] ) ? sanitize_key( wp_unslash( $_POST['vao_lang'] ) ) : '';
+	$redirect = add_query_arg( array( 'form' => $type ), vao_url( $slug, '', $lang ) );
 	$anchor   = $fragment ? '#' . $fragment : '';
 
 	// Robot détecté : on fait comme si tout s'était bien passé.
@@ -104,6 +105,10 @@ function vao_handle_form() {
 		} else {
 			$lines[] = 'Fichier joint refusé : ' . $upload['error'];
 		}
+	}
+
+	if ( $lang ) {
+		$lines[] = 'Langue du formulaire : ' . strtoupper( $lang );
 	}
 
 	$reply_to = isset( $fields['E-mail'] ) ? sanitize_email( $fields['E-mail'] ) : '';

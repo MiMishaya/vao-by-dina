@@ -15,15 +15,15 @@ $vao_email   = vao_mod( 'email' );
 				<img src="<?php echo esc_url( vao_mod( 'logo_sdoi' ) ); ?>" alt="SDOI">
 			</div>
 			<div>
-				<h4>Notre siège</h4>
+				<h4><?php vao_e( 'Notre siège' ); ?></h4>
 				<p><?php echo esc_html( vao_mod( 'siege' ) ); ?></p>
 			</div>
 			<div>
-				<h4>Service client</h4>
+				<h4><?php vao_e( 'Service client' ); ?></h4>
 				<p><a href="<?php echo esc_url( vao_tel_link( $vao_phone ) ); ?>"><?php echo esc_html( $vao_phone ); ?></a></p>
 			</div>
 			<div>
-				<h4>Contact</h4>
+				<h4><?php vao_e( 'Contact' ); ?></h4>
 				<p><a href="<?php echo esc_url( 'mailto:' . $vao_email ); ?>"><?php echo esc_html( $vao_email ); ?></a></p>
 			</div>
 			<div class="footer-vao-logo">

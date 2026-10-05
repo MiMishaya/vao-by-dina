@@ -58,13 +58,13 @@ $vao_cta = array(
 	<div class="testimonials-container">
 		<div class="testimonials-title"><?php echo esc_html( vao_mod( 'temoignages_titre' ) ); ?></div>
 		<div class="testimonials-shell">
-			<button type="button" class="testimonial-arrow" id="testi-prev" aria-label="Précédent">‹</button>
+			<button type="button" class="testimonial-arrow" id="testi-prev" aria-label="<?php echo esc_attr( vao_t( 'Précédent' ) ); ?>">‹</button>
 			<div class="testimonials-track" id="testi-track">
 				<?php foreach ( $vao_testimonials as $vao_item ) : ?>
 					<div class="testimonial-card"><img src="<?php echo esc_url( vao_post_img( $vao_item, 'large' ) ); ?>" alt="<?php echo esc_attr( get_the_title( $vao_item ) ); ?>"></div>
 				<?php endforeach; ?>
 			</div>
-			<button type="button" class="testimonial-arrow" id="testi-next" aria-label="Suivant">›</button>
+			<button type="button" class="testimonial-arrow" id="testi-next" aria-label="<?php echo esc_attr( vao_t( 'Suivant' ) ); ?>">›</button>
 		</div>
 	</div>
 </section>

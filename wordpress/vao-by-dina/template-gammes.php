@@ -17,7 +17,7 @@ $vao_product_row = function ( $products, $after ) {
 		<div class="prod-card">
 			<div class="prod-thumb"><img src="<?php echo esc_url( vao_post_img( $product, 'medium' ) ); ?>" alt="<?php echo esc_attr( vao_post_alt( $product ) ); ?>" loading="lazy"></div>
 			<div class="prod-name"><?php echo esc_html( get_the_title( $product ) ); ?></div>
-			<div class="prod-meta"><?php echo esc_html( $poids ); ?><?php echo $poids && $cond ? '<br>' : ''; ?><?php echo esc_html( $cond ); ?></div>
+			<div class="prod-meta"><?php vao_e( $poids ); ?><?php echo $poids && $cond ? '<br>' : ''; ?><?php vao_e( $cond ); ?></div>
 		</div>
 		<?php
 	}
@@ -52,11 +52,11 @@ $vao_product_row = function ( $products, $after ) {
 		$vao_button      = get_term_meta( $vao_gamme->term_id, 'vao_bouton_couleur', true );
 		$vao_first       = array_shift( $vao_rows );
 		$vao_plus        = $vao_rows
-			? '<button type="button" class="row-plus ' . esc_attr( $vao_button ? $vao_button : 'orange' ) . '" aria-expanded="false" aria-label="Voir plus de produits">+</button>'
+			? '<button type="button" class="row-plus ' . esc_attr( $vao_button ? $vao_button : 'orange' ) . '" aria-expanded="false" aria-label="' . esc_attr( vao_t( 'Voir plus de produits' ) ) . '">+</button>'
 			: '<div class="row-plus-spacer"></div>';
 		?>
 		<div class="category" id="<?php echo esc_attr( $vao_gamme->slug ); ?>">
-			<div class="category-title <?php echo esc_attr( $vao_title_class ); ?>"><?php echo esc_html( $vao_gamme->name ); ?></div>
+			<div class="category-title <?php echo esc_attr( $vao_title_class ); ?>"><?php vao_e( $vao_gamme->name ); ?></div>
 			<?php $vao_product_row( $vao_first, $vao_plus ); ?>
 			<?php if ( $vao_rows ) : ?>
 				<div class="extra-rows">

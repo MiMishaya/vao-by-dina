@@ -10,6 +10,10 @@
   if (!tabEchantillon || !tabCandidature || !panelEchantillon || !panelCandidature) return;
 
   var revendeurUrl = (window.VAO_FORMS && window.VAO_FORMS.revendeurUrl) || arrowPrev.href;
+  var L = (window.VAO_FORMS && window.VAO_FORMS.labels) || {
+    prev: 'Précédent', next: 'Suivant', revendeur: 'Devenir revendeur',
+    echantillon: "Demande d'échantillon", candidature: 'Candidature spontanée'
+  };
 
   function activate(name) {
     var isEchantillon = name === 'echantillon';
@@ -24,14 +28,14 @@
 
     if (isEchantillon) {
       arrowPrev.href = revendeurUrl;
-      arrowPrev.setAttribute('aria-label', 'Précédent : Devenir revendeur');
+      arrowPrev.setAttribute('aria-label', L.prev + ' : ' + L.revendeur);
       arrowNext.href = '#candidature';
-      arrowNext.setAttribute('aria-label', 'Suivant : Candidature spontanée');
+      arrowNext.setAttribute('aria-label', L.next + ' : ' + L.candidature);
     } else {
       arrowPrev.href = '#echantillon';
-      arrowPrev.setAttribute('aria-label', 'Précédent : Demande d\'échantillon');
+      arrowPrev.setAttribute('aria-label', L.prev + ' : ' + L.echantillon);
       arrowNext.href = revendeurUrl;
-      arrowNext.setAttribute('aria-label', 'Suivant : Devenir revendeur');
+      arrowNext.setAttribute('aria-label', L.next + ' : ' + L.revendeur);
     }
   }
 
