@@ -2,11 +2,12 @@
 /**
  * VAO by Dina - fonctions du thème.
  *
- * inc/helpers.php     : fonctions utilitaires (URL, images, menus)
+ * inc/helpers.php     : fonctions utilitaires (URL, images, navigation, galeries)
  * inc/i18n.php        : site bilingue français / malagasy (extension Polylang)
- * inc/content.php     : types de contenu (Produits, Témoignages, Bannière, Logos de marques)
+ * inc/strings/*.php   : textes de chaque page à traduire en malagasy
+ * inc/content.php     : types de contenu (Produits, Témoignages, Bannière, Logos, Avis, Collaborateurs, RSE, Offres, Distributeurs)
  * inc/customizer.php  : réglages modifiables dans Apparence > Personnaliser
- * inc/install.php     : création des pages, du contenu et des menus à l'activation
+ * inc/install.php     : création des pages et du contenu à l'activation (+ mise à jour v2)
  * inc/forms.php       : envoi des formulaires par e-mail
  */
 
@@ -14,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'VAO_VERSION', '1.1.0' );
+define( 'VAO_VERSION', '2.0.0' );
 
 require get_template_directory() . '/inc/helpers.php';
 require get_template_directory() . '/inc/i18n.php';
@@ -27,13 +28,6 @@ function vao_setup() {
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'post-thumbnails' );
 	add_theme_support( 'html5', array( 'search-form', 'style', 'script' ) );
-
-	register_nav_menus(
-		array(
-			'gamme'       => 'Menu « Notre gamme »',
-			'formulaires' => 'Menu « Formulaires »',
-		)
-	);
 }
 add_action( 'after_setup_theme', 'vao_setup' );
 
@@ -52,43 +46,27 @@ function vao_assets() {
 		return;
 	}
 
-	wp_enqueue_style( 'vao-main', "$uri/css/main.css", array(), VAO_VERSION );
+	wp_enqueue_style( 'vao-fonts', 'https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,600;1,800&family=Poppins:wght@700;800;900&display=swap', array(), null );
+	wp_enqueue_style( 'vao-main', "$uri/css/main.css", array( 'vao-fonts' ), VAO_VERSION );
+	wp_enqueue_style( 'vao-components', "$uri/css/components.css", array( 'vao-main' ), VAO_VERSION );
 	wp_enqueue_script( 'vao-header', "$uri/js/header.js", array(), VAO_VERSION, true );
 	wp_enqueue_script( 'vao-hero', "$uri/js/hero-carousel.js", array(), VAO_VERSION, true );
 	wp_localize_script( 'vao-hero', 'VAO_HERO', array( 'slides' => vao_hero_slides() ) );
+	// Carrousels à flèches et galerie plein écran, partagés par les pages (voir assets/js/ui.js).
+	wp_enqueue_script( 'vao-ui', "$uri/js/ui.js", array(), VAO_VERSION, true );
+	wp_localize_script(
+		'vao-ui',
+		'VAO_UI',
+		array(
+			'prev'  => vao_t( 'Précédent' ),
+			'next'  => vao_t( 'Suivant' ),
+			'close' => vao_t( 'Fermer' ),
+		)
+	);
 
 	if ( $view ) {
 		wp_enqueue_style( "vao-$view", "$uri/css/$view.css", array( 'vao-main' ), VAO_VERSION );
-		wp_enqueue_script( "vao-$view", "$uri/js/$view.js", array(), VAO_VERSION, true );
-	}
-	if ( 'formulaires' === $view ) {
-		wp_localize_script(
-			'vao-formulaires',
-			'VAO_FORMS',
-			array(
-				'revendeurUrl' => vao_url( 'devenir-revendeur' ),
-				'labels'       => array(
-					'prev'        => vao_t( 'Précédent' ),
-					'next'        => vao_t( 'Suivant' ),
-					'revendeur'   => vao_t( 'Devenir revendeur' ),
-					'echantillon' => vao_t( "Demande d'échantillon" ),
-					'candidature' => vao_t( 'Candidature spontanée' ),
-				),
-			)
-		);
+		wp_enqueue_script( "vao-$view", "$uri/js/$view.js", array( 'vao-ui' ), VAO_VERSION, true );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'vao_assets' );
-
-/**
- * Classe de thème de couleur sur <body> pour les pages formulaires.
- */
-function vao_body_class( $classes ) {
-	if ( is_page_template( 'template-revendeur.php' ) ) {
-		$classes[] = 'theme-revendeur';
-	} elseif ( is_page_template( 'template-formulaires.php' ) ) {
-		$classes[] = 'theme-echantillon';
-	}
-	return $classes;
-}
-add_filter( 'body_class', 'vao_body_class' );

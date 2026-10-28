@@ -29,12 +29,103 @@ function vao_img( $path ) {
  */
 function vao_pages() {
 	return array(
-		'accueil'           => array( 'Accueil', '', 'Fandraisana', 'fandraisana' ),
-		'gammes'            => array( 'Tous nos gammes', 'template-gammes.php', 'Ny vokatray rehetra', 'vokatra' ),
-		'devenir-revendeur' => array( 'Devenir revendeur', 'template-revendeur.php', 'Ho mpivarotra', 'ho-mpivarotra' ),
-		'formulaires'       => array( "Demande d'échantillon & Candidature", 'template-formulaires.php', 'Fangatahana santionany sy asa', 'fangatahana' ),
-		'chargement'        => array( 'Chargement', 'template-chargement.php', 'Miandry', 'miandry' ),
+		'accueil'                      => array( 'Accueil', '', 'Fandraisana', 'fandraisana' ),
+		'qui-sommes-nous'              => array( 'Qui sommes-nous', 'template-qui-sommes-nous.php', 'Iza izahay', 'iza-izahay' ),
+		'gammes'                       => array( 'Nos marques', 'template-gammes.php', 'Ny marikanay', 'vokatra' ),
+		'nous-contacter'               => array( 'Nous contacter', 'template-contact.php', 'Hifandray aminay', 'hifandray' ),
+		'chargement'                   => array( 'Chargement', 'template-chargement.php', 'Miandry', 'miandry' ),
+		'politique-de-confidentialite' => array( 'Politique de confidentialité', '', 'Politika momba ny tsiambaratelo', 'politika-tsiambaratelo' ),
+		'conditions-generales'         => array( 'Conditions générales', '', 'Fepetra ankapobeny', 'fepetra-ankapobeny' ),
 	);
+}
+
+/**
+ * Navigation principale : array( titre, url, icône, sous-liens array( array( titre, url ), ... ) ).
+ * Les ancres correspondent aux id des sections des pages.
+ */
+function vao_nav() {
+	return array(
+		'accueil'         => array( 'Accueil', vao_url( 'accueil' ), 'home', array() ),
+		'qui-sommes-nous' => array(
+			'Qui sommes-nous',
+			vao_url( 'qui-sommes-nous' ),
+			'user',
+			array(
+				array( 'Notre engagement', vao_url( 'accueil', 'engagement' ) ),
+				array( 'Notre gage de qualité', vao_url( 'qui-sommes-nous', 'qualite' ) ),
+				array( 'Nos valeurs', vao_url( 'qui-sommes-nous', 'valeurs' ) ),
+				array( 'Nos actions RSE', vao_url( 'qui-sommes-nous', 'rse' ) ),
+			),
+		),
+		'gammes'          => array(
+			'Nos marques',
+			vao_url( 'gammes' ),
+			'sun',
+			array(
+				array( 'Savon de ménage', vao_url( 'gammes', 'menage' ) ),
+				array( 'Savon barre', vao_url( 'gammes', 'savonbar' ) ),
+				array( 'Savon de toilette', vao_url( 'gammes', 'toilette' ) ),
+				array( 'Détergent en poudre', vao_url( 'gammes', 'detergent' ) ),
+				array( 'Détergent en barre', vao_url( 'gammes', 'detergent-barre' ) ),
+			),
+		),
+		'nous-contacter'  => array(
+			'Nous contacter',
+			vao_url( 'nous-contacter' ),
+			'mail',
+			array(
+				array( 'Devenir distributeur', vao_url( 'nous-contacter', 'distributeur' ) ),
+				array( "Demande d'informations", vao_url( 'nous-contacter', 'information' ) ),
+				array( "Nos offres d'emploi", vao_url( 'nous-contacter', 'offres' ) ),
+				array( 'Candidature spontanée', vao_url( 'nous-contacter', 'candidature' ) ),
+			),
+		),
+	);
+}
+
+/**
+ * Clé de vao_nav() correspondant à la page affichée (entrée active du menu).
+ */
+function vao_current_nav() {
+	$views = array(
+		'home'    => 'accueil',
+		'apropos' => 'qui-sommes-nous',
+		'gammes'  => 'gammes',
+		'contact' => 'nous-contacter',
+	);
+	$view = vao_view();
+	return isset( $views[ $view ] ) ? $views[ $view ] : '';
+}
+
+/**
+ * Images d'une galerie : images ajoutées dans l'admin (médias attachés), sinon images livrées avec le thème.
+ *
+ * @return array array( array( 'thumb' => url, 'full' => url ), ... )
+ */
+function vao_gallery( $post ) {
+	$post   = get_post( $post );
+	$images = array();
+	if ( ! $post ) {
+		return $images;
+	}
+	$attached = get_attached_media( 'image', $post->ID );
+	foreach ( $attached as $attachment ) {
+		$images[] = array(
+			'thumb' => wp_get_attachment_image_url( $attachment->ID, 'medium_large' ),
+			'full'  => wp_get_attachment_image_url( $attachment->ID, 'full' ),
+		);
+	}
+	if ( ! $images ) {
+		foreach ( (array) get_post_meta( $post->ID, '_vao_galerie', true ) as $file ) {
+			if ( $file ) {
+				$images[] = array(
+					'thumb' => vao_img( $file ),
+					'full'  => vao_img( $file ),
+				);
+			}
+		}
+	}
+	return $images;
 }
 
 /**
@@ -80,11 +171,14 @@ function vao_view() {
 	if ( is_front_page() ) {
 		return 'home';
 	}
+	if ( is_page_template( 'template-qui-sommes-nous.php' ) ) {
+		return 'apropos';
+	}
 	if ( is_page_template( 'template-gammes.php' ) ) {
 		return 'gammes';
 	}
-	if ( is_page_template( 'template-revendeur.php' ) || is_page_template( 'template-formulaires.php' ) ) {
-		return 'formulaires';
+	if ( is_page_template( 'template-contact.php' ) ) {
+		return 'contact';
 	}
 	if ( is_page_template( 'template-chargement.php' ) ) {
 		return 'chargement';
@@ -154,31 +248,6 @@ function vao_hero_slides() {
 		},
 		vao_items( 'vao_banniere' )
 	);
-}
-
-/**
- * Liens d'un emplacement de menu (Apparence > Menus), ou les liens par défaut si aucun menu n'est attribué.
- *
- * @param string $location Emplacement du menu.
- * @param array  $fallback Liens par défaut : array( array( titre, url ), ... ).
- * @return array array( array( titre, url ), ... )
- */
-function vao_menu_links( $location, $fallback ) {
-	$locations = get_nav_menu_locations();
-	if ( empty( $locations[ $location ] ) ) {
-		return $fallback;
-	}
-	$items = wp_get_nav_menu_items( $locations[ $location ] );
-	if ( ! $items ) {
-		return $fallback;
-	}
-	$links = array();
-	foreach ( $items as $item ) {
-		if ( ! $item->menu_item_parent ) {
-			$links[] = array( $item->title, $item->url );
-		}
-	}
-	return $links;
 }
 
 /**

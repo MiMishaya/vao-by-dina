@@ -1,54 +1,40 @@
-// VAO - carrousel 3D des témoignages (page d'accueil).
+// VAO - page d'accueil.
+// Les carrousels sont gérés par assets/js/ui.js ; ici, on met seulement en avant
+// la carte de témoignage la plus proche du centre, comme sur la maquette.
 (function () {
-  var track = document.getElementById('testi-track');
-  var prev = document.getElementById('testi-prev');
-  var next = document.getElementById('testi-next');
-  if (!track || !prev || !next) return;
+  var track = document.querySelector('.home-temoignages .vao-carousel-track');
+  if (!track) return;
   var cards = Array.prototype.slice.call(track.children);
-  var total = cards.length;
-  var active = Math.floor(total / 2);
+  if (cards.length < 3) return;
 
-  function layout() {
-    cards.forEach(function (card, i) {
-      var diff = i - active;
-      if (diff > total / 2) diff -= total;
-      if (diff < -total / 2) diff += total;
-      var abs = Math.abs(diff);
-      if (abs > 2) {
-        card.style.opacity = '0';
-        card.style.pointerEvents = 'none';
-        card.style.zIndex = '0';
-        return;
+  var pending = false;
+
+  function highlight() {
+    pending = false;
+    var box = track.getBoundingClientRect();
+    var middle = box.left + box.width / 2;
+    var best = null;
+    var bestDist = Infinity;
+    cards.forEach(function (card) {
+      var r = card.getBoundingClientRect();
+      var dist = Math.abs(r.left + r.width / 2 - middle);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = card;
       }
-      var scale = 1 - abs * 0.18;
-      var spacing = window.innerWidth <= 480 ? 110 : (window.innerWidth <= 900 ? 160 : 220);
-      var translateX = diff * spacing;
-      var rotate = diff * -18;
-      var opacity = 1 - abs * 0.35;
-      card.style.zIndex = String(100 - abs);
-      card.style.opacity = String(Math.max(opacity, 0));
-      card.style.pointerEvents = 'auto';
-      card.style.transform = 'translate(-50%,-50%) translateX(' + translateX + 'px) scale(' + scale + ') rotateY(' + rotate + 'deg)';
+    });
+    cards.forEach(function (card) {
+      card.classList.toggle('is-center', card === best);
     });
   }
 
-  cards.forEach(function (card, i) {
-    card.addEventListener('click', function () {
-      active = i;
-      layout();
-    });
-  });
+  function schedule() {
+    if (pending) return;
+    pending = true;
+    window.requestAnimationFrame(highlight);
+  }
 
-  prev.addEventListener('click', function () {
-    active = (active - 1 + total) % total;
-    layout();
-  });
-  next.addEventListener('click', function () {
-    active = (active + 1) % total;
-    layout();
-  });
-
-  window.addEventListener('resize', layout);
-
-  layout();
+  track.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  highlight();
 })();

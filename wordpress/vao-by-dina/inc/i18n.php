@@ -51,7 +51,7 @@ function vao_is_mg() {
  * Types de contenu traduits élément par élément (leurs images contiennent du texte).
  */
 function vao_translated_types() {
-	return array( 'vao_banniere', 'vao_temoignage' );
+	return array( 'vao_banniere', 'vao_temoignage', 'vao_collaborateur', 'vao_rse', 'vao_offre' );
 }
 
 /**
@@ -89,31 +89,60 @@ function vao_language_switcher() {
  * ---------------------------------------------------------------------- */
 
 function vao_i18n() {
+	static $all = null;
+	if ( null !== $all ) {
+		return $all;
+	}
+	$all = vao_i18n_base();
+	// Textes propres à chaque page : inc/strings/*.php renvoient array( groupe => array( français => malagasy ) ).
+	// Malagasy vide = à traduire (le français s'affiche en attendant).
+	foreach ( glob( get_template_directory() . '/inc/strings/*.php' ) as $file ) {
+		foreach ( (array) include $file as $group => $strings ) {
+			$all[ $group ] = isset( $all[ $group ] ) ? array_merge( $all[ $group ], $strings ) : $strings;
+		}
+	}
+	return $all;
+}
+
+function vao_i18n_base() {
 	return array(
 		'Navigation'    => array(
-			'Accueil'               => 'Fandraisana',
-			'Notre gamme'           => 'Ny vokatray',
-			'Formulaires'           => 'Fangatahana',
-			'Menu'                  => 'Menio',
-			'Rechercher'            => 'Hikaroka',
-			'Langue'                => 'Fiteny',
-			'Précédent'             => 'Teo aloha',
-			'Suivant'               => 'Manaraka',
-			'Tous les produits'     => 'Ny vokatra rehetra',
-			'Détergent en poudre'   => 'Detergent vovoka',
-			'Détergent en barre'    => 'Detergent bara',
-			'Savon de toilette'     => 'Savony fandroana',
-			'Savon en barre'        => 'Savony bara',
-			'Savon translucide'     => 'Savony mangarahara',
-			'Savon de ménage'       => 'Savony fanasan-damba',
-			'Devenir revendeur'     => 'Ho mpivarotra',
-			"Demande d'échantillon" => 'Fangatahana santionany',
-			'Candidature spontanée' => 'Fangatahana asa',
+			'Accueil'                => 'Fandraisana',
+			'Qui sommes-nous'        => 'Iza izahay',
+			'Nos marques'            => 'Ny marikanay',
+			'Nous contacter'         => 'Hifandray aminay',
+			'Notre engagement'       => '',
+			'Notre gage de qualité'  => '',
+			'Nos valeurs'            => '',
+			'Nos actions RSE'        => '',
+			'Menu'                   => 'Menio',
+			'Rechercher'             => 'Hikaroka',
+			'Langue'                 => 'Fiteny',
+			'Catalogue'              => 'Katalaogy',
+			'Précédent'              => 'Teo aloha',
+			'Suivant'                => 'Manaraka',
+			'Fermer'                 => 'Hidy',
+			'Détergent en poudre'    => 'Detergent vovoka',
+			'Détergent en barre'     => 'Detergent bara',
+			'Savon de toilette'      => 'Savony fandroana',
+			'Savon barre'            => 'Savony bara',
+			'Savon de ménage'        => 'Savony fanasan-damba',
+			'Devenir distributeur'   => '',
+			"Demande d'informations" => '',
+			"Nos offres d'emploi"    => '',
+			'Candidature spontanée'  => 'Fangatahana asa',
 		),
 		'Pied de page'  => array(
-			'Notre siège'    => 'Foibenay',
-			'Service client' => "Sampan-draharaha ho an'ny mpanjifa",
-			'Contact'        => 'Fifandraisana',
+			'Siège social'                                => '',
+			'Nom'                                         => 'Anarana',
+			'Mail'                                        => 'Mailaka',
+			'Téléphone'                                   => 'Finday',
+			"J'accepte la politique de confidentialité"  => '',
+			"S'abonner"                                   => '',
+			'Inscription à la newsletter'                 => '',
+			'Savons et Détergents de l’Océan Indien'      => '',
+			'Politique de confidentialité'                => '',
+			'Conditions générales'                        => '',
 		),
 		'Gammes'        => array(
 			'Détergent'             => 'Detergent',
@@ -128,8 +157,6 @@ function vao_i18n() {
 			'Découvrez tous nos produits' => 'Jereo ny vokatray rehetra',
 		),
 		'Formulaires'   => array(
-			'DEVENIR REVENDEUR'                                      => 'HO MPIVAROTRA',
-			"DEMANDE D'ÉCHANTILLON"                                  => 'FANGATAHANA SANTIONANY',
 			'CANDIDATURE SPONTANÉE – SDOI'                           => 'FANGATAHANA ASA – SDOI',
 			'1. Informations personnelles'                           => '1. Mombamomba anao',
 			'Nom complet ou Raison sociale :'                        => "Anarana feno na anaran'ny orinasa :",
@@ -161,32 +188,11 @@ function vao_i18n() {
 			'Copie RCS'                                              => "Kopian'ny RCS",
 			'Importer un fichier'                                    => 'Hampiditra rakitra',
 			'Envoyer'                                                => 'Alefa',
-			'Nom :'                                                  => 'Anarana :',
-			'Prénom :'                                               => "Fanampin'anarana :",
-			'2. Informations professionnelles'                       => '2. Mombamomba ara-asa',
-			"Nom de l'entreprise / magasin :"                        => "Anaran'ny orinasa / fivarotana :",
-			"Type d'activité :"                                      => 'Karazana asa :',
-			'Détaillant'                                             => 'Mpivarotra antsinjarany',
-			'Supermarché'                                            => 'Supermarché',
-			'Autre :'                                                => 'Hafa :',
 			'Autre'                                                  => 'Hafa',
 			'Raison sociale :'                                       => "Anaran'ny orinasa ara-dalàna :",
-			'Ville / Région :'                                       => 'Tanàna / Faritra :',
-			'Adresse complète :'                                     => 'Adiresy feno :',
-			"3. Demande d'échantillon"                               => '3. Fangatahana santionany',
-			'Produits souhaités :'                                   => 'Vokatra tadiavina :',
-			'Détergent poudre'                                       => 'Detergent vovoka',
-			'Détergent barre'                                        => 'Detergent bara',
 			'Quantité souhaitée :'                                   => 'Habetsahana tadiavina :',
-			'Test (petit volume)'                                    => 'Fitsapana (habetsahana kely)',
-			'Évaluation commerciale'                                 => 'Fanombanana ara-barotra',
-			'Objectif de la demande :'                               => "Tanjon'ny fangatahana :",
-			'4. Potentiel commercial (important pour qualification)' => "4. Fahafahana ara-barotra (zava-dehibe amin'ny fanombanana)",
-			'Zone de distribution prévue :'                          => 'Faritra hanaparitahana kasaina :',
-			'5. Message complémentaire'                              => '5. Hafatra fanampiny',
 			'Message complémentaire'                                 => 'Hafatra fanampiny',
 			'Nom *'                                                  => 'Anarana *',
-			'Prénom *'                                               => "Fanampin'anarana *",
 			'E-mail *'                                               => 'Mailaka *',
 			'Téléphone *'                                            => 'Finday *',
 			'Adresse :'                                              => 'Adiresy :',
@@ -206,21 +212,12 @@ function vao_i18n() {
 		),
 		// Valeurs par défaut de Apparence > Personnaliser > Thème VAO.
 		'Personnaliser' => array(
-			'Notre équipe dédiée est là pour vous accompagner et vous apporter les solutions adaptées à vos besoins.' => "Vonona hanampy anao ny ekipanay ary hanolotra vahaolana mifanaraka amin'ny filanao.",
-			'En face ex-abattoir - Aranta Mahajanga'          => 'Manoloana ny toeram-pamonoana omby taloha - Aranta Mahajanga',
 			'Une identité ancrée'                             => 'Maha-izy anay miorim-paka',
 			"Plus de 20 ans au service de l'hygiène à Madagascar." => 'Maherin\'ny 20 taona manompo ny fahadiovana eto Madagasikara.',
-			"Depuis plus de 20 ans, SDOI contribue au développement de l'industrie de l'hygiène à Madagascar. L'entreprise conçoit, fabrique et commercialise localement des savons et détergents alliant qualité, efficacité et accessibilité. Engagée dans le « Vita Malagasy », SDOI place l'innovation et la production locale au cœur de sa stratégie, tout en participant durablement au développement économique du pays." => "Maherin'ny 20 taona izay no nandraisan'ny SDOI anjara tamin'ny fampandrosoana ny indostrian'ny fahadiovana eto Madagasikara. Mamorona, manamboatra ary mivarotra eto an-toerana savony sy detergent manambatra ny kalitao, ny fahombiazana ary ny vidiny takatry ny rehetra ny orinasa. Mirotsaka amin'ny « Vita Malagasy », apetrakin'ny SDOI ho ivon'ny paikadiny ny fanavaozana sy ny famokarana eto an-toerana, sady mandray anjara maharitra amin'ny fampandrosoana ara-toekarenan'ny firenena.",
 			'Des savons pensés pour le quotidien des Malagasy' => "Savony noforonina ho an'ny fiainana andavanandron'ny Malagasy",
-			"10 Marques, 20 ans D'existence, 200 Collaborateurs, + 50 Distributeurs nationaux, + 60 Références de produits, + 500 Épiceries partenaires" => 'Marika 10, taona 20 nisiana, mpiara-miasa 200, mpaninjara + 50 manerana ny nosy, karazam-bokatra + 60, epicerie mpiara-miasa + 500',
-			"Parce qu'ils ont placé leur confiance en nous"   => 'Satria nametraka ny fitokisany taminay izy ireo',
 			'Produits recommandés'                            => 'Vokatra atolotray',
 			'Découvrir'                                       => 'Hijery',
-			'Tout voir...'                                    => 'Hijery ny rehetra...',
 			'Accédez à nos formulaires'                       => 'Ireo taratasy fangatahana',
-			"Vous souhaitez distribuer nos produits ? N'hésitez pas à remplir notre formulaire pour élargir votre offre de produits et développer vos revenus." => "Te hivarotra ny vokatray ve ianao ? Aza misalasala mameno ny taratasy fangatahana mba hanitarana ny vokatra atolotrao sy hampitomboana ny fidiram-bolanao.",
-			"Vous souhaitez découvrir nos produits ? Faites votre demande d'échantillon en remplissant simplement le formulaire." => 'Te hahafantatra ny vokatray ve ianao ? Fenoy fotsiny ny taratasy fangatahana santionany.',
-			'CANDIDATURE SPONTANÉE - SDOI'                    => 'FANGATAHANA ASA - SDOI',
 			'Vous souhaitez rejoindre nos équipes ? Envoyez-nous votre candidature spontanée et partagez avec nous votre profil et vos motivations.' => "Te hiditra ao amin'ny ekipanay ve ianao ? Alefaso aminay ny fangatahanao asa ary ampahafantaro anay ny momba anao sy ny antony tianao hiarahana miasa aminay.",
 			'Cliquez ici'                                     => 'Tsindrio eto',
 			'Nos produits'                                    => 'Ny vokatray',
@@ -272,6 +269,9 @@ function vao_product_strings() {
 	}
 	foreach ( vao_gammes( false ) as $term ) {
 		$strings[ $term->name ] = $term->name;
+		if ( $term->description ) {
+			$strings[ $term->description ] = '';
+		}
 	}
 	return $strings;
 }
@@ -420,7 +420,7 @@ function vao_pll_prefill( $language ) {
 	}
 	$mo->import_from_db( $language );
 	foreach ( $translations as $fr => $mg ) {
-		if ( $mg !== $fr && $mo->translate( $fr ) === $fr ) {
+		if ( '' !== $mg && $mg !== $fr && $mo->translate( $fr ) === $fr ) {
 			$mo->add_entry( $mo->make_entry( $fr, $mg ) );
 		}
 	}

@@ -1,127 +1,163 @@
-/* VAO - page "Tous nos gammes" */
-body { background: #000; }
-
-.gammes-section { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+/* VAO - page "Nos marques" (template-gammes.php) : catalogue des produits par gamme. */
+.gammes-page {
+  max-width: var(--vao-container);
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+}
 
 .gammes-title {
+  font-family: var(--vao-font-title);
+  font-weight: 800;
+  font-style: italic;
+  font-size: clamp(1.8rem, 4vw, 2.9rem);
+  line-height: 1.15;
+  color: var(--vao-orange);
   text-align: center;
-  font-size: 26px;
-  font-weight: 700;
-  color: #f2a324;
-  font-style: italic;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.category { margin-bottom: 2.5rem; }
+/* ============== GAMME ============== */
+/* Couleur propre à chaque gamme (titre et bouton « + »), selon le slug utilisé par le menu. */
+.gamme { --gamme-color: var(--vao-violet); margin-bottom: 3rem; }
+.gamme--menage { --gamme-color: #2f6fd0; }
+.gamme--savonbar { --gamme-color: #f5c400; }
+.gamme--toilette { --gamme-color: var(--vao-gold); }
+.gamme--detergent { --gamme-color: var(--vao-blue); }
+.gamme--detergent-barre { --gamme-color: var(--vao-violet); }
 
-.category-title {
-  font-size: 15px;
-  font-weight: 700;
+.gamme-title {
+  font-family: var(--vao-font-title);
+  font-weight: 800;
   font-style: italic;
-  color: #fff;
-  margin-bottom: 1rem;
+  font-size: clamp(1.4rem, 2.6vw, 1.75rem);
+  line-height: 1.2;
+  color: var(--gamme-color);
+  margin-bottom: 1.1rem;
 }
-.category-title.c-orange { color: #f2a324; }
 
+.gamme-text { font-size: 14px; line-height: 1.6; color: #222; margin-bottom: 1.4rem; }
+.gamme-text p { margin-bottom: 0.15rem; }
+.gamme-text strong { font-weight: 700; }
+.gamme-text ul { margin: 0.1rem 0 0.3rem 2.4rem; }
+
+/* ============== RANGÉES DE PRODUITS ============== */
 .prod-row {
   display: flex;
   align-items: flex-end;
   gap: 1.5rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.1rem;
+}
+.prod-grid {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1rem;
 }
 
 .prod-card {
-  flex: 1;
-  background: #f4f4f6;
-  border-radius: 6px;
-  padding: 1.2rem 1rem 1rem;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
+  padding: 1rem 0.9rem 0.9rem;
+  background: #f4f4f6;
+  border-radius: var(--vao-radius);
 }
-
-.prod-card .prod-thumb {
-  height: 130px;
+.prod-thumb {
+  flex: 1;
+  height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.9rem;
 }
-.prod-card .prod-thumb img { max-height: 130px; width: auto; object-fit: contain; margin: 0 auto; }
+.prod-thumb img { max-height: 210px; width: auto; max-width: 100%; object-fit: contain; }
 
+.prod-info {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
 .prod-name {
-  font-weight: 700;
-  font-style: italic;
-  font-size: 15px;
-  color: #1a2b4a;
-  margin-bottom: 0.2rem;
+  min-width: 0;
+  font-family: var(--vao-font-title);
+  font-weight: 800;
+  font-size: clamp(1.4rem, 2.3vw, 1.85rem);
+  line-height: 1;
+  color: var(--vao-navy);
+  overflow-wrap: anywhere;
 }
-.prod-meta { font-size: 11px; color: #888; line-height: 1.3; }
+.prod-logo { height: 46px; width: auto; max-width: 150px; object-fit: contain; object-position: left bottom; }
+.prod-meta {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--vao-muted);
+}
+.prod-meta strong { color: var(--vao-navy); font-weight: 700; }
 
+/* ============== BOUTON « + » ============== */
 .row-plus {
   flex: 0 0 44px;
   width: 44px; height: 44px;
-  border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  color: #fff;
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.8rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  color: var(--gamme-color);
+  font-family: var(--vao-font-title);
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 1;
   cursor: pointer;
-  user-select: none;
-  border: none;
   transition: transform 0.25s ease;
 }
-.row-plus.blue { background: #2f6fed; }
-.row-plus.yellow { background: #f2c123; }
-.row-plus.orange { background: #f2a324; }
-.row-plus.brown { background: #7a4a2b; }
-.row-plus.open { transform: rotate(45deg); }
-.row-plus-spacer { flex: 0 0 44px; width: 44px; }
+.row-plus span { display: block; margin-top: -0.1em; }
+.row-plus:hover { transform: scale(1.12); }
+.row-plus:focus-visible { outline: 2px solid var(--gamme-color); outline-offset: 2px; }
+.row-plus[aria-expanded="true"] { transform: rotate(45deg); }
+.row-plus-spacer { flex: 0 0 44px; }
 
-.extra-rows { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
-.extra-rows.open { max-height: 2000px; }
+/* Repli animé sans hauteur maximale arbitraire : la hauteur suit le contenu (grille 0fr → 1fr). */
+.extra-rows {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 0.35s ease, visibility 0s linear 0.35s;
+}
+.extra-rows-inner { min-height: 0; overflow: hidden; }
+.extra-rows.open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows 0.35s ease, visibility 0s;
+}
 
-/* LOGO STRIP */
-.brand-strip {
-  overflow: hidden;
-  padding: 1.5rem 0 2.5rem;
-  border-top: 1px solid rgba(255,255,255,0.15);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-.brand-track {
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-  width: max-content;
-  animation: brand-scroll 28s linear infinite;
-}
-.brand-strip:hover .brand-track { animation-play-state: paused; }
-.brand-track img { height: 56px; width: auto; flex-shrink: 0; }
-@keyframes brand-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
+/* Logos grisés en bas de page */
+.gammes-page + .brand-strip { margin-bottom: 1rem; }
+
 @media (prefers-reduced-motion: reduce) {
-  .brand-track { animation: none; }
-  .brand-strip { overflow-x: auto; }
+  .extra-rows, .extra-rows.open, .row-plus { transition: none; }
 }
-
-/* FOOTER (variante sombre) */
-footer.site-footer { background: #111; border-top: 1px solid rgba(255,255,255,0.1); }
-.footer-tagline { color: #bbb; }
-.footer-main { color: #aaa; }
-footer.site-footer h4 { color: #fff; }
-footer.site-footer a { color: #aaa; }
-.footer-social { color: #ccc; }
-footer.site-footer .footer-social a { color: #ccc; }
 
 @media (max-width: 900px) {
-  .prod-row { flex-wrap: wrap; }
-  .prod-card { flex: 1 1 calc(50% - 0.75rem); }
+  .prod-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .prod-row { gap: 0.8rem; }
+  .prod-thumb { height: 190px; }
+  .prod-thumb img { max-height: 180px; }
 }
 
-@media (max-width: 640px) {
-  .prod-card { flex: 1 1 100%; }
-  .row-plus { align-self: center; }
+@media (max-width: 600px) {
+  .gammes-page { padding: 2rem 1rem 2.5rem; }
+  .gamme-text ul { margin-left: 1.3rem; }
+  .prod-row { flex-direction: column; align-items: stretch; gap: 0.4rem; }
+  .prod-grid { grid-template-columns: minmax(0, 1fr); }
+  .row-plus { align-self: center; margin-bottom: 0; }
+  .row-plus-spacer { display: none; }
+  .prod-logo { height: 40px; }
 }

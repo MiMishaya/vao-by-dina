@@ -1,0 +1,8 @@
+# Advences : secrets et fichiers Claude locaux
+.env
+.env.local
+.env.*.local
+.claude/settings.local.json
+.claude/worktrees/
+.claude/scheduled_tasks.lock
+.claude/.auth

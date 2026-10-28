@@ -1,7 +1,8 @@
 <?php
 /**
  * Types de contenu modifiables dans l'admin :
- * Produits (+ Gammes), Témoignages, Bannière, Logos de marques.
+ * Produits (+ Gammes), Témoignages, Bannière, Logos de marques,
+ * Avis (captures), Collaborateurs, Actions RSE, Offres d'emploi, Distributeurs.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,7 +13,39 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Types de contenu du thème.
  */
 function vao_content_types() {
-	return array( 'vao_produit', 'vao_temoignage', 'vao_banniere', 'vao_marque' );
+	return array( 'vao_produit', 'vao_temoignage', 'vao_banniere', 'vao_marque', 'vao_avis', 'vao_collaborateur', 'vao_rse', 'vao_offre', 'vao_distributeur' );
+}
+
+/**
+ * Types ajoutés en v2 : array( singulier, pluriel, icône, champs supportés ).
+ */
+function vao_extra_types() {
+	return array(
+		'vao_avis'          => array( 'Avis consommateur', 'Avis consommateurs', 'dashicons-format-chat', array( 'title', 'thumbnail', 'page-attributes' ) ),
+		'vao_collaborateur' => array( 'Collaborateur', 'Collaborateurs', 'dashicons-groups', array( 'title', 'thumbnail', 'page-attributes' ) ),
+		'vao_rse'           => array( 'Action RSE', 'Actions RSE', 'dashicons-heart', array( 'title', 'editor', 'page-attributes' ) ),
+		'vao_offre'         => array( "Offre d'emploi", "Offres d'emploi", 'dashicons-businessperson', array( 'title', 'editor', 'thumbnail', 'page-attributes' ) ),
+		'vao_distributeur'  => array( 'Ville (distributeurs)', 'Distributeurs', 'dashicons-store', array( 'title', 'page-attributes' ) ),
+	);
+}
+
+/**
+ * Champs supplémentaires par type : clé de méta => array( libellé, type (text|textarea|select), choix ).
+ */
+function vao_meta_fields() {
+	return array(
+		'vao_collaborateur' => array(
+			'_vao_poste'      => array( 'Poste (ex. : Responsable Marketing)', 'text' ),
+			'_vao_anciennete' => array( 'Ancienneté (ex. : 3 ans chez SDOI)', 'text' ),
+			'_vao_texte'      => array( 'Témoignage', 'textarea' ),
+		),
+		'vao_offre'         => array(
+			'_vao_couleur' => array( 'Couleur du titre', 'select', array( 'orange' => 'Orange', 'bleu' => 'Bleu', 'violet' => 'Violet' ) ),
+		),
+		'vao_distributeur'  => array(
+			'_vao_points' => array( 'Points de vente (un par ligne, ex. : MITSINJO : Ampasampito)', 'textarea' ),
+		),
+	);
 }
 
 function vao_labels( $singular, $plural ) {
@@ -93,6 +126,23 @@ function vao_register_content() {
 		)
 	);
 
+	$position = 24;
+	foreach ( vao_extra_types() as $type => $def ) {
+		list( $singular, $plural, $icon, $supports ) = $def;
+		register_post_type(
+			$type,
+			array_merge(
+				$common,
+				array(
+					'labels'        => vao_labels( $singular, $plural ),
+					'menu_icon'     => $icon,
+					'menu_position' => $position++,
+					'supports'      => $supports,
+				)
+			)
+		);
+	}
+
 	register_taxonomy(
 		'vao_gamme',
 		'vao_produit',
@@ -158,6 +208,11 @@ function vao_title_placeholder( $text, $post ) {
 		'vao_temoignage' => "Description de l'image (ex. : Client - Robert, père de famille)",
 		'vao_banniere'   => "Texte de l'image (ex. : La fraîcheur qui voyage avec vous)",
 		'vao_marque'     => 'Nom de la marque',
+		'vao_avis'       => "Auteur de l'avis (ex. : Nilah Rissa)",
+		'vao_collaborateur' => 'Prénom et nom',
+		'vao_rse'        => "Titre de l'action (ex. : VAO, au cœur de la solidarité à Noël)",
+		'vao_offre'      => 'Intitulé du poste',
+		'vao_distributeur' => 'Ville ou région (ex. : ANTSIRABE)',
 	);
 	return isset( $placeholders[ $post->post_type ] ) ? $placeholders[ $post->post_type ] : $text;
 }
@@ -212,11 +267,83 @@ function vao_card_colors() {
 
 function vao_add_meta_boxes() {
 	add_meta_box( 'vao_produit_details', 'Détails du produit', 'vao_produit_metabox', 'vao_produit', 'normal', 'high' );
-	foreach ( vao_content_types() as $post_type ) {
-		add_meta_box( 'vao_theme_image', "Image d'origine", 'vao_theme_image_metabox', $post_type, 'side', 'low' );
+	foreach ( array_keys( vao_meta_fields() ) as $post_type ) {
+		add_meta_box( 'vao_details', 'Informations', 'vao_fields_metabox', $post_type, 'normal', 'high' );
 	}
+	foreach ( vao_content_types() as $post_type ) {
+		if ( post_type_supports( $post_type, 'thumbnail' ) ) {
+			add_meta_box( 'vao_theme_image', "Image d'origine", 'vao_theme_image_metabox', $post_type, 'side', 'low' );
+		}
+	}
+	add_meta_box( 'vao_rse_galerie', 'Photos', 'vao_rse_metabox', 'vao_rse', 'side', 'low' );
 }
 add_action( 'add_meta_boxes', 'vao_add_meta_boxes' );
+
+/* -------------------------------------------------------------------------
+ * Champs des collaborateurs, offres et distributeurs
+ * ---------------------------------------------------------------------- */
+
+function vao_fields_metabox( $post ) {
+	$fields = vao_meta_fields();
+	wp_nonce_field( 'vao_fields_save', 'vao_fields_nonce' );
+	foreach ( $fields[ $post->post_type ] as $key => $field ) {
+		$value = get_post_meta( $post->ID, $key, true );
+		$id    = ltrim( $key, '_' );
+		echo '<p><label for="' . esc_attr( $id ) . '"><strong>' . esc_html( $field[0] ) . '</strong></label><br>';
+		if ( 'textarea' === $field[1] ) {
+			echo '<textarea id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" rows="8" class="widefat">' . esc_textarea( $value ) . '</textarea>';
+		} elseif ( 'select' === $field[1] ) {
+			echo '<select id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '">';
+			foreach ( $field[2] as $choice => $label ) {
+				echo '<option value="' . esc_attr( $choice ) . '"' . selected( $value, $choice, false ) . '>' . esc_html( $label ) . '</option>';
+			}
+			echo '</select>';
+		} else {
+			echo '<input type="text" id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" value="' . esc_attr( $value ) . '" class="widefat">';
+		}
+		echo '</p>';
+	}
+	if ( 'vao_offre' === $post->post_type ) {
+		echo '<p class="description">Rédigez les missions et le profil recherché dans l\'éditeur (titres « Missions », « Profil recherché » + listes à puces). L\'image du poste se choisit dans l\'encadré « Image ».</p>';
+	}
+}
+
+function vao_fields_save( $post_id, $post ) {
+	$fields = vao_meta_fields();
+	if ( ! isset( $fields[ $post->post_type ], $_POST['vao_fields_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['vao_fields_nonce'] ) ), 'vao_fields_save' ) ) {
+		return;
+	}
+	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+	foreach ( $fields[ $post->post_type ] as $key => $field ) {
+		$name  = ltrim( $key, '_' );
+		$value = isset( $_POST[ $name ] ) ? wp_unslash( $_POST[ $name ] ) : '';
+		if ( 'textarea' === $field[1] ) {
+			$value = sanitize_textarea_field( $value );
+		} elseif ( 'select' === $field[1] ) {
+			$value = array_key_exists( $value, $field[2] ) ? $value : key( $field[2] );
+		} else {
+			$value = sanitize_text_field( $value );
+		}
+		update_post_meta( $post_id, $key, $value );
+	}
+}
+add_action( 'save_post', 'vao_fields_save', 10, 2 );
+
+/**
+ * Photos d'une action RSE : les images ajoutées via « Ajouter un média » remplacent celles du thème.
+ */
+function vao_rse_metabox( $post ) {
+	$attached = get_attached_media( 'image', $post->ID );
+	$theme    = array_filter( (array) get_post_meta( $post->ID, '_vao_galerie', true ) );
+	if ( $attached ) {
+		printf( '<p>%d photo(s) ajoutée(s) à cette action sont affichées.</p>', count( $attached ) );
+	} elseif ( $theme ) {
+		printf( '<p>%d photo(s) livrée(s) avec le thème sont affichées.</p>', count( $theme ) );
+	}
+	echo '<p>Pour changer les photos : bouton « Ajouter un média » au-dessus du texte, puis téléverser les images. Toutes les images téléversées dans cette action forment la galerie (elles n\'ont pas besoin d\'être insérées dans le texte).</p>';
+}
 
 function vao_produit_metabox( $post ) {
 	wp_nonce_field( 'vao_produit_save', 'vao_produit_nonce' );

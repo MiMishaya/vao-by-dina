@@ -1,11 +1,9 @@
-// VAO - bouton "+" qui déplie les lignes de produits supplémentaires.
-document.querySelectorAll('.row-plus').forEach(function (btn) {
-  var row = btn.closest('.prod-row');
-  var extra = row ? row.nextElementSibling : null;
-  if (!extra || !extra.classList.contains('extra-rows')) return;
+// VAO - page "Nos marques" : le bouton "+" déplie les produits suivants de la gamme.
+document.querySelectorAll('.row-plus[aria-controls]').forEach(function (btn) {
+  var extra = document.getElementById(btn.getAttribute('aria-controls'));
+  if (!extra) return;
   btn.addEventListener('click', function () {
     var open = extra.classList.toggle('open');
-    btn.classList.toggle('open', open);
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
 });

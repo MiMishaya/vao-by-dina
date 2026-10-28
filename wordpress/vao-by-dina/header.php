@@ -1,33 +1,25 @@
 <?php
 /**
- * En-tête du site : <head>, bannière carrousel et navigation superposée.
- * Menus : Apparence > Menus. Logo : Apparence > Personnaliser > Thème VAO. Images : menu « Bannière ».
- * Sans menu attribué (par ex. en malagasy), les liens par défaut ci-dessous sont utilisés, traduits.
+ * En-tête du site : <head>, barre de navigation (dégradé) et bannière carrousel.
+ * Liens du menu : vao_nav() (inc/helpers.php). Logo et catalogue : Apparence > Personnaliser > Thème VAO.
+ * Images de la bannière : menu « Bannière ».
  */
 
-$vao_slides = vao_hero_slides();
-$vao_home   = vao_url( 'accueil' );
+$vao_slides  = vao_hero_slides();
+$vao_home    = vao_url( 'accueil' );
+$vao_current = vao_current_nav();
+$vao_icons   = array(
+	'home' => '<path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+	'user' => '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+	'sun'  => '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/>',
+	'mail' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+);
+$vao_catalogue = vao_mod( 'catalogue_url' );
 
-$vao_gamme_links = vao_menu_links(
-	'gamme',
-	array(
-		array( 'Tous les produits', vao_url( 'gammes' ) ),
-		array( 'Détergent en poudre', vao_url( 'gammes', 'detergent' ) ),
-		array( 'Détergent en barre', vao_url( 'gammes', 'detergent' ) ),
-		array( 'Savon de toilette', vao_url( 'gammes', 'toilette' ) ),
-		array( 'Savon en barre', vao_url( 'gammes', 'savonbar' ) ),
-		array( 'Savon translucide', vao_url( 'gammes', 'savonbar' ) ),
-		array( 'Savon de ménage', vao_url( 'gammes', 'menage' ) ),
-	)
-);
-$vao_form_links = vao_menu_links(
-	'formulaires',
-	array(
-		array( 'Devenir revendeur', vao_url( 'devenir-revendeur' ) ),
-		array( "Demande d'échantillon", vao_url( 'formulaires', 'echantillon' ) ),
-		array( 'Candidature spontanée', vao_url( 'formulaires', 'candidature' ) ),
-	)
-);
+// Bannière affichée en premier selon la page (ordre du menu « Bannière »), comme sur la maquette.
+$vao_starts = array( 'home' => 3, 'apropos' => 1, 'gammes' => 4, 'contact' => 4 );
+$vao_view   = vao_view();
+$vao_start  = isset( $vao_starts[ $vao_view ] ) && $vao_starts[ $vao_view ] < count( $vao_slides ) ? $vao_starts[ $vao_view ] : 0;
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -38,75 +30,53 @@ $vao_form_links = vao_menu_links(
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<div class="site-top">
-	<div class="hero" id="home">
-		<?php if ( $vao_slides ) : ?>
-			<img class="hero-bg" src="<?php echo esc_url( $vao_slides[0]['src'] ); ?>" alt="<?php echo esc_attr( $vao_slides[0]['alt'] ); ?>">
-		<?php endif; ?>
-		<div class="hero-dots"></div>
-	</div>
+<header class="site-header">
+	<a class="header-logo" href="<?php echo esc_url( $vao_home ); ?>">
+		<img src="<?php echo esc_url( vao_mod( 'logo_header' ) ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ? get_bloginfo( 'name' ) : 'VAO' ); ?>" width="640" height="242">
+	</a>
 
-	<header class="site-header">
-		<div class="header-left">
-			<div class="header-home">
-				<a href="<?php echo esc_url( $vao_home ); ?>" aria-label="<?php echo esc_attr( vao_t( 'Accueil' ) ); ?>">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M3 11.5 12 4l9 7.5"/>
-						<path d="M5 10v10h14V10"/>
-						<path d="M10 20v-6h4v6"/>
-					</svg>
+	<nav class="header-nav" id="site-nav" aria-label="<?php echo esc_attr( vao_t( 'Menu' ) ); ?>">
+		<?php foreach ( vao_nav() as $vao_key => $vao_item ) : ?>
+			<?php list( $vao_title, $vao_link, $vao_icon, $vao_children ) = $vao_item; ?>
+			<div class="nav-item<?php echo $vao_children ? ' has-children' : ''; ?><?php echo $vao_key === $vao_current ? ' current' : ''; ?>">
+				<a class="nav-link" href="<?php echo esc_url( 'gammes' === $vao_key ? vao_via_loading( $vao_link ) : $vao_link ); ?>"<?php echo $vao_key === $vao_current ? ' aria-current="page"' : ''; ?>>
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><?php echo $vao_icons[ $vao_icon ]; // SVG statique. ?></svg>
+					<?php vao_e( $vao_title ); ?>
 				</a>
+				<?php if ( $vao_children ) : ?>
+					<button type="button" class="nav-sub-toggle" aria-expanded="false" aria-label="<?php echo esc_attr( vao_t( $vao_title ) ); ?>"><span aria-hidden="true">▾</span></button>
+					<div class="nav-sub"><?php vao_print_links( $vao_children ); ?></div>
+				<?php endif; ?>
 			</div>
-			<div class="header-nav">
-				<div class="nav-dropdown">
-					<button type="button" class="dropdown-toggle" id="gamme-toggle" aria-expanded="false"><?php vao_e( 'Notre gamme' ); ?> ▼</button>
-					<div class="nav-dropdown-panel" id="gamme-panel"><?php vao_print_links( $vao_gamme_links ); ?></div>
-				</div>
-				<div class="nav-dropdown">
-					<button type="button" class="dropdown-toggle" id="formulaire-toggle" aria-expanded="false"><?php vao_e( 'Formulaires' ); ?> ▼</button>
-					<div class="nav-dropdown-panel" id="formulaire-panel"><?php vao_print_links( $vao_form_links ); ?></div>
-				</div>
-			</div>
-		</div>
-		<div class="header-logo">
-			<a href="<?php echo esc_url( $vao_home ); ?>">
-				<img src="<?php echo esc_url( vao_mod( 'logo_header' ) ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ? get_bloginfo( 'name' ) : 'VAO' ); ?>">
-			</a>
-		</div>
-		<div class="header-right">
-			<?php vao_language_switcher(); ?>
+		<?php endforeach; ?>
+	</nav>
+
+	<div class="header-tools">
+		<div class="header-tools-row">
 			<form class="site-search" id="site-search" role="search" method="get" action="<?php echo esc_url( $vao_home ); ?>">
-				<input type="text" name="s" class="search-inline-input" id="search-panel-input" placeholder="<?php echo esc_attr( vao_t( 'Rechercher' ) ); ?>" aria-label="<?php echo esc_attr( vao_t( 'Rechercher' ) ); ?>" value="<?php echo esc_attr( get_search_query() ); ?>">
-				<button type="button" class="header-menu-icon" id="search-toggle" aria-expanded="false" aria-label="<?php echo esc_attr( vao_t( 'Rechercher' ) ); ?>">
-					<img src="<?php echo esc_url( vao_img( 'Render element 02/Element-05.png' ) ); ?>" alt="">
+				<input type="search" name="s" class="search-input" id="search-input" placeholder="<?php echo esc_attr( vao_t( 'Rechercher' ) ); ?>" aria-label="<?php echo esc_attr( vao_t( 'Rechercher' ) ); ?>" value="<?php echo esc_attr( get_search_query() ); ?>">
+				<button type="button" class="search-toggle" id="search-toggle" aria-expanded="false" aria-label="<?php echo esc_attr( vao_t( 'Rechercher' ) ); ?>">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
 				</button>
 			</form>
-			<div class="site-menu">
-				<button type="button" class="header-menu-icon" id="site-menu-toggle" aria-expanded="false" aria-label="<?php echo esc_attr( vao_t( 'Menu' ) ); ?>">
-					<img src="<?php echo esc_url( vao_img( 'Render element 02/Element-06.png' ) ); ?>" alt="">
-				</button>
-				<div class="nav-dropdown-panel align-right" id="site-menu-panel"><?php vao_print_links( $vao_form_links ); ?></div>
-			</div>
-			<div class="mobile-menu">
-				<button type="button" class="header-menu-icon burger-icon" id="mobile-menu-toggle" aria-expanded="false" aria-label="<?php echo esc_attr( vao_t( 'Menu' ) ); ?>">
-					<span></span><span></span><span></span>
-				</button>
-				<div class="nav-dropdown-panel align-right" id="mobile-menu-panel">
-					<a href="<?php echo esc_url( $vao_home ); ?>"><?php vao_e( 'Accueil' ); ?></a>
-					<div class="mobile-nav-section">
-						<button type="button" class="mobile-nav-toggle" id="mnav-gamme-toggle" aria-expanded="false">
-							<?php vao_e( 'Notre gamme' ); ?> <span class="mobile-nav-caret">▾</span>
-						</button>
-						<div class="mobile-nav-submenu" id="mnav-gamme-submenu"><?php vao_print_links( $vao_gamme_links ); ?></div>
-					</div>
-					<div class="mobile-nav-section">
-						<button type="button" class="mobile-nav-toggle" id="mnav-formulaire-toggle" aria-expanded="false">
-							<?php vao_e( 'Formulaires' ); ?> <span class="mobile-nav-caret">▾</span>
-						</button>
-						<div class="mobile-nav-submenu" id="mnav-formulaire-submenu"><?php vao_print_links( $vao_form_links ); ?></div>
-					</div>
-				</div>
-			</div>
+			<?php vao_language_switcher(); ?>
 		</div>
-	</header>
+		<?php if ( $vao_catalogue ) : ?>
+			<a class="catalogue-btn" href="<?php echo esc_url( $vao_catalogue ); ?>" download>
+				<?php vao_e( 'Catalogue' ); ?>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+			</a>
+		<?php endif; ?>
+	</div>
+
+	<button type="button" class="burger" id="burger" aria-expanded="false" aria-controls="site-nav" aria-label="<?php echo esc_attr( vao_t( 'Menu' ) ); ?>">
+		<span></span><span></span><span></span>
+	</button>
+</header>
+
+<div class="hero" id="home" data-start="<?php echo esc_attr( $vao_start ); ?>">
+	<?php if ( $vao_slides ) : ?>
+		<img class="hero-bg" src="<?php echo esc_url( $vao_slides[ $vao_start ]['src'] ); ?>" alt="<?php echo esc_attr( $vao_slides[ $vao_start ]['alt'] ); ?>" width="6000" height="2518">
+	<?php endif; ?>
+	<div class="hero-dots"></div>
 </div>

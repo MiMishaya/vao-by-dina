@@ -26,16 +26,19 @@
     var imgs = [imgA, imgB];
     imgs.forEach(function (im) { im.style.transition = "opacity " + FADE_MS + "ms ease"; });
 
+    var start = parseInt(hero.getAttribute("data-start"), 10) || 0;
+    if (start >= SLIDES.length) start = 0;
+
     dotsWrap.innerHTML = "";
     SLIDES.forEach(function (slide, i) {
       var dot = document.createElement("span");
-      if (i === 0) dot.className = "active";
+      if (i === start) dot.className = "active";
       dot.addEventListener("click", function () { goTo(i); });
       dotsWrap.appendChild(dot);
     });
     var dots = dotsWrap.children;
 
-    var current = 0;
+    var current = start;
     var front = 0;
     var timer = null;
 
