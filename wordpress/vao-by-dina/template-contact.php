@@ -16,12 +16,12 @@ $vao_poste = isset( $_GET['poste'] ) ? sanitize_text_field( wp_unslash( $_GET['p
 $vao_tabs = array(
 	'distributeur' => 'DEVENEZ DISTRIBUTEURS',
 	'information'  => "DEMANDE D'INFORMATIONS",
-	'offres'       => "NOS OFFRES D'EMPLOI",
+	'offres'       => "NOS OFFRES D'EMPLOIS",
 	'candidature'  => 'CANDIDATURE SPONTANÉE – SDOI',
 );
 
 /**
- * Ligne libellé / champ. $args : type, required, autocomplete, value.
+ * Ligne libellé / champ. $args : type, required, autocomplete, value, rows (textarea).
  */
 $vao_field = function ( $id, $label, $name, $args = array() ) {
 	$args = array_merge(
@@ -30,6 +30,7 @@ $vao_field = function ( $id, $label, $name, $args = array() ) {
 			'required'     => false,
 			'autocomplete' => '',
 			'value'        => '',
+			'rows'         => 4,
 		),
 		$args
 	);
@@ -37,11 +38,12 @@ $vao_field = function ( $id, $label, $name, $args = array() ) {
 	printf( '<label class="contact-label" for="%s">%s</label>', esc_attr( $id ), esc_html( vao_t( $label ) ) );
 	if ( 'textarea' === $args['type'] ) {
 		printf(
-			'<textarea class="contact-input" id="%1$s" name="vao[%2$s]" rows="4"%3$s>%4$s</textarea>',
+			'<textarea class="contact-input" id="%1$s" name="vao[%2$s]" rows="%5$d"%3$s>%4$s</textarea>',
 			esc_attr( $id ),
 			esc_attr( $name ),
 			$args['required'] ? ' required' : '',
-			esc_textarea( $args['value'] )
+			esc_textarea( $args['value'] ),
+			(int) $args['rows']
 		);
 	} else {
 		printf(
@@ -219,7 +221,7 @@ $vao_arrow  = array(
 						<fieldset class="contact-section">
 							<legend class="contact-legend"><?php vao_e( '2. Spécifications du produit recherché' ); ?></legend>
 							<div class="contact-row">
-								<label class="contact-label" for="i-categorie"><?php vao_e( 'Catégorie :' ); ?></label>
+								<label class="contact-label" for="i-categorie"><?php vao_e( 'Catégorie' ); ?></label>
 								<select class="contact-input" id="i-categorie" name="vao[Catégorie]">
 									<option value=""><?php vao_e( 'Sélectionner…' ); ?></option>
 									<?php foreach ( vao_gammes( false ) as $vao_gamme ) : ?>
@@ -228,10 +230,10 @@ $vao_arrow  = array(
 								</select>
 							</div>
 							<?php
-							$vao_field( 'i-gamme', 'Gamme / Type Format / Parfum :', 'Gamme / Type Format / Parfum' );
-							$vao_field( 'i-quantite', 'Quantité souhaitée :', 'Quantité souhaitée' );
-							$vao_field( 'i-usage', 'Usage prévu :', 'Usage prévu' );
-							$vao_field( 'i-commentaires', 'Commentaires :', 'Commentaires', array( 'type' => 'textarea' ) );
+							$vao_field( 'i-gamme', 'Gamme / Type Format / Parfum', 'Gamme / Type Format / Parfum' );
+							$vao_field( 'i-quantite', 'Quantité souhaitée', 'Quantité souhaitée' );
+							$vao_field( 'i-usage', 'Usage prévu', 'Usage prévu' );
+							$vao_field( 'i-commentaires', 'Commentaires', 'Commentaires', array( 'type' => 'textarea', 'rows' => 2 ) );
 							?>
 						</fieldset>
 
@@ -256,7 +258,7 @@ $vao_arrow  = array(
 						<div class="contact-section">
 							<div class="contact-row">
 								<label class="contact-legend contact-label" for="i-message"><?php vao_e( '4. Message complémentaire' ); ?></label>
-								<textarea class="contact-input" id="i-message" name="vao[Message]" rows="5"></textarea>
+								<textarea class="contact-input contact-input--tall" id="i-message" name="vao[Message]" rows="4"></textarea>
 							</div>
 						</div>
 
@@ -314,10 +316,10 @@ $vao_arrow  = array(
 						<fieldset class="contact-section">
 							<legend class="contact-legend"><?php vao_e( '1. Informations personnelles' ); ?></legend>
 							<?php
-							$vao_field( 'c-nom', 'Nom *', 'Nom', array( 'required' => true, 'autocomplete' => 'family-name' ) );
-							$vao_field( 'c-prenoms', 'Prénoms *', 'Prénoms', array( 'required' => true, 'autocomplete' => 'given-name' ) );
-							$vao_field( 'c-email', 'E-mail *', 'E-mail', array( 'type' => 'email', 'required' => true, 'autocomplete' => 'email' ) );
-							$vao_field( 'c-telephone', 'Téléphone *', 'Téléphone', array( 'type' => 'tel', 'required' => true, 'autocomplete' => 'tel' ) );
+							$vao_field( 'c-nom', 'Nom * :', 'Nom', array( 'required' => true, 'autocomplete' => 'family-name' ) );
+							$vao_field( 'c-prenoms', 'Prénoms * :', 'Prénoms', array( 'required' => true, 'autocomplete' => 'given-name' ) );
+							$vao_field( 'c-email', 'E-mail * :', 'E-mail', array( 'type' => 'email', 'required' => true, 'autocomplete' => 'email' ) );
+							$vao_field( 'c-telephone', 'Téléphone * :', 'Téléphone', array( 'type' => 'tel', 'required' => true, 'autocomplete' => 'tel' ) );
 							$vao_field( 'c-adresse', 'Adresse :', 'Adresse', array( 'autocomplete' => 'street-address' ) );
 							$vao_field( 'c-ville', 'Ville :', 'Ville', array( 'autocomplete' => 'address-level2' ) );
 							$vao_field( 'c-pays', 'Pays :', 'Pays', array( 'autocomplete' => 'country-name' ) );

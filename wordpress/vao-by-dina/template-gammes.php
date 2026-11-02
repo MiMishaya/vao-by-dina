@@ -45,6 +45,37 @@ $vao_img_tag = function ( $post, $size, $alt, $class = '' ) {
 	);
 };
 
+/**
+ * Texte de présentation d'une gamme. Une description saisie sans balises <p>/<ul> (WordPress ne garde que
+ * <strong> quand l'auteur n'a pas le droit unfiltered_html) a ses lignes collées : « quotidien :Vao Citron ».
+ * On recoupe aux collages (minuscule ou ponctuation suivie d'une majuscule sans espace) puis les lignes
+ * qui suivent un « : » deviennent une liste à puces, comme sur la maquette.
+ */
+$vao_gamme_text = function ( $term ) {
+	$text = vao_t( $term->description );
+	if ( ! $text || preg_match( '#<(p|ul|br)\b#i', $text ) ) {
+		return $text;
+	}
+	if ( false === strpos( $text, "\n" ) ) {
+		$text = preg_replace( '#^(\s*<strong>.*?</strong>)\s*(?=\S)#su', "$1\n", $text, 1 );
+		$text = preg_replace( '#(?<=[\p{Ll}.:!?])(?=[\p{Lu}])#u', "\n", $text );
+	}
+	$html = '';
+	$list = false;
+	foreach ( array_filter( array_map( 'trim', explode( "\n", $text ) ), 'strlen' ) as $line ) {
+		if ( $list ) {
+			$html .= '<li>' . $line . '</li>';
+			continue;
+		}
+		$html .= '<p>' . $line . '</p>';
+		if ( ':' === substr( wp_strip_all_tags( $line ), -1 ) ) {
+			$list  = true;
+			$html .= '<ul>';
+		}
+	}
+	return $list ? $html . '</ul>' : $html;
+};
+
 // Logos de marques indexés par leur nom, pour remplacer le nom des produits homonymes.
 $vao_logos = array();
 foreach ( vao_items( 'vao_marque' ) as $vao_logo ) {
@@ -55,16 +86,19 @@ $vao_product_row = function ( $products, $after ) use ( $vao_img_tag, $vao_logos
 	echo '<div class="prod-row"><div class="prod-grid">';
 	foreach ( $products as $product ) {
 		$title = trim( get_the_title( $product ) );
+		$alt   = trim( (string) get_post_meta( $product->ID, '_vao_alt', true ) );
+		// Produits nommés « VAO » (Antiseptique…) : leur texte alternatif donne le logo à afficher.
+		$logo  = isset( $vao_logos[ $title ] ) ? $title : ( isset( $vao_logos[ $alt ] ) ? $alt : '' );
 		$poids = get_post_meta( $product->ID, '_vao_poids', true );
 		$cond  = get_post_meta( $product->ID, '_vao_conditionnement', true );
 		?>
-		<article class="prod-card">
+		<article class="prod-card prod-card--<?php echo esc_attr( sanitize_title( $logo ? $logo : $title ) ); ?>">
 			<div class="prod-thumb"><?php echo $vao_img_tag( $product, 'medium_large', vao_post_alt( $product ) ); // Balise construite et échappée par $vao_img_tag. ?></div>
 			<div class="prod-info">
 				<h3 class="prod-name">
 					<?php
-					if ( isset( $vao_logos[ $title ] ) ) {
-						echo $vao_img_tag( $vao_logos[ $title ], 'medium', $title, 'prod-logo' ); // Balise échappée.
+					if ( $logo ) {
+						echo $vao_img_tag( $vao_logos[ $logo ], 'medium', $logo, 'prod-logo' ); // Balise échappée.
 					} else {
 						echo esc_html( $title );
 					}
@@ -88,61 +122,85 @@ $vao_product_row = function ( $products, $after ) use ( $vao_img_tag, $vao_logos
 	echo $after; // HTML construit et échappé par ce modèle.
 	echo '</div>';
 };
+
+/*
+ * Sections affichées. La maquette regroupe le détergent en barre sous « Détergent » (même grille que la poudre),
+ * alors que le menu garde deux entrées : la gamme rattachée garde son ancre sur son texte.
+ */
+$vao_merge    = array( 'detergent-barre' => 'detergent' );
+$vao_sections = array();
+foreach ( vao_gammes() as $vao_gamme ) {
+	$vao_products = vao_items(
+		'vao_produit',
+		array(
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'vao_gamme',
+					'terms'    => $vao_gamme->term_id,
+				),
+			),
+		)
+	);
+	if ( ! $vao_products ) {
+		continue;
+	}
+	$vao_parent = isset( $vao_merge[ $vao_gamme->slug ] ) ? $vao_merge[ $vao_gamme->slug ] : '';
+	if ( $vao_parent && isset( $vao_sections[ $vao_parent ] ) ) {
+		$vao_sections[ $vao_parent ]['subs'][]   = $vao_gamme;
+		$vao_sections[ $vao_parent ]['products'] = array_merge( $vao_sections[ $vao_parent ]['products'], $vao_products );
+		continue;
+	}
+	$vao_sections[ $vao_gamme->slug ] = array(
+		'term'     => $vao_gamme,
+		'subs'     => array(),
+		'products' => $vao_products,
+	);
+}
 ?>
 
 <main class="gammes-page">
-	<h1 class="gammes-title"><?php vao_e( 'NOS GAMMES de PRODUITS' ); ?></h1>
+	<div class="gammes-inner">
+		<h1 class="gammes-title"><?php vao_e( 'NOS GAMMES de PRODUITS' ); ?></h1>
 
-	<?php foreach ( vao_gammes() as $vao_gamme ) : ?>
 		<?php
-		$vao_rows = array_chunk(
-			vao_items(
-				'vao_produit',
-				array(
-					'tax_query' => array(
-						array(
-							'taxonomy' => 'vao_gamme',
-							'terms'    => $vao_gamme->term_id,
-						),
-					),
-				)
-			),
-			3
-		);
-		if ( ! $vao_rows ) {
-			continue;
-		}
-		$vao_first   = array_shift( $vao_rows );
-		$vao_extra   = 'gamme-plus-' . $vao_gamme->slug;
-		$vao_spacer  = '<div class="row-plus-spacer" aria-hidden="true"></div>';
-		$vao_plus    = $vao_rows
-			? '<button type="button" class="row-plus" aria-expanded="false" aria-controls="' . esc_attr( $vao_extra ) . '" aria-label="' . esc_attr( vao_t( 'Voir plus de produits' ) ) . '"><span aria-hidden="true">+</span></button>'
-			: $vao_spacer;
-		$vao_text    = vao_t( $vao_gamme->description );
-		if ( $vao_text && false === stripos( $vao_text, '<p' ) ) {
-			$vao_text = wpautop( $vao_text );
-		}
-		?>
-		<section class="gamme gamme--<?php echo esc_attr( $vao_gamme->slug ); ?>" id="<?php echo esc_attr( $vao_gamme->slug ); ?>">
-			<h2 class="gamme-title"><?php vao_e( $vao_gamme->name ); ?></h2>
-			<?php if ( $vao_text ) : ?>
-				<div class="gamme-text"><?php echo wp_kses_post( $vao_text ); ?></div>
-			<?php endif; ?>
-
-			<?php $vao_product_row( $vao_first, $vao_plus ); ?>
-			<?php if ( $vao_rows ) : ?>
-				<div class="extra-rows" id="<?php echo esc_attr( $vao_extra ); ?>">
-					<div class="extra-rows-inner">
-						<?php
-						foreach ( $vao_rows as $vao_row ) {
-							$vao_product_row( $vao_row, $vao_spacer );
-						}
-						?>
+		foreach ( $vao_sections as $vao_section ) :
+			$vao_gamme  = $vao_section['term'];
+			$vao_rows   = array_chunk( $vao_section['products'], 3 );
+			$vao_first  = array_shift( $vao_rows );
+			$vao_extra  = 'gamme-plus-' . $vao_gamme->slug;
+			$vao_spacer = '<div class="row-plus-spacer" aria-hidden="true"></div>';
+			$vao_plus   = $vao_rows
+				? '<button type="button" class="row-plus" aria-expanded="false" aria-controls="' . esc_attr( $vao_extra ) . '" aria-label="' . esc_attr( vao_t( 'Voir plus de produits' ) ) . '"><span aria-hidden="true">+</span></button>'
+				: '<span class="row-plus row-plus--deco" aria-hidden="true"><span>+</span></span>';
+			$vao_text   = $vao_gamme_text( $vao_gamme );
+			?>
+			<section class="gamme gamme--<?php echo esc_attr( $vao_gamme->slug ); ?>" id="<?php echo esc_attr( $vao_gamme->slug ); ?>">
+				<h2 class="gamme-title"><?php vao_e( $vao_section['subs'] ? 'Détergent' : $vao_gamme->name ); ?></h2>
+				<?php if ( $vao_text ) : ?>
+					<div class="gamme-text"><?php echo wp_kses_post( $vao_text ); ?></div>
+				<?php endif; ?>
+				<?php foreach ( $vao_section['subs'] as $vao_sub ) : ?>
+					<div class="gamme-text gamme-text--sub" id="<?php echo esc_attr( $vao_sub->slug ); ?>">
+						<p class="gamme-sub-title"><strong><?php echo esc_html( sprintf( vao_t( 'Et nos %s' ), vao_t( $vao_sub->name ) ) ); ?></strong></p>
+						<?php echo wp_kses_post( $vao_gamme_text( $vao_sub ) ); ?>
 					</div>
-				</div>
-			<?php endif; ?>
-		</section>
-	<?php endforeach; ?>
+				<?php endforeach; ?>
+
+				<?php $vao_product_row( $vao_first, $vao_plus ); ?>
+				<?php if ( $vao_rows ) : ?>
+					<div class="extra-rows" id="<?php echo esc_attr( $vao_extra ); ?>">
+						<div class="extra-rows-inner">
+							<?php
+							foreach ( $vao_rows as $vao_row ) {
+								$vao_product_row( $vao_row, $vao_spacer );
+							}
+							?>
+						</div>
+					</div>
+				<?php endif; ?>
+			</section>
+		<?php endforeach; ?>
+	</div>
 </main>
 
 <?php

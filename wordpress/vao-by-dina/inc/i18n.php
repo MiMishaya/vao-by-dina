@@ -23,7 +23,37 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Traduit un texte du thème dans la langue courante.
  */
 function vao_t( $text ) {
-	return ( function_exists( 'pll__' ) && '' !== (string) $text ) ? pll__( $text ) : $text;
+	if ( ! function_exists( 'pll__' ) || '' === (string) $text ) {
+		return $text;
+	}
+	$translated = pll__( $text );
+	// Chaîne pas encore traduite dans Langues > Traductions des chaînes : malagasy proposé par le thème.
+	if ( $translated === $text && vao_is_mg() ) {
+		$dictionary = vao_i18n_flat();
+		if ( isset( $dictionary[ $text ] ) && '' !== $dictionary[ $text ] ) {
+			return $dictionary[ $text ];
+		}
+	}
+	return $translated;
+}
+
+/**
+ * Toutes les traductions proposées par le thème : array( français => malagasy ).
+ */
+function vao_i18n_flat() {
+	static $flat = null;
+	if ( null === $flat ) {
+		// Les traductions du thème priment sur les noms de produits/gammes (souvent sans malagasy).
+		$flat = vao_product_strings();
+		foreach ( vao_i18n() as $strings ) {
+			foreach ( $strings as $fr => $mg ) {
+				if ( '' !== $mg || ! isset( $flat[ $fr ] ) ) {
+					$flat[ $fr ] = $mg;
+				}
+			}
+		}
+	}
+	return $flat;
 }
 
 /**
@@ -58,16 +88,20 @@ function vao_translated_types() {
  * Sélecteur de langue FR | MG (affiché seulement si Polylang est actif).
  */
 function vao_language_switcher() {
-	if ( ! function_exists( 'pll_the_languages' ) ) {
-		return;
-	}
-	$languages = pll_the_languages(
-		array(
-			'raw'           => 1,
-			'hide_if_empty' => 0,
+	$languages = function_exists( 'pll_the_languages' )
+		? pll_the_languages(
+			array(
+				'raw'           => 1,
+				'hide_if_empty' => 0,
+			)
 		)
-	);
+		: array();
 	if ( ! $languages || count( $languages ) < 2 ) {
+		// Polylang absent ou malagasy pas encore configuré : FR | MG reste affiché comme sur la maquette, MG inactif.
+		echo '<nav class="lang-switch" aria-label="' . esc_attr( vao_t( 'Langue' ) ) . '">'
+			. '<a href="' . esc_url( home_url( '/' ) ) . '" lang="fr" class="current" aria-current="true">FR</a>'
+			. '<span class="lang-off" lang="mg" title="Malagasy">MG</span>'
+			. '</nav>';
 		return;
 	}
 	echo '<nav class="lang-switch" aria-label="' . esc_attr( vao_t( 'Langue' ) ) . '">';
@@ -110,11 +144,12 @@ function vao_i18n_base() {
 			'Accueil'                => 'Fandraisana',
 			'Qui sommes-nous'        => 'Iza izahay',
 			'Nos marques'            => 'Ny marikanay',
+			'Nos Marques'            => 'Ny Marikanay',
 			'Nous contacter'         => 'Hifandray aminay',
-			'Notre engagement'       => '',
-			'Notre gage de qualité'  => '',
-			'Nos valeurs'            => '',
-			'Nos actions RSE'        => '',
+			'Notre engagement'       => 'Ny fanoloran-tenanay',
+			'Notre gage de qualité'  => "Ny antoka ho an'ny kalitao",
+			'Nos valeurs'            => 'Ny soatoavinay',
+			'Nos actions RSE'        => 'Ny asa RSE ataonay',
 			'Menu'                   => 'Menio',
 			'Rechercher'             => 'Hikaroka',
 			'Langue'                 => 'Fiteny',
@@ -122,27 +157,28 @@ function vao_i18n_base() {
 			'Précédent'              => 'Teo aloha',
 			'Suivant'                => 'Manaraka',
 			'Fermer'                 => 'Hidy',
+			'Retour en haut'         => 'Hiverina any ambony',
 			'Détergent en poudre'    => 'Detergent vovoka',
 			'Détergent en barre'     => 'Detergent bara',
 			'Savon de toilette'      => 'Savony fandroana',
 			'Savon barre'            => 'Savony bara',
 			'Savon de ménage'        => 'Savony fanasan-damba',
-			'Devenir distributeur'   => '',
-			"Demande d'informations" => '',
-			"Nos offres d'emploi"    => '',
+			'Devenir distributeur'   => 'Ho mpaninjara',
+			"Demande d'informations" => 'Fangatahana fanazavana',
+			"Nos offres d'emploi"    => 'Ireo asa atolotray',
 			'Candidature spontanée'  => 'Fangatahana asa',
 		),
 		'Pied de page'  => array(
-			'Siège social'                                => '',
+			'Siège social'                                => 'Foibe',
 			'Nom'                                         => 'Anarana',
 			'Mail'                                        => 'Mailaka',
 			'Téléphone'                                   => 'Finday',
-			"J'accepte la politique de confidentialité"  => '',
-			"S'abonner"                                   => '',
-			'Inscription à la newsletter'                 => '',
+			"J'accepte la politique de confidentialité"  => "Ekeko ny politika momba ny tsiambaratelo",
+			"S'abonner"                                   => 'Hisoratra anarana',
+			'Inscription à la newsletter'                 => 'Fisoratana anarana hahazoana vaovao',
 			'Savons et Détergents de l’Océan Indien'      => '',
-			'Politique de confidentialité'                => '',
-			'Conditions générales'                        => '',
+			'Politique de confidentialité'                => 'Politika momba ny tsiambaratelo',
+			'Conditions générales'                        => 'Fepetra ankapobeny',
 		),
 		'Gammes'        => array(
 			'Détergent'             => 'Detergent',
@@ -220,6 +256,11 @@ function vao_i18n_base() {
 			'Accédez à nos formulaires'                       => 'Ireo taratasy fangatahana',
 			'Vous souhaitez rejoindre nos équipes ? Envoyez-nous votre candidature spontanée et partagez avec nous votre profil et vos motivations.' => "Te hiditra ao amin'ny ekipanay ve ianao ? Alefaso aminay ny fangatahanao asa ary ampahafantaro anay ny momba anao sy ny antony tianao hiarahana miasa aminay.",
 			'Cliquez ici'                                     => 'Tsindrio eto',
+			'DEVENIR REVENDEUR'                               => 'HO MPIVAROTRA',
+			'Vous souhaitez distribuer nos produits ? Remplissez ce formulaire pour nous présenter votre projet et devenir l’un de nos revendeurs.' => "Te hizara ny vokatray ve ianao ? Fenoy ity taratasy ity hampahafantarana anay ny tetikasanao ary ho iray amin'ireo mpivarotra anay.",
+			'DEMANDE D’ÉCHANTILLON'                           => 'FANGATAHANA SANTIONANY',
+			'Vous souhaitez découvrir nos produits ? Faites votre demande d’échantillon en remplissant simplement ce formulaire.' => 'Te hahafantatra ny vokatray ve ianao ? Angataho ny santionany amin\'ny famenoana fotsiny ity taratasy ity.',
+			"Depuis plus de 20 ans, SDOI s'inscrit comme un acteur engagé dans le développement de l'industrie de l'hygiène et de l'entretien à Madagascar. Portée par une volonté forte de valoriser le « Vita Malagasy », l'entreprise place la production locale et l'innovation industrielle au cœur de sa stratégie." => "Nandritra ny 20 taona mahery, ny SDOI dia mpandray anjara mavitrika amin'ny fampandrosoana ny indostrian'ny fahadiovana sy ny fikarakarana eto Madagasikara. Entanin'ny faniriana mafy hanome lanja ny « Vita Malagasy », ny orinasa dia mametraka ny famokarana eto an-toerana sy ny fanavaozana ara-indostria ho fototry ny paikady arahiny.",
 			'Nos produits'                                    => 'Ny vokatray',
 		),
 	);
@@ -408,11 +449,7 @@ function vao_pll_prefill( $language ) {
 	if ( ! class_exists( 'PLL_MO' ) ) {
 		return;
 	}
-	$translations = array();
-	foreach ( vao_i18n() as $strings ) {
-		$translations = array_merge( $translations, $strings );
-	}
-	$translations = array_merge( $translations, vao_product_strings() );
+	$translations = vao_i18n_flat();
 
 	$mo = new PLL_MO();
 	if ( ! method_exists( $mo, 'import_from_db' ) || ! method_exists( $mo, 'make_entry' ) || ! method_exists( $mo, 'export_to_db' ) ) {
@@ -426,3 +463,24 @@ function vao_pll_prefill( $language ) {
 	}
 	$mo->export_to_db( $language );
 }
+
+/**
+ * Après une mise à jour du thème apportant de nouvelles traductions, les ajoute dans Polylang
+ * (seulement les chaînes encore vides : les traductions saisies dans l'admin sont conservées).
+ */
+function vao_pll_refresh_prefill() {
+	if ( ! get_option( 'vao_pll_setup' ) || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	$mg = vao_pll_mg_language();
+	if ( ! $mg ) {
+		return;
+	}
+	$hash = md5( serialize( vao_i18n_flat() ) );
+	if ( get_option( 'vao_pll_prefill_hash' ) === $hash ) {
+		return;
+	}
+	vao_pll_prefill( $mg );
+	update_option( 'vao_pll_prefill_hash', $hash );
+}
+add_action( 'admin_init', 'vao_pll_refresh_prefill', 20 );

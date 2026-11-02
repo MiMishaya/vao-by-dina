@@ -167,7 +167,8 @@ function vao_handle_form() {
 		if ( empty( $upload['error'] ) ) {
 			$attachments[] = $upload['file'];
 		} else {
-			$lines[] = 'Fichier joint refusé : ' . $upload['error'];
+			// Message de WordPress dans la langue de l'admin (souvent l'anglais) : l'e-mail reste en français.
+			$lines[] = 'Fichier joint refusé (type non autorisé ou fichier invalide) : ' . sanitize_file_name( $file['name'] );
 		}
 	}
 

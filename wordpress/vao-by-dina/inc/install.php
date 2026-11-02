@@ -98,13 +98,13 @@ function vao_insert_item( $post_type, $title, $order, $theme_img, $meta = array(
 function vao_install_content() {
 	// Bannière.
 	$slides = array(
-		array( 'Web project 02 Header only_Header 01.png', "Propre à l'œil, mais encore plus frais au nez" ),
+		array( 'Web project 02 Header only-03.png', "Propre à l'œil, mais encore plus frais au nez" ),
 		array( 'Web project 02 Header only-04.png', 'Mousse généreuse pour une propreté éclatante' ),
 		array( 'Web project 02 Header only-05.png', 'Votre linge, propre comme au premier jour' ),
 		array( 'Web project 02 Header only-06.png', 'La propreté qui se voit, la fraîcheur qui se ressent' ),
 		array( 'Web project 02 Header only-07.png', 'Puissance contre les taches, fraîcheur sur votre linge' ),
-		array( 'Web project 02 Header only_Header 02.png', 'La fraîcheur qui voyage avec vous' ),
-		array( 'Web project 02 Header only-03.png', 'Douceur au toucher, fraîcheur au quotidien' ),
+		array( 'Web project 02 Header only_Header 01.png', 'La fraîcheur qui voyage avec vous' ),
+		array( 'Web project 02 Header only_Header 02.png', 'Douceur au toucher, fraîcheur au quotidien' ),
 	);
 	foreach ( $slides as $i => $slide ) {
 		vao_insert_item( 'vao_banniere', $slide[1], $i + 1, 'header/' . $slide[0] );
@@ -112,14 +112,14 @@ function vao_install_content() {
 
 	// Témoignages.
 	$testimonials = array(
-		array( 'élement-08.png', 'Distributeur - Haja, Caissier' ),
+		array( 'élement_Témoignage.png', 'Distributeur - Haja, Caissier' ),
 		array( 'élement-02.png', 'Grossiste - Razery, Vendeuse' ),
 		array( 'élement-03.png', 'Client - Robert, père de famille' ),
 		array( 'élement-04.png', 'Épicerie - Mme Harisoa, Vendeuse' ),
-		array( 'élement_Témoignage.png', 'Client - Fara, Mpanasa lamba' ),
-		array( 'élement-05.png', 'Client - Noro, Renim-pianakaviana' ),
-		array( 'élement-06.png', 'Client - Fara, Mécanicien' ),
-		array( 'élement-07.png', 'Client - Fara, Entrepreneuse' ),
+		array( 'élement-05.png', 'Client - Fara, Mpanasa lamba' ),
+		array( 'élement-06.png', 'Client - Noro, Renim-pianakaviana' ),
+		array( 'élement-07.png', 'Client - Fara, Mécanicien' ),
+		array( 'élement-08.png', 'Client - Fara, Entrepreneuse' ),
 	);
 	foreach ( $testimonials as $i => $testimonial ) {
 		vao_insert_item( 'vao_temoignage', $testimonial[1], $i + 1, 'temoignage/Web project 02 ' . $testimonial[0] );
@@ -339,7 +339,7 @@ function vao_install_content_v2() {
 	// Actions RSE.
 	$actions = array(
 		array( "SDOI s'engage pour la solidarité et le bien-être des enfants.", 'enfants', 16, "À travers sa marque VAO, SDOI, membre du SIM, a soutenu l'initiative « Mbola Mijoro ho an'ny Zaza Malagasy », portée par C'est du Joely, au bénéfice de MealEspoirs et de l'École associative L'Île aux Enfants à Anosibe. Ce soutien s'est concrétisé par un don de produits d'hygiène et d'entretien VAO, contribuant à garantir un environnement propre et sain aux enfants." ),
-		array( 'SDOI engagée pour le bien-être des communautés locales', 'communautes', 14, "Dans le cadre de sa démarche de responsabilité sociétale, SDOI a apporté son soutien aux personnes âgées et aux enfants du fokontany d'Ambanitsena, où est implantée l'usine Savony VAO. Cette initiative s'est concrétisée par un don de savons et de détergents, témoignant de l'engagement de l'entreprise en faveur de la solidarité, de l'hygiène et du bien-être des communautés locales." ),
+		array( 'SDOI engagée pour le bien-être des communautés locales', 'communautes', 12, "Dans le cadre de sa démarche de responsabilité sociétale, SDOI a apporté son soutien aux personnes âgées et aux enfants du fokontany d'Ambanitsena, où est implantée l'usine Savony VAO. Cette initiative s'est concrétisée par un don de savons et de détergents, témoignant de l'engagement de l'entreprise en faveur de la solidarité, de l'hygiène et du bien-être des communautés locales." ),
 		array( 'VAO, au cœur de la solidarité à Noël', 'noel', 20, "À l'occasion des fêtes de Noël, SDOI a apporté son soutien aux personnes les plus démunies du fokontany d'Ankorondrano à travers une distribution de calendriers et de produits d'hygiène et d'entretien VAO. Une initiative solidaire qui témoigne de l'engagement de l'entreprise en faveur du bien-être des communautés locales." ),
 	);
 	foreach ( $actions as $i => $a ) {

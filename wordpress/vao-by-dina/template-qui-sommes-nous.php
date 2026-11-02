@@ -9,12 +9,12 @@
  * Textes : inc/strings/apropos.php (traduction malagasy dans Langues > Traductions des chaînes).
  */
 
+// Polices propres à cette page : présentation et « Qualité certifiée » (Montserrat), textes en italique non gras (Inter).
+wp_enqueue_style( 'vao-apropos-fonts', 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:ital,wght@1,400&display=swap', array(), null );
+
 get_header();
 
 $vao_icons = array(
-	'truck'    => '<path d="M1.5 6h12v10h-12z"/><path d="M13.5 9.5h4.2l3.3 3.6V16h-7.5z"/><circle cx="5.5" cy="17.5" r="1.9"/><circle cx="17" cy="17.5" r="1.9"/>',
-	'boxes'    => '<rect x="2.5" y="12" width="9" height="8.5" rx="1"/><rect x="12.5" y="12" width="9" height="8.5" rx="1"/><rect x="7.5" y="3.5" width="9" height="8.5" rx="1"/><path d="M5.5 12v3M15.5 12v3M10.5 3.5v3"/>',
-	'shop'     => '<path d="M4 4h16l1.5 5h-19z"/><path d="M2.5 9a3.2 3.2 0 0 0 6.3 0 3.2 3.2 0 0 0 6.4 0 3.2 3.2 0 0 0 6.3 0"/><path d="M4.5 11.5V20h15v-8.5"/><path d="M10 20v-5h4v5"/>',
 	'shield'   => '<path d="M12 2.8 4.5 5.8v6c0 4.6 3.2 8.2 7.5 9.4 4.3-1.2 7.5-4.8 7.5-9.4v-6z"/><path d="m8.6 12.2 2.4 2.4 4.6-4.8"/>',
 	'sparkle'  => '<path fill="currentColor" stroke="none" d="M10.5 3.5c.7 4.6 2.9 6.8 7.5 7.5-4.6.7-6.8 2.9-7.5 7.5-.7-4.6-2.9-6.8-7.5-7.5 4.6-.7 6.8-2.9 7.5-7.5z"/><circle cx="19.2" cy="4.6" r="1.9"/>',
 	'pin'      => '<path d="M12 21.5s-7-6.3-7-11.8a7 7 0 0 1 14 0c0 5.5-7 11.8-7 11.8z"/><circle cx="12" cy="9.7" r="2.8"/>',
@@ -71,6 +71,26 @@ if ( $vao_column ) {
 $vao_column_colors = array( 'sky', 'green', 'orange' );
 
 /*
+ * Références produits (panneau « + 60 ») : liste du catalogue, distincte des fiches « Produits »
+ * de la page Nos marques (qui regroupent plusieurs formats). Codes produit : non traduits.
+ */
+$vao_references = array(
+	'B30 - Bonjour', 'O20', 'O20 OR', 'O20+', 'O27', 'O30 OR', 'SM180', 'U1', 'U6', 'U20', 'U20+', 'U27', 'U30', 'U30+',
+	'U80+', 'UM20', 'UP3', 'UP3 MAVO', 'UP3+', 'UPBarre', 'UP20+', 'UP20+', 'UR20', 'UR20 MAVO', 'V1', 'V3', 'V3 MAVO', 'V3 OR',
+	'V3+', 'V6+', 'V20', 'V26', 'V27', 'V27 MAVO', 'V27 OR', 'V30', 'V30+', 'Antiseptique Blanc', 'Antiseptique Noir', 'Antiseptique Vert', 'VAO Bébé 70g', 'VAO Hôtel 20g',
+	'VAO Lemon 800g', 'VAO Lemon 1kg', 'VAOLUX Camavel', 'VAOLUX Citron Vert', 'VAOLUX Rose', 'VAOMAGIC 120g', 'VAOMAGIC 220g', 'Vao Citron 250g', 'Vao Citron 500g', 'Vao Citron 1kg', 'Vao Line 125g', 'Vao Line 30g Exotique', 'Vao Line 30g Florale', 'Vao Line 30g Lavande',
+	'Vao Line 30g Lemon', 'Vao Line 30g Original', 'Vao Line 500g', 'Vao Line 800g', 'Z29+', 'Z-27', 'Z-27 MAVO', 'Z-20 MAVO', 'Z30 Marron', 'Z30+', 'Z30 Mavo',
+);
+$vao_ref_columns = array_chunk( $vao_references, 14 );
+
+$vao_chiffres = array(
+	// array( icône, largeur, hauteur, chiffre, libellé, id du panneau déplié au clic ).
+	array( 'chiffre-truck.png', 200, 104, '+&nbsp;100', 'Distributeurs nationaux', $vao_columns ? 'distributeurs' : '' ),
+	array( 'chiffre-boxes.png', 130, 151, '+&nbsp;60', 'Références de produits', 'references' ),
+	array( 'chiffre-shop.png', 130, 102, '+&nbsp;3&nbsp;000', 'Épiceries partenaires', '' ),
+);
+
+/*
  * Témoignages : le bas des cartes suit le dégradé violet → rose → orange,
  * réparti sur les 4 cartes visibles côte à côte sur ordinateur.
  */
@@ -119,7 +139,7 @@ $vao_rse_actions = vao_items( 'vao_rse' );
 				<span class="qsn-big-label"><?php vao_e( 'Marques' ); ?></span>
 			</div>
 			<div class="qsn-big-item is-main">
-				<span class="qsn-num">20<span class="qsn-ans"><?php vao_e( 'ans' ); ?></span></span>
+				<span class="qsn-num-wrap"><span class="qsn-num">20</span><span class="qsn-ans"><?php vao_e( 'ans' ); ?></span></span>
 				<span class="qsn-big-label"><?php vao_e( 'D’existence' ); ?></span>
 			</div>
 			<div class="qsn-big-item">
@@ -128,29 +148,53 @@ $vao_rse_actions = vao_items( 'vao_rse' );
 			</div>
 		</div>
 		<div class="qsn-small">
-			<div class="qsn-small-item">
-				<div class="qsn-small-figure"><?php $vao_icon( 'truck', 'qsn-small-icon' ); ?><span>+&nbsp;100</span></div>
-				<span class="qsn-small-label"><?php vao_e( 'Distributeurs nationaux' ); ?></span>
-				<?php if ( $vao_columns ) : ?>
-					<button type="button" class="qsn-distrib-toggle" aria-expanded="false" aria-controls="distributeurs" aria-label="<?php echo esc_attr( vao_t( 'Voir la liste des distributeurs' ) ); ?>">
-						<?php $vao_icon( 'chevron' ); ?>
+			<?php foreach ( $vao_chiffres as $vao_chiffre ) : ?>
+				<?php
+				$vao_inner = sprintf(
+					'<span class="qsn-small-figure"><img class="qsn-small-icon" src="%s" alt="" width="%d" height="%d"><span>%s</span></span><span class="qsn-small-label">%s</span>',
+					esc_url( vao_img( 'apropos/' . $vao_chiffre[0] ) ),
+					$vao_chiffre[1],
+					$vao_chiffre[2],
+					$vao_chiffre[3], // Chiffre statique défini ci-dessus.
+					esc_html( vao_t( $vao_chiffre[4] ) )
+				);
+				?>
+				<?php if ( $vao_chiffre[5] ) : ?>
+					<button type="button" class="qsn-small-item qsn-panel-toggle" aria-expanded="false" aria-controls="<?php echo esc_attr( $vao_chiffre[5] ); ?>">
+						<?php echo $vao_inner; // Construit ci-dessus avec échappement. ?>
+						<?php $vao_icon( 'chevron', 'qsn-chevron' ); ?>
 					</button>
+				<?php else : ?>
+					<div class="qsn-small-item"><?php echo $vao_inner; // Construit ci-dessus avec échappement. ?></div>
 				<?php endif; ?>
-			</div>
-			<div class="qsn-small-item">
-				<div class="qsn-small-figure"><?php $vao_icon( 'boxes', 'qsn-small-icon' ); ?><span>+&nbsp;60</span></div>
-				<span class="qsn-small-label"><?php vao_e( 'Références de produits' ); ?></span>
-			</div>
-			<div class="qsn-small-item">
-				<div class="qsn-small-figure"><?php $vao_icon( 'shop', 'qsn-small-icon' ); ?><span>+&nbsp;3&nbsp;000</span></div>
-				<span class="qsn-small-label"><?php vao_e( 'Épiceries partenaires' ); ?></span>
+			<?php endforeach; ?>
+		</div>
+	</section>
+
+	<!-- RÉFÉRENCES DE PRODUITS (dépliées par « + 60 », assets/js/apropos.js) -->
+	<section class="qsn-panel qsn-refs" id="references" aria-labelledby="qsn-refs-titre" hidden>
+		<h2 class="visually-hidden" id="qsn-refs-titre"><?php vao_e( 'Liste des références de produits' ); ?></h2>
+		<div class="vao-carousel" data-carousel>
+			<div class="vao-carousel-track">
+				<?php foreach ( $vao_ref_columns as $vao_i => $vao_col ) : ?>
+					<div class="qsn-refs-col">
+						<ul>
+							<?php foreach ( $vao_col as $vao_ref ) : ?>
+								<li><?php echo esc_html( $vao_ref ); ?></li>
+							<?php endforeach; ?>
+						</ul>
+						<?php if ( count( $vao_ref_columns ) - 1 === $vao_i ) : ?>
+							<a class="qsn-refs-all" href="<?php echo esc_url( vao_gamme_url() ); ?>"><?php vao_e( 'Tout voir…' ); ?></a>
+						<?php endif; ?>
+					</div>
+				<?php endforeach; ?>
 			</div>
 		</div>
 	</section>
 
 	<?php if ( $vao_columns ) : ?>
-		<!-- LISTE DES DISTRIBUTEURS (dépliée par le chevron, assets/js/apropos.js) -->
-		<section class="qsn-distrib container" id="distributeurs" aria-labelledby="qsn-distrib-titre" hidden>
+		<!-- LISTE DES DISTRIBUTEURS (dépliée par « + 100 », assets/js/apropos.js) -->
+		<section class="qsn-panel qsn-distrib" id="distributeurs" aria-labelledby="qsn-distrib-titre" hidden>
 			<h2 class="visually-hidden" id="qsn-distrib-titre"><?php vao_e( 'Liste des distributeurs' ); ?></h2>
 			<div class="vao-carousel" data-carousel>
 				<div class="vao-carousel-track">
@@ -186,8 +230,8 @@ $vao_rse_actions = vao_items( 'vao_rse' );
 			<div class="qsn-gages">
 				<?php
 				$vao_gages = array(
-					array( 'shield', 'Contrôle & qualité', 'Des savons de ménage aux détergents puissants (VAO Line, Lemon, Magic), chaque produit respecte des standards rigoureux pour garantir la sécurité et la santé des utilisateurs.' ),
-					array( 'sparkle', 'Innovation & accessibilité', 'Une gamme sans cesse renouvelée et élargie : du format de poche aux grands conditionnements pour répondre aux exigences de propreté de chaque foyer.' ),
+					array( 'shield', 'Contrôle et qualité', 'Des savons de ménage aux détergents puissants (VAO Line, Lemon, Magic), chaque produit respecte des standards rigoureux pour garantir la sécurité et la santé des utilisateurs.' ),
+					array( 'sparkle', 'Innovation et accessibilité', 'Une gamme sans cesse renouvelée et élargie : du format de poche aux grands conditionnements pour répondre aux exigences de propreté de chaque foyer.' ),
 					array( 'pin', 'Proche de vous', 'Présents au cœur des marchés, dans les lavoirs et dans chaque épicerie, nous accompagnons les foyers au quotidien pour un entretien facile et rapide.' ),
 				);
 				foreach ( $vao_gages as $vao_gage ) :
@@ -237,8 +281,10 @@ $vao_rse_actions = vao_items( 'vao_rse' );
 
 	<?php if ( $vao_collaborateurs ) : ?>
 		<!-- TÉMOIGNAGES COLLABORATEURS -->
-		<section class="qsn-collab container" id="collaborateurs">
-			<h2 class="section-subtitle"><?php vao_e( 'Témoignages collaborateurs' ); ?></h2>
+		<section class="qsn-collab" id="collaborateurs">
+			<div class="container">
+				<h2 class="section-subtitle"><?php vao_e( 'Témoignages collaborateurs' ); ?></h2>
+			</div>
 			<div class="vao-carousel" data-carousel>
 				<div class="vao-carousel-track">
 					<?php foreach ( $vao_collaborateurs as $vao_i => $vao_collab ) : ?>

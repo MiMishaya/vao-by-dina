@@ -20,8 +20,9 @@
   tabs.forEach(function (tab, i) {
     tab.setAttribute('role', 'tab');
     tab.setAttribute('aria-controls', ids[i]);
+    // Pas de tabindex sur les panneaux : ils contiennent des champs, et Chrome donnerait le focus
+    // (cadre visible) au panneau ciblé par l'ancre de l'URL au chargement.
     panels[i].setAttribute('role', 'tabpanel');
-    panels[i].setAttribute('tabindex', '0');
   });
   arrows.forEach(function (arrow) { arrow.setAttribute('data-label', arrow.getAttribute('aria-label')); });
 

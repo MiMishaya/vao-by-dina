@@ -32,7 +32,7 @@ $vao_start  = isset( $vao_starts[ $vao_view ] ) && $vao_starts[ $vao_view ] < co
 
 <header class="site-header">
 	<a class="header-logo" href="<?php echo esc_url( $vao_home ); ?>">
-		<img src="<?php echo esc_url( vao_mod( 'logo_header' ) ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ? get_bloginfo( 'name' ) : 'VAO' ); ?>" width="640" height="242">
+		<img src="<?php echo esc_url( vao_mod( 'logo_header' ) ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ? get_bloginfo( 'name' ) : 'VAO' ); ?>" width="1167" height="485">
 	</a>
 
 	<nav class="header-nav" id="site-nav" aria-label="<?php echo esc_attr( vao_t( 'Menu' ) ); ?>">

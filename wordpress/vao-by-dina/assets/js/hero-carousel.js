@@ -79,9 +79,11 @@
 
     function next() { goTo(current + 1); }
 
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     function restart() {
       clearInterval(timer);
-      timer = setInterval(next, INTERVAL);
+      if (!reduced) timer = setInterval(next, INTERVAL);
     }
 
     showSlide(false);

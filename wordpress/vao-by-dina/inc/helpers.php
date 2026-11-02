@@ -58,7 +58,7 @@ function vao_nav() {
 			),
 		),
 		'gammes'          => array(
-			'Nos marques',
+			'Nos Marques',
 			vao_url( 'gammes' ),
 			'sun',
 			array(

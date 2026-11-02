@@ -1,21 +1,22 @@
-/* VAO - page Nous contacter (template-contact.php) : onglets, formulaires, offres d'emploi. */
+/* VAO - page Nous contacter (template-contact.php) : onglets, formulaires, offres d'emploi.
+   Cotes reprises des maquettes Render à 1440 px (Web 05 Formulaire 01 à 04). */
 
 /* ============== FOND TEINTÉ SELON L'ONGLET (attribut posé par contact.js) ============== */
 body.page-template-template-contact {
   --contact-bg: #fbf1e3;
   background-color: var(--contact-bg);
   /* Larges bandes claires légèrement courbes de la maquette */
-  background-image: repeating-radial-gradient(circle at -15% 115%, rgba(255, 255, 255, 0) 0 80px, rgba(255, 255, 255, 0.5) 80px 160px);
+  background-image: repeating-radial-gradient(circle at -15% 115%, rgba(255, 255, 255, 0) 0 80px, rgba(255, 255, 255, 0.38) 80px 160px);
   transition: background-color 0.3s ease;
 }
-body[data-contact="information"] { --contact-bg: #fadbe9; }
-body[data-contact="offres"] { --contact-bg: #e9def5; }
-body[data-contact="candidature"] { --contact-bg: #e8e9f1; }
+body[data-contact="information"] { --contact-bg: #f8d9e8; }
+body[data-contact="offres"] { --contact-bg: #e6daf3; }
+body[data-contact="candidature"] { --contact-bg: #e7e8f1; }
 
-.contact { padding: 1.6rem 0 0.5rem; }
+.contact { padding: 27px 0 0.5rem; }
 .contact-tab--distributeur, .contact-form--distributeur { --tab-color: var(--vao-orange); --form-color: var(--vao-orange); }
-.contact-tab--information, .contact-form--information { --tab-color: var(--vao-pink); --form-color: var(--vao-pink); }
-.contact-tab--offres { --tab-color: var(--vao-violet); }
+.contact-tab--information, .contact-form--information { --tab-color: #df3b8b; --form-color: #df3b8b; }
+.contact-tab--offres { --tab-color: #8a3fc0; }
 .contact-tab--candidature, .contact-form--candidature { --tab-color: var(--vao-navy); --form-color: var(--vao-navy); }
 
 /* ============== ONGLETS ============== */
@@ -24,17 +25,18 @@ body[data-contact="candidature"] { --contact-bg: #e8e9f1; }
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 0.6rem clamp(1rem, 3.2vw, 2.8rem);
-  max-width: 1180px;
-  margin: 0 auto 1.8rem;
+  gap: 0.6rem clamp(1rem, 3.9vw, 56px);
+  max-width: 1320px;
+  margin: 0 auto 30px;
   padding: 0 1rem;
 }
 .contact-tab {
-  padding: 0.35rem 0.9rem;
-  border-radius: 6px;
-  color: #9b9aa5;
-  font-size: 14px;
+  padding: 0.3rem 0;
+  border-radius: 7px;
+  color: #9d9ca4;
+  font-size: clamp(13px, 1.12vw, 16px);
   font-weight: 600;
+  line-height: 1.2;
   text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
@@ -43,62 +45,66 @@ body[data-contact="candidature"] { --contact-bg: #e8e9f1; }
 .contact-tab:hover { color: var(--tab-color); }
 .contact-tab:focus-visible { outline: 2px solid var(--tab-color); outline-offset: 3px; }
 .contact-tab.active {
+  padding: 7px 15px;
   background: var(--tab-color);
   color: #fff;
-  font-family: var(--vao-font-title);
-  font-weight: 800;
-  font-size: clamp(16px, 1.6vw, 20px);
-  padding: 0.25rem 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  font-size: clamp(16px, 1.6vw, 23px);
+  font-weight: 700;
 }
 
 /* ============== ZONE CENTRALE + FLÈCHES ============== */
 .contact-stage {
   position: relative;
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 70px;
+  padding: 0 84px;
 }
+/* Colonnes de 114 px : flèche centrée à 57 px du bord de page comme sur la maquette ;
+   la carte des offres (plus large) peut passer sous la partie vide de la colonne. */
 .contact-arrow-col {
   position: absolute;
   top: 0; bottom: 0;
-  width: 70px;
+  z-index: 2;
+  width: 114px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  pointer-events: none;
 }
 .contact-arrow-col--prev { left: 0; }
 .contact-arrow-col--next { right: 0; }
-/* Espace qui place la flèche vers le milieu du formulaire, et se réduit si le panneau est court */
-.contact-arrow-col::before { content: ""; flex: 0 1 280px; }
+/* Place la flèche au milieu de la carte formulaire (850 px), et se réduit si le panneau est court */
+.contact-arrow-col::before { content: ""; flex: 0 1 402px; }
 .contact-arrow {
   position: sticky;
-  top: calc(50vh - 32px);
+  top: calc(50vh - 24px);
   flex-shrink: 0;
-  width: 44px; height: 64px;
+  width: 40px; height: 48px;
   display: flex; align-items: center; justify-content: center;
-  color: #a6a5b0;
+  color: #c3c3c8;
   border-radius: 8px;
+  pointer-events: auto;
+  filter: drop-shadow(-4px 0 0 rgba(255, 255, 255, 0.55));
 }
-.contact-arrow svg { width: 24px; height: 40px; }
-.contact-arrow:hover, .contact-arrow:focus-visible { color: var(--vao-violet); }
+.contact-arrow svg { width: 26px; height: 46px; }
+.contact-arrow:hover, .contact-arrow:focus-visible { color: #8a8a93; }
 /* Sans JavaScript tous les panneaux sont affichés : les flèches n'ont pas de sens */
 .contact:not(.contact-js) .contact-arrow-col { display: none; }
 
 .contact-panel { scroll-margin-top: 180px; border-radius: 18px; }
-.contact-panel:focus-visible { outline: 2px solid var(--vao-violet); outline-offset: 6px; }
 .contact:not(.contact-js) .contact-panel + .contact-panel { margin-top: 3rem; }
 
 /* ============== FORMULAIRES ============== */
 .contact-card {
+  position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: 37% 1fr;
-  max-width: 960px;
+  grid-template-columns: 37.3% 1fr;
+  max-width: 1064px;
+  min-height: 850px;
   margin: 0 auto;
   background: #fff;
-  border-radius: 18px;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: var(--vao-shadow);
+  box-shadow: 0 6px 22px rgba(60, 20, 110, 0.07);
 }
 .contact-photo { position: relative; min-height: 320px; background: #eee; }
 .contact-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -106,10 +112,12 @@ body[data-contact="candidature"] { --contact-bg: #e8e9f1; }
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 1.7rem;
+  gap: 34px;
   min-width: 0;
-  padding: 2.2rem 2.6rem 2rem 2.4rem;
+  padding: 30px 68px 24px 46px;
 }
+/* Formulaire court (candidature) : contenu centré verticalement, bouton toujours en bas de la carte */
+.contact-form > fieldset:first-of-type { margin-top: auto; }
 .contact-form .form-notice { margin: 0; }
 
 .contact-section { min-width: 0; margin: 0; padding: 0; border: 0; }
@@ -118,10 +126,11 @@ body[data-contact="candidature"] { --contact-bg: #e8e9f1; }
   float: left;
   width: 100%;
   padding: 0;
-  margin-bottom: 0.55rem;
-  font-size: 14px;
+  margin-bottom: 6px;
+  font-size: 11px;
   font-weight: 700;
-  color: #222;
+  line-height: 1.35;
+  color: #1d1d1f;
 }
 .contact-legend + * { clear: both; }
 .contact-form--information .contact-legend { text-transform: uppercase; }
@@ -129,35 +138,38 @@ body[data-contact="candidature"] { --contact-bg: #e8e9f1; }
 
 .contact-row {
   display: grid;
-  grid-template-columns: minmax(130px, 40%) 1fr;
+  grid-template-columns: 41% 1fr;
   align-items: center;
-  gap: 0.4rem 1rem;
+  gap: 0.3rem 0;
 }
-.contact-row + .contact-row { margin-top: 0.5rem; }
+.contact-row + .contact-row { margin-top: 5.5px; }
+.contact-form--information .contact-row + .contact-row { margin-top: 3px; }
 .contact-row:has(textarea), .contact-row:has(.contact-field) { align-items: start; }
-.contact-row:has(textarea) .contact-label, .contact-row:has(.contact-field) .contact-label { padding-top: 0.45rem; }
-.contact-label { font-size: 13px; color: #333; }
+.contact-row:has(textarea) .contact-label, .contact-row:has(.contact-field) .contact-label { padding-top: 3px; }
+.contact-label { padding-right: 0.4rem; font-size: 11px; line-height: 1.35; color: #222; }
 
 .contact-input {
   width: 100%;
   min-width: 0;
-  padding: 0.5rem 0.95rem;
+  height: 22px;
+  padding: 0 0.9rem;
   border: 0;
   border-radius: 999px;
   background: #e9edf5;
   color: var(--vao-text);
   font: inherit;
-  font-size: 14px;
+  font-size: 11px;
 }
-textarea.contact-input { border-radius: 12px; min-height: 84px; resize: vertical; }
+textarea.contact-input { height: auto; min-height: 45px; padding: 0.4rem 0.9rem; border-radius: 6px; resize: vertical; }
+textarea.contact-input--tall, #c-motivation { min-height: 90px; }
 select.contact-input {
   appearance: none;
   -webkit-appearance: none;
-  padding-right: 2.4rem;
+  padding-right: 2.2rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.9rem center;
-  background-size: 14px;
+  background-position: right 0.8rem center;
+  background-size: 12px;
   cursor: pointer;
 }
 .contact-input:focus { outline: 2px solid var(--form-color); outline-offset: 1px; background-color: #fff; }
@@ -165,118 +177,134 @@ select.contact-input {
 .contact-checks {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: 0.35rem 1.4rem;
-  padding: 0.45rem 1rem;
-  border-radius: 18px;
+  gap: 0.15rem 1.6rem;
+  min-height: 22px;
+  padding: 2px 0.8rem;
+  border-radius: 11px;
   background: #e9edf5;
-  font-size: 13px;
+  font-size: 11px;
+  color: #222;
 }
-.contact-checks label { display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; }
-.contact-checks input { width: 14px; height: 14px; flex: none; accent-color: var(--form-color); cursor: pointer; }
+.contact-checks label { display: inline-flex; align-items: center; gap: 0.3rem; cursor: pointer; }
+.contact-checks input { width: 10px; height: 10px; margin: 0; flex: none; accent-color: var(--form-color); cursor: pointer; }
 .contact-checks--grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.6rem 1.5rem;
-  padding: 0;
+  grid-template-columns: 41% 1fr;
+  justify-content: stretch;
+  gap: 7px 0;
+  padding: 0 0 0 4px;
   background: none;
   border-radius: 0;
 }
 
-.contact-field { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.contact-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .contact-upload {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  padding: 0.85rem 1rem;
-  border-radius: 10px;
+  gap: 0.9rem;
+  min-height: 47px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
   background: #e9edf5;
   color: var(--vao-blue);
-  font-size: 13px;
+  font-size: 11px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-.contact-upload svg { width: 20px; height: 20px; color: var(--vao-navy); }
+.contact-upload svg { width: 20px; height: 20px; color: var(--vao-blue); }
 .contact-upload:hover { background: #dde3ef; }
 .contact-file:focus-visible + .contact-upload { outline: 2px solid var(--form-color); outline-offset: 2px; }
-.contact-hint { font-size: 11.5px; color: var(--vao-muted); }
-.contact-file-error { font-size: 12.5px; font-weight: 600; color: #9b1c1c; }
-.contact-file-list { list-style: none; font-size: 12.5px; color: var(--vao-text); }
+.contact-hint { font-size: 10px; line-height: 1.4; color: #8a8a93; }
+.contact-file-error { font-size: 12px; font-weight: 600; color: #9b1c1c; }
+.contact-file-list { list-style: none; font-size: 12px; color: var(--vao-text); }
 .contact-file-list li { overflow-wrap: anywhere; }
 .contact-file-list li::before { content: "• "; color: var(--form-color); }
 
+/* Bouton centré sous la colonne des champs (41 % libellés / 59 % champs) */
 .contact-submit {
-  align-self: center;
-  min-width: 150px;
-  padding: 0.45rem 2.4rem;
+  --submit-w: 106px;
+  align-self: flex-start;
+  width: var(--submit-w);
+  height: 25px;
+  margin-top: auto;
+  margin-left: calc(41% + (59% - var(--submit-w)) / 2);
+  padding: 0;
   border: 0;
   border-radius: 999px;
   background: var(--form-color);
   color: #fff;
-  font-size: 13px;
-  font-weight: 700;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 400;
   cursor: pointer;
   transition: filter 0.2s ease;
 }
-.contact-submit:hover { filter: brightness(0.9); }
+.contact-form--distributeur .contact-submit { color: #1d1d1f; }
+.contact-form--information .contact-submit { --submit-w: 175px; }
+.contact-submit:hover { filter: brightness(0.92); }
 .contact-submit:focus-visible { outline: 2px solid var(--form-color); outline-offset: 3px; }
 
 /* ============== OFFRES D'EMPLOI ============== */
-.offres { display: flex; flex-direction: column; gap: 2.4rem; max-width: 1100px; margin: 0 auto; }
+.offres { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 53px; max-width: 1272px; margin: 0 auto; }
 .offre {
   --offre-color: var(--vao-orange);
   display: grid;
-  grid-template-columns: 31% 1fr;
+  grid-template-columns: 31.1% 1fr;
   background: #fff;
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: var(--vao-shadow);
+  box-shadow: 0 6px 22px rgba(60, 20, 110, 0.07);
 }
-.offre--bleu { --offre-color: var(--vao-blue); }
-.offre--violet { --offre-color: var(--vao-violet); }
+.offre--bleu { --offre-color: #1d4685; }
+.offre--violet { --offre-color: #8a3fc0; }
 .offre > .offre-body:first-child { grid-column: 1 / -1; }
-.offre-photo { position: relative; min-height: 320px; background: var(--offre-color); }
-/* Le nom du poste est écrit en bas de la photo : on garde le bas visible quand elle est recadrée */
+.offre-photo { position: relative; min-height: 320px; background: #8a3fc0; }
+/* Le nom du poste est écrit dans l'image (provisoire, extraite de la maquette) : on garde le bas visible quand elle est recadrée */
 .offre-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
 
-.offre-body { display: flex; flex-direction: column; min-width: 0; padding: 2rem 2.2rem 1.8rem; }
+.offre-body { display: flex; flex-direction: column; min-width: 0; padding: 30px 44px 44px 45px; }
 .offre-title,
 .offre-content h2 {
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.6rem;
   font-family: var(--vao-font-title);
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
-  font-weight: 900;
-  line-height: 1.1;
+  font-size: clamp(1.6rem, 3.25vw, 2.95rem);
+  font-weight: 800;
+  line-height: 1.2;
   text-align: center;
   text-transform: uppercase;
   color: var(--offre-color);
 }
-.offre-content { font-size: 14px; line-height: 1.6; color: #333; text-align: justify; }
-.offre-content h2 { margin-top: 2.2rem; }
+.offre-content { font-size: 15px; line-height: 1.7; color: #262626; text-align: justify; }
+.offre-content h2 { margin-top: 2.6rem; }
 .offre-content h3 {
-  margin: 1.5rem 0 0.15rem;
-  font-size: 1.25rem;
+  margin: 2.1rem 0 0;
+  font-size: 23px;
   font-style: italic;
   font-weight: 800;
   line-height: 1.3;
   text-align: left;
-  color: var(--vao-violet);
+  color: #8a3fc0;
 }
 .offre-content > h3:first-child, .offre-content h2 + h3 { margin-top: 0; }
-.offre-content p { margin-bottom: 0.25rem; }
-.offre-content ul { list-style: none; padding-left: 2.6rem; }
-.offre-content li { position: relative; padding-left: 1rem; }
+.offre-content p { margin-bottom: 0.2rem; }
+.offre-content ul { list-style: none; padding-left: 2.45rem; }
+.offre-content li { position: relative; padding-left: 0.95rem; }
 .offre-content li::before { content: "-"; position: absolute; left: 0; }
 .offre-postuler {
   align-self: flex-end;
-  margin-top: 1.6rem;
-  padding: 0.4rem 2.8rem;
+  width: 176px;
+  margin-top: 1.4rem;
+  padding: 0 1rem;
   border-radius: 999px;
-  background: var(--vao-violet);
+  background: #8a3fc0;
   color: #fff;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 25px;
+  text-align: center;
   text-decoration: none;
 }
 .offre-postuler:hover { background: var(--vao-violet-dark); }
@@ -303,31 +331,54 @@ select.contact-input {
   text-decoration: none;
 }
 
-.contact .brand-strip { margin-top: 3rem; }
+/* ============== BANDEAU DE LOGOS (gris, fixe sur grand écran comme la maquette) ============== */
+.contact .brand-strip { margin-top: 34px; }
+@media (min-width: 1200px) {
+  .contact .brand-strip { padding: 0.5rem 36px; -webkit-mask-image: none; mask-image: none; }
+  .contact .brand-track { width: 100%; justify-content: space-between; gap: 1rem; animation: none; }
+  .contact .brand-track img[aria-hidden="true"] { display: none; }
+  .contact .brand-strip.muted .brand-track img { height: 46px; max-width: 86px; object-fit: contain; filter: grayscale(1) opacity(0.32); }
+}
 
 /* ============== RESPONSIVE ============== */
 @media (max-width: 1000px) {
   .contact-stage { padding: 0 1.25rem; }
   .contact-arrow-col { display: none; }
+  .contact-card { min-height: 0; }
+  .contact-form { padding: 2rem 2rem 1.8rem; }
 }
 @media (max-width: 860px) {
   .contact-card, .offre { grid-template-columns: 1fr; }
-  .contact-photo { min-height: 0; height: 240px; }
-  .offre-photo { min-height: 0; height: 300px; }
+  .contact-photo { min-height: 0; height: 260px; }
+  .contact-photo img { object-position: center 25%; }
+  /* Colonne empilée : on montre la photo (haut de l'image), l'intitulé est déjà écrit dans le corps de l'offre */
+  .offre-photo { min-height: 0; height: 320px; }
+  .offre-photo img { object-position: center 12%; }
 }
 @media (max-width: 760px) {
-  .contact-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .contact { padding-top: 1.25rem; }
+  .contact-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1.25rem; }
   .contact-tab { white-space: normal; text-align: center; font-size: 12px; padding: 0.5rem; }
   .contact-tab.active { font-size: 13px; padding: 0.5rem; }
 }
 @media (max-width: 560px) {
   .contact-stage { padding: 0 0.75rem; }
-  .contact-form { padding: 1.5rem 1.1rem; gap: 1.4rem; }
+  .contact-form { padding: 1.5rem 1.1rem; gap: 1.6rem; }
   .contact-row { grid-template-columns: 1fr; gap: 0.3rem; }
+  .contact-row + .contact-row, .contact-form--information .contact-row + .contact-row { margin-top: 0.75rem; }
   .contact-row:has(textarea) .contact-label, .contact-row:has(.contact-field) .contact-label { padding-top: 0; }
-  .contact-checks--grid { grid-template-columns: 1fr; }
+  .contact-label { font-size: 13px; }
+  .contact-legend { font-size: 14px; margin-bottom: 0.5rem; }
+  /* 16 px : évite le zoom automatique d'iOS au focus ; hauteur tactile confortable */
+  .contact-input { height: 40px; font-size: 16px; }
+  textarea.contact-input { height: auto; }
+  .contact-checks { justify-content: flex-start; gap: 0.5rem 1.2rem; padding: 0.55rem 0.9rem; font-size: 13px; }
+  .contact-checks input { width: 16px; height: 16px; }
+  .contact-checks--grid { grid-template-columns: 1fr; padding: 0; }
+  .contact-submit { align-self: center; margin-left: 0; width: auto; min-width: 160px; height: 40px; padding: 0 2rem; font-size: 14px; }
   .offre-body { padding: 1.5rem 1.1rem; }
-  .offre-content { text-align: left; }
+  .offre-content { font-size: 14px; text-align: left; }
+  .offre-content h3 { font-size: 20px; }
   .offre-content ul { padding-left: 0.4rem; }
-  .offre-postuler { align-self: stretch; text-align: center; }
+  .offre-postuler { align-self: stretch; width: auto; line-height: 40px; font-size: 14px; }
 }

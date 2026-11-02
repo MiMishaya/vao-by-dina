@@ -10,13 +10,10 @@ $vao_facebook = vao_mod( 'facebook_url' );
 $vao_linkedin = vao_mod( 'linkedin_url' );
 ?>
 <footer class="site-footer">
-	<svg class="footer-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40C180 10 360 0 540 18s360 42 540 30 270-38 360-30v42H0z"/></svg>
+	<span class="footer-wave" aria-hidden="true"></span>
 	<div class="footer-main">
 		<div class="footer-brand">
-			<div class="footer-logos">
-				<img class="footer-logo-vao" src="<?php echo esc_url( vao_mod( 'logo_vao' ) ); ?>" alt="VAO" width="640" height="242">
-				<span class="footer-logo-sdoi"><strong>SDOI</strong><small><?php vao_e( 'Savons et Détergents de l’Océan Indien' ); ?></small></span>
-			</div>
+			<img class="footer-logo" src="<?php echo esc_url( vao_mod( 'logo_vao' ) ); ?>" alt="VAO - SDOI, <?php echo esc_attr( vao_t( 'Savons et Détergents de l’Océan Indien' ) ); ?>" width="1124" height="327">
 			<p class="footer-siege"><?php vao_e( 'Siège social' ); ?> : <?php echo esc_html( vao_mod( 'siege' ) ); ?></p>
 			<div class="footer-social">
 				<?php if ( $vao_facebook ) : ?>
@@ -49,14 +46,19 @@ $vao_linkedin = vao_mod( 'linkedin_url' );
 		</form>
 
 		<ul class="footer-links">
-			<?php foreach ( vao_nav() as $vao_key => $vao_item ) : ?>
+			<?php
+			$vao_nav = vao_nav();
+			// Ordre du pied de page de la maquette (différent du menu principal).
+			foreach ( array( 'accueil', 'gammes', 'qui-sommes-nous', 'nous-contacter' ) as $vao_key ) :
+				$vao_item = $vao_nav[ $vao_key ];
+				?>
 				<li><a href="<?php echo esc_url( 'gammes' === $vao_key ? vao_via_loading( $vao_item[1] ) : $vao_item[1] ); ?>"><?php vao_e( $vao_item[0] ); ?></a></li>
 			<?php endforeach; ?>
 		</ul>
 	</div>
 
 	<div class="footer-bottom">
-		<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php vao_e( 'Savons et Détergents de l’Océan Indien' ); ?></p>
+		<p><?php echo esc_html( gmdate( 'Y' ) ); ?> &copy; <?php vao_e( 'Savons et Détergents de l’Océan Indien' ); ?></p>
 		<p class="footer-contact">
 			<a href="<?php echo esc_url( vao_tel_link( $vao_phone ) ); ?>">
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
@@ -74,6 +76,10 @@ $vao_linkedin = vao_mod( 'linkedin_url' );
 		</p>
 	</div>
 </footer>
+
+<button type="button" class="to-top" id="to-top" aria-label="<?php echo esc_attr( vao_t( 'Retour en haut' ) ); ?>">
+	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
 
 <?php wp_footer(); ?>
 </body>
