@@ -6,11 +6,22 @@
   var INTERVAL = 5000;
   var FADE_MS = 600;
 
-  function preload(src, cb) {
+  // srcset avant src : le navigateur choisit la même taille (960 / 1920 px) pour le préchargement et l'affichage.
+  function setSource(im, slide) {
+    if (slide.srcset) {
+      im.sizes = "100vw";
+      im.srcset = slide.srcset;
+    } else {
+      im.removeAttribute("srcset");
+    }
+    im.src = slide.src;
+  }
+
+  function preload(slide, cb) {
     var im = new Image();
     im.onload = cb;
     im.onerror = cb;
-    im.src = src;
+    setSource(im, slide);
   }
 
   function init() {
@@ -53,7 +64,7 @@
       updateDots();
 
       if (!animate) {
-        imgs[front].src = slide.src;
+        setSource(imgs[front], slide);
         imgs[front].alt = slide.alt;
         imgs[front].style.opacity = 1;
         imgs[1 - front].style.opacity = 0;
@@ -61,8 +72,8 @@
       }
 
       var back = 1 - front;
-      preload(slide.src, function () {
-        imgs[back].src = slide.src;
+      preload(slide, function () {
+        setSource(imgs[back], slide);
         imgs[back].alt = slide.alt;
         void imgs[back].offsetWidth; // force le reflow pour que la transition d'opacité s'exécute
         imgs[back].style.opacity = 1;

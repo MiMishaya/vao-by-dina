@@ -76,7 +76,7 @@ function vao_customizer_base_fields() {
 			'marketing_tel'         => array( 'vao_contacts', 'Service Marketing - téléphone', 'text', '+261 32 11 226 62' ),
 			'marketing_email'       => array( 'vao_contacts', 'Service Marketing - e-mail', 'text', 'marketing@vao.mg' ),
 			'commercial_tel'        => array( 'vao_contacts', 'Service Commercial - téléphone', 'text', '+261 32 11 224 93' ),
-			'commercial_email'      => array( 'vao_contacts', 'Service Commercial - e-mail', 'text', 'vente directe@vao.mg' ),
+			'commercial_email'      => array( 'vao_contacts', 'Service Commercial - e-mail', 'text', 'ventedirecte@vao.mg' ),
 			'grandcompte_tel'       => array( 'vao_contacts', 'Service Grand Compte - téléphone', 'text', '+261 32 11 226 92' ),
 			'grandcompte_email'     => array( 'vao_contacts', 'Service Grand Compte - e-mail', 'text', 'grandcompte@vao.mg' ),
 
@@ -186,9 +186,12 @@ function vao_customize_register( $wp_customize ) {
 		'emails'   => 'vao_sanitize_emails',
 	);
 
+	// Ordre explicite (10, 20, …) : le champ « en malagasy » de inc/admin-mg.php se place juste en dessous (+1).
+	$order = 0;
 	foreach ( vao_customizer_fields() as $key => $field ) {
 		list( $section, $label, $type, $default ) = $field;
 		$setting = 'vao_' . $key;
+		$order  += 10;
 
 		$wp_customize->add_setting(
 			$setting,
@@ -204,8 +207,9 @@ function vao_customize_register( $wp_customize ) {
 					$wp_customize,
 					$setting,
 					array(
-						'label'   => $label,
-						'section' => $section,
+						'label'    => $label,
+						'section'  => $section,
+						'priority' => $order,
 					)
 				)
 			);
@@ -213,9 +217,10 @@ function vao_customize_register( $wp_customize ) {
 			$wp_customize->add_control(
 				$setting,
 				array(
-					'label'   => $label,
-					'section' => $section,
-					'type'    => 'emails' === $type ? 'text' : $type,
+					'label'    => $label,
+					'section'  => $section,
+					'type'     => 'emails' === $type ? 'text' : $type,
+					'priority' => $order,
 				)
 			);
 		}

@@ -35,9 +35,17 @@ function vao_extra_types() {
 function vao_meta_fields() {
 	return array(
 		'vao_collaborateur' => array(
-			'_vao_poste'      => array( 'Poste (ex. : Responsable Marketing)', 'text' ),
-			'_vao_anciennete' => array( 'Ancienneté (ex. : 3 ans chez SDOI)', 'text' ),
-			'_vao_texte'      => array( 'Témoignage', 'textarea' ),
+			'_vao_poste'         => array( 'Poste (ex. : Responsable Marketing)', 'text' ),
+			'_vao_poste_mg'      => array( '↳ Poste en malagasy', 'text' ),
+			'_vao_anciennete'    => array( 'Ancienneté (ex. : 3 ans chez SDOI)', 'text' ),
+			'_vao_anciennete_mg' => array( '↳ Ancienneté en malagasy', 'text' ),
+			'_vao_texte'         => array( 'Témoignage', 'textarea' ),
+			'_vao_texte_mg'      => array( '↳ Témoignage en malagasy', 'textarea' ),
+		),
+		// Le titre et le texte français se saisissent dans les champs habituels de WordPress.
+		'vao_rse'           => array(
+			'_vao_titre_mg' => array( 'Titre en malagasy', 'text' ),
+			'_vao_texte_mg' => array( 'Texte en malagasy', 'textarea' ),
 		),
 		'vao_offre'         => array(
 			'_vao_couleur' => array( 'Couleur du titre', 'select', array( 'orange' => 'Orange', 'bleu' => 'Bleu', 'violet' => 'Violet' ) ),
@@ -286,9 +294,14 @@ add_action( 'add_meta_boxes', 'vao_add_meta_boxes' );
 function vao_fields_metabox( $post ) {
 	$fields = vao_meta_fields();
 	wp_nonce_field( 'vao_fields_save', 'vao_fields_nonce' );
+	$mg_sources = vao_mg_post_fields();
 	foreach ( $fields[ $post->post_type ] as $key => $field ) {
 		$value = get_post_meta( $post->ID, $key, true );
 		$id    = ltrim( $key, '_' );
+		// Champ malagasy vide : pré-rempli avec la traduction affichée aujourd'hui sur le site.
+		if ( '' === (string) $value && isset( $mg_sources[ $post->post_type ][ $key ] ) ) {
+			$value = vao_mg_current( vao_mg_source( $post, $mg_sources[ $post->post_type ][ $key ] ) );
+		}
 		echo '<p><label for="' . esc_attr( $id ) . '"><strong>' . esc_html( $field[0] ) . '</strong></label><br>';
 		if ( 'textarea' === $field[1] ) {
 			echo '<textarea id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" rows="8" class="widefat">' . esc_textarea( $value ) . '</textarea>';

@@ -76,7 +76,8 @@ $vao_start  = isset( $vao_starts[ $vao_view ] ) && $vao_starts[ $vao_view ] < co
 
 <div class="hero" id="home" data-start="<?php echo esc_attr( $vao_start ); ?>">
 	<?php if ( $vao_slides ) : ?>
-		<img class="hero-bg" src="<?php echo esc_url( $vao_slides[ $vao_start ]['src'] ); ?>" alt="<?php echo esc_attr( $vao_slides[ $vao_start ]['alt'] ); ?>" width="6000" height="2518">
+		<?php // Première image visible de la page : chargée en priorité (indicateur LCP). ?>
+		<img class="hero-bg" src="<?php echo esc_url( $vao_slides[ $vao_start ]['src'] ); ?>"<?php echo $vao_slides[ $vao_start ]['srcset'] ? ' srcset="' . esc_attr( $vao_slides[ $vao_start ]['srcset'] ) . '" sizes="100vw"' : ''; ?> alt="<?php echo esc_attr( $vao_slides[ $vao_start ]['alt'] ); ?>" width="6000" height="2518" fetchpriority="high" decoding="async">
 	<?php endif; ?>
 	<div class="hero-dots"></div>
 </div>

@@ -139,7 +139,6 @@
 button.row-plus:hover { transform: scale(1.12); }
 .row-plus:focus-visible { outline: 2px solid var(--plus-color); outline-offset: 2px; }
 .row-plus[aria-expanded="true"] { transform: rotate(45deg); }
-.row-plus--deco { cursor: default; }
 .row-plus-spacer { flex: 0 0 44px; }
 
 /* Repli animé sans hauteur maximale arbitraire : la hauteur suit le contenu (grille 0fr → 1fr). */
@@ -187,5 +186,5 @@ button.row-plus:hover { transform: scale(1.12); }
   .prod-thumb img { max-height: 190px; }
   .prod-name { font-size: 1.9rem; }
   .row-plus { align-self: center; margin-bottom: 0; }
-  .row-plus--deco, .row-plus-spacer { display: none; }
+  .row-plus-spacer { display: none; }
 }

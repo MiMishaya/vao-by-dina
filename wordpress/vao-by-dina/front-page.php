@@ -8,7 +8,6 @@
 get_header();
 
 $vao_allowed = array( 'strong' => array() );
-$vao_img_dir = get_template_directory_uri() . '/assets/img/accueil/';
 
 // Frise : array( année, titre, texte, liste à puces, icône ). Positions : classes tl-s1..tl-s5 de home.css.
 $vao_steps = array(
@@ -73,7 +72,8 @@ $vao_reviews      = vao_items( 'vao_avis' );
 			</span>
 		</div>
 		<div class="home-sdoi-text">
-			<h2><?php echo esc_html( vao_mod( 'about_titre' ) ); ?></h2>
+			<?php // Titre principal de l'accueil (SEO) : la bannière n'est qu'une image. ?>
+			<h1><?php echo esc_html( vao_mod( 'about_titre' ) ); ?></h1>
 			<p><?php echo nl2br( esc_html( vao_mod( 'about_texte' ) ) ); ?></p>
 		</div>
 	</div>
@@ -131,9 +131,9 @@ $vao_reviews      = vao_items( 'vao_avis' );
 				</div>
 				<span class="tl-icon" aria-hidden="true">
 					<?php if ( '20' === $vao_icon ) : ?>
-						<img src="<?php echo esc_url( $vao_img_dir . 'vingt-ans.png' ); ?>" alt="" width="69" height="54">
+						<img src="<?php echo esc_url( vao_img( 'accueil/vingt-ans.png' ) ); ?>" alt="" width="69" height="54">
 					<?php elseif ( 'label' === $vao_icon ) : ?>
-						<img src="<?php echo esc_url( $vao_img_dir . 'label-malagasy-ny-antsika.png' ); ?>" alt="" width="59" height="45">
+						<img src="<?php echo esc_url( vao_img( 'accueil/label-malagasy-ny-antsika.png' ) ); ?>" alt="" width="59" height="45">
 					<?php else : ?>
 						<svg viewBox="2 2 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><?php echo $vao_icons[ $vao_icon ]; // phpcs:ignore WordPress.Security.EscapeOutput -- SVG fixe du thème. ?></svg>
 					<?php endif; ?>
@@ -179,7 +179,7 @@ $vao_reviews      = vao_items( 'vao_avis' );
 				<img src="<?php echo esc_url( vao_mod( 'engagement_image' ) ); ?>" alt="<?php echo esc_attr( vao_t( 'Notre engagement' ) ); ?>" width="1345" height="1565" loading="lazy">
 			<?php else : ?>
 				<?php for ( $vao_n = 1; $vao_n <= 3; $vao_n++ ) : ?>
-					<img class="engagement-photo engagement-photo-<?php echo (int) $vao_n; ?>" src="<?php echo esc_url( $vao_img_dir . 'engagement-' . $vao_n . '.jpg' ); ?>" alt="<?php echo esc_attr( 1 === $vao_n ? vao_t( 'Notre engagement' ) : '' ); ?>" width="796" height="528" loading="lazy">
+					<img class="engagement-photo engagement-photo-<?php echo (int) $vao_n; ?>" src="<?php echo esc_url( vao_img( 'accueil/engagement-' . $vao_n . '.jpg' ) ); ?>" alt="<?php echo esc_attr( 1 === $vao_n ? vao_t( 'Notre engagement' ) : '' ); ?>" width="796" height="528" loading="lazy">
 				<?php endfor; ?>
 			<?php endif; ?>
 			<div class="home-engagement-icons" aria-hidden="true">

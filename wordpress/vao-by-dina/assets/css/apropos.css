@@ -177,8 +177,8 @@ button.qsn-small-item { cursor: pointer; }
   /* Les bords déchirés de la maquette (BG_Trash UP / BG-03, 5,35 % de la largeur) sont dans le padding. */
   padding: calc(5.35vw + clamp(1.2rem, 2vw, 26px)) 0 calc(5.35vw + clamp(1.5rem, 2.4vw, 34px));
   background:
-    url("../img/bg/dechire-haut.png") center -1px / 100% auto no-repeat,
-    url("../img/bg/dechire-bas.png") center calc(100% + 1px) / 100% auto no-repeat,
+    url("../img/bg/dechire-haut.webp") center -1px / 100% auto no-repeat,
+    url("../img/bg/dechire-bas.webp") center calc(100% + 1px) / 100% auto no-repeat,
     #7d39b6;
   color: #fff;
 }

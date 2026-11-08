@@ -9,19 +9,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * URL d'une image livrée avec le thème (assets/img/...). Encode les espaces et accents.
- * Les photos sans transparence sont converties en .jpg à la construction (build.ps1) :
- * si le .png demandé n'existe pas, on utilise le .jpg du même nom.
+ * La construction (build.ps1 / optimize-images.php) crée un .webp de chaque image et convertit
+ * les PNG opaques en .jpg : on sert le .webp s'il existe, sinon le .png, sinon le .jpg du même nom.
  */
 function vao_img( $path ) {
 	$base = get_template_directory() . '/assets/img/';
-	if ( ! file_exists( $base . $path ) ) {
-		$jpg = preg_replace( '/\.png$/i', '.jpg', $path );
-		if ( file_exists( $base . $jpg ) ) {
-			$path = $jpg;
+	if ( preg_match( '/\.(png|jpe?g)$/i', $path ) ) {
+		$stem = preg_replace( '/\.(png|jpe?g)$/i', '', $path );
+		foreach ( array( $stem . '.webp', $path, $stem . '.jpg' ) as $candidate ) {
+			if ( file_exists( $base . $candidate ) ) {
+				$path = $candidate;
+				break;
+			}
 		}
 	}
+	return vao_img_uri( $path );
+}
+
+function vao_img_uri( $path ) {
 	$segments = array_map( 'rawurlencode', explode( '/', $path ) );
 	return get_template_directory_uri() . '/assets/img/' . implode( '/', $segments );
+}
+
+/**
+ * URL de la variante réduite « nom-<largeur>.webp » d'une image du thème (créée par optimize-images.php
+ * pour la bannière et les photos RSE), ou "" si elle n'existe pas.
+ */
+function vao_img_variant( $path, $width ) {
+	$variant = preg_replace( '/\.(png|jpe?g|webp)$/i', '', $path ) . '-' . (int) $width . '.webp';
+	return file_exists( get_template_directory() . '/assets/img/' . $variant ) ? vao_img_uri( $variant ) : '';
 }
 
 /**
@@ -118,9 +134,11 @@ function vao_gallery( $post ) {
 	if ( ! $images ) {
 		foreach ( (array) get_post_meta( $post->ID, '_vao_galerie', true ) as $file ) {
 			if ( $file ) {
+				$full     = vao_img( $file );
+				$thumb    = vao_img_variant( $file, 640 );
 				$images[] = array(
-					'thumb' => vao_img( $file ),
-					'full'  => vao_img( $file ),
+					'thumb' => $thumb ? $thumb : $full,
+					'full'  => $full,
 				);
 			}
 		}
@@ -206,10 +224,39 @@ function vao_items( $post_type, $args = array() ) {
 		return get_posts( $args );
 	}
 
-	$items = get_posts( array_merge( $args, array( 'lang' => $lang ) ) );
-	if ( ! $items && function_exists( 'pll_default_language' ) && pll_default_language() !== $lang ) {
-		$items = get_posts( array_merge( $args, array( 'lang' => pll_default_language() ) ) );
+	$default = function_exists( 'pll_default_language' ) ? pll_default_language() : '';
+	if ( ! $default || $default === $lang || ! function_exists( 'pll_get_post' ) ) {
+		return get_posts( array_merge( $args, array( 'lang' => $lang ) ) );
 	}
+
+	// Élément par élément : sa traduction si elle existe, sinon l'original. Traduire une seule
+	// bannière ne doit pas faire disparaître les autres de la version malagasy.
+	$items = array();
+	$used  = array();
+	foreach ( get_posts( array_merge( $args, array( 'lang' => $default ) ) ) as $item ) {
+		$id = pll_get_post( $item->ID, $lang );
+		if ( $id && 'publish' === get_post_status( $id ) ) {
+			$items[]     = get_post( $id );
+			$used[ $id ] = true;
+		} else {
+			// Pas de traduction, ou traduction en brouillon : l'original reste affiché.
+			$items[] = $item;
+		}
+	}
+	// Éléments créés directement en malagasy (sans original français).
+	foreach ( get_posts( array_merge( $args, array( 'lang' => $lang ) ) ) as $item ) {
+		if ( ! isset( $used[ $item->ID ] ) ) {
+			$items[] = $item;
+		}
+	}
+	// Tri par « Ordre » ; à ordre égal, l'ordre d'origine est conservé (usort n'est pas stable en PHP 7).
+	$rank = array_flip( array_map( 'spl_object_hash', $items ) );
+	usort(
+		$items,
+		function ( $a, $b ) use ( $rank ) {
+			return ( $a->menu_order - $b->menu_order ) ?: ( $rank[ spl_object_hash( $a ) ] - $rank[ spl_object_hash( $b ) ] );
+		}
+	);
 	return $items;
 }
 
@@ -223,10 +270,27 @@ function vao_post_img( $post, $size = 'full' ) {
 	}
 	$url = get_the_post_thumbnail_url( $post, $size );
 	if ( ! $url ) {
-		$file = get_post_meta( $post->ID, '_vao_theme_img', true );
+		$file = vao_mg_theme_file( get_post_meta( $post->ID, '_vao_theme_img', true ) );
 		$url  = $file ? vao_img( $file ) : '';
 	}
 	return $url;
+}
+
+/**
+ * Image livrée avec le thème dans la langue affichée : en malagasy, la version « nom-mg »
+ * (texte incrusté traduit : bannières, cartes témoignages) si elle existe, sinon l'image française.
+ */
+function vao_mg_theme_file( $file ) {
+	if ( ! $file || ! vao_is_mg() ) {
+		return $file;
+	}
+	$stem = preg_replace( '/\.(png|jpe?g)$/i', '', $file ) . '-mg';
+	foreach ( array( '.webp', '.png', '.jpg' ) as $ext ) {
+		if ( file_exists( get_template_directory() . '/assets/img/' . $stem . $ext ) ) {
+			return $stem . '.png';
+		}
+	}
+	return $file;
 }
 
 /**
@@ -235,19 +299,106 @@ function vao_post_img( $post, $size = 'full' ) {
 function vao_post_alt( $post ) {
 	$post = get_post( $post );
 	$alt  = get_post_meta( $post->ID, '_vao_alt', true );
-	return $alt ? $alt : get_the_title( $post );
+	return $alt ? vao_t( $alt ) : vao_post_title( $post );
 }
 
 /**
- * Images de la bannière (carrousel) : array( array( 'src' => ..., 'alt' => ... ), ... ).
+ * Titre d'un élément traduit par le dictionnaire du thème (inc/strings/contenus.php).
+ * La clé est le titre brut : get_the_title() remplace les apostrophes et ne correspondrait plus.
+ */
+function vao_post_title( $post ) {
+	$post       = get_post( $post );
+	$translated = vao_t( $post->post_title );
+	return $translated === $post->post_title ? get_the_title( $post ) : $translated;
+}
+
+/**
+ * srcset d'une image de bannière, pour qu'un mobile charge la version 960 px au lieu de 1920 px.
+ * Image de la médiathèque : tailles générées par WordPress ; image du thème : variante -960.webp.
+ */
+function vao_hero_srcset( $slide, $file = '' ) {
+	$thumb = get_post_thumbnail_id( $slide );
+	if ( $thumb ) {
+		return (string) wp_get_attachment_image_srcset( $thumb, 'full' );
+	}
+	$file  = $file ? $file : get_post_meta( $slide->ID, '_vao_theme_img', true );
+	$small = $file ? vao_img_variant( $file, 960 ) : '';
+	return $small ? $small . ' 960w, ' . vao_img( $file ) . ' 1920w' : '';
+}
+
+/**
+ * Image du thème d'une bannière dans la langue affichée (voir vao_mg_theme_file()).
+ */
+function vao_hero_file( $slide ) {
+	return vao_mg_theme_file( get_post_meta( $slide->ID, '_vao_theme_img', true ) );
+}
+
+/**
+ * Images de la bannière (carrousel) : array( array( 'src' => ..., 'srcset' => ..., 'alt' => ... ), ... ).
  */
 function vao_hero_slides() {
-	return array_map(
+	// Appelée par header.php et par wp_localize_script : une seule requête par page.
+	static $slides = null;
+	if ( null !== $slides ) {
+		return $slides;
+	}
+	$slides = array_map(
 		function ( $slide ) {
-			return array( 'src' => vao_post_img( $slide ), 'alt' => get_the_title( $slide ) );
+			// Image choisie dans la médiathèque : prioritaire (traduite via Polylang).
+			$file = get_post_thumbnail_id( $slide ) ? '' : vao_hero_file( $slide );
+			return array(
+				'src'    => $file ? vao_img( $file ) : vao_post_img( $slide ),
+				'srcset' => vao_hero_srcset( $slide, $file ),
+				'alt'    => vao_post_title( $slide ),
+			);
 		},
 		vao_items( 'vao_banniere' )
 	);
+	return $slides;
+}
+
+/**
+ * Recherche dans le catalogue (gammes et produits), en français et en malagasy, sans tenir compte
+ * des accents : les produits ne sont pas des pages publiques, la recherche WordPress ne les voit pas.
+ *
+ * @return array array( 'gammes' => array( array( titre, url ) ), 'produits' => array( array( titre, url ) ) )
+ */
+function vao_search_catalogue( $query ) {
+	$norm  = function ( $text ) {
+		return mb_strtolower( remove_accents( wp_strip_all_tags( (string) $text ) ) );
+	};
+	$query = trim( $norm( $query ) );
+	$found = array(
+		'gammes'   => array(),
+		'produits' => array(),
+	);
+	if ( mb_strlen( $query ) < 2 ) {
+		return $found;
+	}
+	$match = function ( $texts ) use ( $norm, $query ) {
+		foreach ( $texts as $text ) {
+			if ( '' !== (string) $text && false !== mb_strpos( $norm( $text ), $query ) ) {
+				return true;
+			}
+		}
+		return false;
+	};
+	foreach ( vao_gammes() as $term ) {
+		if ( $match( array( $term->name, vao_t( $term->name ) ) ) ) {
+			$found['gammes'][] = array( vao_t( $term->name ), vao_url( 'gammes', $term->slug ) );
+		}
+	}
+	foreach ( vao_items( 'vao_produit' ) as $product ) {
+		$terms = get_the_terms( $product, 'vao_gamme' );
+		$term  = $terms && ! is_wp_error( $terms ) ? $terms[0] : null;
+		$alt   = (string) get_post_meta( $product->ID, '_vao_alt', true );
+		// Nom du produit seulement : une gamme trouvée est déjà listée au-dessus.
+		if ( $match( array( $product->post_title, $alt ) ) ) {
+			$label               = trim( get_the_title( $product ) . ( $term ? ' – ' . vao_t( $term->name ) : '' ) );
+			$found['produits'][] = array( $label, vao_url( 'gammes', $term ? $term->slug : '' ) );
+		}
+	}
+	return $found;
 }
 
 /**

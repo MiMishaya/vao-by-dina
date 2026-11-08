@@ -10,4 +10,4 @@
 **Projet :** site vitrine VAO / SDOI (savons, Madagascar), FR + MG
 **Stack :** thème WordPress `wordpress/vao-by-dina`
 **Prod :** à compléter
-**Dernière session :** 2026-10-28 (refonte v2)
+**Dernière session :** 2026-11-08 (traductions MG officielles client, catalogue allégé)

@@ -38,7 +38,7 @@
 }
 .home-sdoi-logo img { width: 100%; opacity: 0; }
 .home-sdoi-text { padding-top: 40px; color: #293293; }
-.home-sdoi-text h2 {
+.home-sdoi-text h1 {
   font-style: italic; font-weight: 800;
   font-size: 30px; line-height: 1.25;
   margin-bottom: 24px;
@@ -136,9 +136,9 @@
   padding: 93px 0 98px;
   /* Fonds de la maquette : bords déchirés blancs (BG_Trash UP / BG-03) sur le dégradé orange. */
   background:
-    url("../img/bg/dechire-haut.png") center -1px / 100% auto no-repeat,
-    url("../img/bg/dechire-bas.png") center calc(100% + 1px) / 100% auto no-repeat,
-    url("../img/bg/degrade-orange.jpg") center / cover no-repeat,
+    url("../img/bg/dechire-haut.webp") center -1px / 100% auto no-repeat,
+    url("../img/bg/dechire-bas.webp") center calc(100% + 1px) / 100% auto no-repeat,
+    url("../img/bg/degrade-orange.webp") center / cover no-repeat,
     #e3a856;
 }
 .home-engagement-kicker {
@@ -410,7 +410,7 @@
   .home-sdoi-surtitre { margin-bottom: 1rem; }
   .home-sdoi-logo { width: 220px; margin: 0 auto; }
   .home-sdoi-text { padding-top: 1.4rem; }
-  .home-sdoi-text h2 { font-size: 1.35rem; margin-bottom: 1rem; }
+  .home-sdoi-text h1 { font-size: 1.35rem; margin-bottom: 1rem; }
   .home-sdoi-text p { font-size: 15px; line-height: 1.65; }
 
   .home-histoire { padding: 2rem 0; }

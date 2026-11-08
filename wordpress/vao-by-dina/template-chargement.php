@@ -22,10 +22,7 @@ $vao_leaves = array(
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap">
-<?php wp_head(); ?>
+<?php wp_head(); // Polices : assets/fonts/fonts.css, chargé par vao_assets(). ?>
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
@@ -33,7 +30,7 @@ $vao_leaves = array(
 <div class="loading-bg">
 	<img class="bg-img" src="<?php echo esc_url( vao_mod( 'loading_fond' ) ); ?>" alt="" width="3000" height="1600">
 	<div class="logo-wrap">
-		<img class="logo-img" src="<?php echo esc_url( vao_mod( 'loading_logo' ) ); ?>" alt="VAO 20 taona" width="1875" height="542">
+		<img class="logo-img" src="<?php echo esc_url( vao_mod( 'loading_logo' ) ); ?>" alt="<?php echo esc_attr( vao_t( 'VAO 20 ans' ) ); ?>" width="1875" height="542">
 	</div>
 	<div class="products-wrap">
 		<img class="products-img" src="<?php echo esc_url( vao_mod( 'loading_produits' ) ); ?>" alt="<?php echo esc_attr( vao_t( 'Nos produits VAO' ) ); ?>" width="1600" height="509">

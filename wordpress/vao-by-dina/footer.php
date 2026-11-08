@@ -13,7 +13,7 @@ $vao_linkedin = vao_mod( 'linkedin_url' );
 	<span class="footer-wave" aria-hidden="true"></span>
 	<div class="footer-main">
 		<div class="footer-brand">
-			<img class="footer-logo" src="<?php echo esc_url( vao_mod( 'logo_vao' ) ); ?>" alt="VAO - SDOI, <?php echo esc_attr( vao_t( 'Savons et Détergents de l’Océan Indien' ) ); ?>" width="1124" height="327">
+			<img class="footer-logo" src="<?php echo esc_url( vao_mod( 'logo_vao' ) ); ?>" alt="VAO - SDOI, <?php echo esc_attr( vao_t( 'Savons et Détergents de l’Océan Indien' ) ); ?>" width="1124" height="327" loading="lazy" decoding="async">
 			<p class="footer-siege"><?php vao_e( 'Siège social' ); ?> : <?php echo esc_html( vao_mod( 'siege' ) ); ?></p>
 			<div class="footer-social">
 				<?php if ( $vao_facebook ) : ?>

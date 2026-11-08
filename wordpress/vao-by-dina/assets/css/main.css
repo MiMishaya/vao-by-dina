@@ -37,7 +37,7 @@ body {
   color: var(--vao-text);
   line-height: 1.55;
   /* Rayures courbes de la maquette (BG_Raillure) */
-  background: #fff url("../img/bg/raillure.jpg") center top / 100% auto repeat-y;
+  background: #fff url("../img/bg/raillure.webp") center top / 100% auto repeat-y;
   overflow-x: clip;
 }
 /* Feuilles qui tombent le long des bords (BG_Leave's Fall), à partir du bas de la bannière (ratio 6000 / 2518). */
@@ -46,7 +46,7 @@ body::after {
   position: absolute;
   top: calc(120px + 41.97vw);
   left: 0; right: 0; bottom: 0;
-  background: url("../img/bg/feuilles.png") center top / 100% auto repeat-y;
+  background: url("../img/bg/feuilles.webp") center top / 100% auto repeat-y;
   pointer-events: none;
   z-index: -1;
 }
@@ -382,7 +382,7 @@ button { font: inherit; }
 .footer-wave {
   position: absolute; bottom: calc(100% - 1px); left: 0;
   width: 100%; aspect-ratio: 1920 / 95;
-  background: url("../img/bg/vague-pied.png") center bottom / 100% 100% no-repeat;
+  background: url("../img/bg/vague-pied.webp") center bottom / 100% 100% no-repeat;
 }
 .footer-main {
   max-width: 1206px;

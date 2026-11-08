@@ -9,8 +9,7 @@
  * Textes : inc/strings/apropos.php (traduction malagasy dans Langues > Traductions des chaînes).
  */
 
-// Polices propres à cette page : présentation et « Qualité certifiée » (Montserrat), textes en italique non gras (Inter).
-wp_enqueue_style( 'vao-apropos-fonts', 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:ital,wght@1,400&display=swap', array(), null );
+// Polices Montserrat et Inter italique de cette page : déclarées dans assets/fonts/fonts.css (téléchargées seulement si utilisées).
 
 get_header();
 
@@ -58,7 +57,7 @@ foreach ( vao_items( 'vao_distributeur' ) as $vao_ville ) {
 			$vao_used      = 0;
 		}
 		$vao_column[] = array(
-			'title'  => get_the_title( $vao_ville ),
+			'title'  => vao_post_title( $vao_ville ),
 			'points' => $vao_chunk,
 			'cont'   => $vao_k > 0,
 		);
@@ -291,8 +290,8 @@ $vao_rse_actions = vao_items( 'vao_rse' );
 						<?php
 						$vao_name  = get_the_title( $vao_collab );
 						$vao_photo = vao_post_img( $vao_collab, 'medium_large' );
-						$vao_poste = get_post_meta( $vao_collab->ID, '_vao_poste', true );
-						$vao_anc   = get_post_meta( $vao_collab->ID, '_vao_anciennete', true );
+						$vao_poste = vao_t( get_post_meta( $vao_collab->ID, '_vao_poste', true ) );
+						$vao_anc   = vao_t( get_post_meta( $vao_collab->ID, '_vao_anciennete', true ) );
 						$vao_step  = $vao_i % 4;
 						?>
 						<article class="qsn-collab-card" style="--c1:<?php echo esc_attr( $vao_mix( $vao_step / 4 ) ); ?>;--c2:<?php echo esc_attr( $vao_mix( ( $vao_step + 1 ) / 4 ) ); ?>">
@@ -303,7 +302,7 @@ $vao_rse_actions = vao_items( 'vao_rse' );
 							<?php endif; ?>
 							<div class="qsn-collab-body">
 								<h3><?php echo esc_html( $vao_name ); ?></h3>
-								<p class="qsn-collab-text"><?php echo esc_html( get_post_meta( $vao_collab->ID, '_vao_texte', true ) ); ?></p>
+								<p class="qsn-collab-text"><?php echo esc_html( vao_t( get_post_meta( $vao_collab->ID, '_vao_texte', true ) ) ); ?></p>
 								<?php if ( $vao_poste || $vao_anc ) : ?>
 									<p class="qsn-collab-meta">
 										<?php echo esc_html( $vao_poste ); ?>
@@ -329,14 +328,14 @@ $vao_rse_actions = vao_items( 'vao_rse' );
 
 		<?php foreach ( $vao_rse_actions as $vao_action ) : ?>
 			<?php
-			$vao_title  = get_the_title( $vao_action );
+			$vao_title  = vao_post_title( $vao_action );
 			$vao_photos = vao_gallery( $vao_action );
 			$vao_total  = count( $vao_photos );
 			$vao_group  = 'rse-' . $vao_action->ID;
 			?>
 			<article class="qsn-rse-item">
 				<h3><?php echo esc_html( $vao_title ); ?></h3>
-				<div class="qsn-rse-text"><?php echo wpautop( wp_kses_post( $vao_action->post_content ) ); ?></div>
+				<div class="qsn-rse-text"><?php echo wpautop( wp_kses_post( vao_t( $vao_action->post_content ) ) ); ?></div>
 				<?php if ( $vao_photos ) : ?>
 					<?php // Les photos au-delà de la 3e restent dans le DOM (masquées) pour que la galerie plein écran les parcoure toutes. ?>
 					<div class="qsn-rse-grid">

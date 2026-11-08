@@ -54,4 +54,130 @@
 - Photos HD sans texte (offres, collage engagement), feuilles décoratives
 
 ### Commits
+- f9b5d06 (message « push »)
+
+## 2026-11-03 — Sécurité formulaires et préparation mise en ligne
+
+### Ce qui a été fait
+- Revue sécurité du thème : nonces, capacités, échappement des sorties, redirections, pièces jointes → pas de faille trouvée
+- Formulaires durcis : limite de 10 envois / 10 min par IP, 30 champs max, libellés 100 car., valeurs 5000 car.
+- E-mail du Service Commercial : valeur par défaut invalide (« vente directe@vao.mg ») retirée → masqué en attendant le client
+- project.md à jour (site LocalWP « vao » en jonction, build, points d'attention)
+- Build vérifié : bannières réduites à 1920 px ; seul le catalogue PDF (≈ 30 Mo) reste lourd
+
+### Non fait
+- Recette sur vao.local : site LocalWP arrêté au moment de la session
+- SMTP : attend les accès client / hébergeur
+
+### Commits
+- (à compléter au commit)
+
+## 2026-11-08 — Historique des demandes (v1)
+
+### Ce qui a été fait
+- Client : hébergement = VPS Pro Madagascar Internet ; envoi des formulaires par e-mail confirmé ; historique des demandes souhaité
+- inc/demandes.php : type privé `vao_demande` (wp_posts/postmeta, pas de table), menu « Demandes » réservé aux admins, fiche en lecture seule, filtre par formulaire, export CSV (BOM + `;`, formules neutralisées), purge quotidienne > 12 mois (corbeille comprise)
+- forms.php : enregistrement après wp_mail(), même en cas d'échec d'envoi (statut « E-mail non envoyé »)
+
+### Décisions
+- Newsletter incluse ; pièces jointes non conservées (noms seulement) ; conservation 12 mois
+
+### Non fait
+- Recette sur vao.local : site LocalWP arrêté
+
+### Commits
+- (à compléter au commit)
+
+## 2026-11-08 — Retours client : malagasy officiel, catalogue, destinataires
+
+### Ce qui a été fait
+- Malagasy du Word client (TEXTE_SITEWEB_03112026_MALAGASY) reporté dans inc/strings/accueil.php, apropos.php, gammes.php et i18n.php (navigation, noms de gammes, texte SDOI) ; coquilles évidentes corrigées
+- Nouveau inc/strings/contenus.php : MG des collaborateurs (poste, ancienneté, témoignage), actions RSE (titre, texte) et textes alternatifs des bannières, clé = texte FR d'install.php ; templates branchés via vao_t() / vao_post_title()
+- Polylang : VAO_MG_REVISION force une fois la réécriture des chaînes déjà en base (anciennes propositions MG)
+- Catalogue remplacé par la version allégée client (30 Mo → 4,9 Mo), même nom de fichier
+- Destinataires des formulaires : déjà conformes au mail client, rien à changer
+
+### Décisions
+- Offres d'emploi laissées en français (client)
+- Bannières : texte MG uniquement en alternatif ; le texte incrusté reste FR tant que le graphiste ne fournit pas les images MG
+
+### En attente
+- Images de bannières en malagasy (graphiste), hébergeur (M. Heidar), précision du client sur « l'historique à conserver »
+- Recette MG sur vao.local (site arrêté pendant la session)
+
+### Commits
+- (à compléter au commit)
+
+## 2026-11-08 — Optimisation des performances
+
+### Ce qui a été fait
+- optimize-images.php : traite aussi les JPG, crée un .webp par image (transparence conservée), variantes bannière 960 px et vignettes RSE 640 px ; logos limités à 800 px
+- vao_img() sert le .webp ; CSS des fonds en .webp ; images de l'accueil appelées en dur passées par vao_img()
+- Bannière : srcset 960/1920 (PHP + hero-carousel.js), fetchpriority="high" ; galerie RSE : vignettes 640 px
+- Polices Inter / Poppins / Montserrat auto-hébergées (assets/fonts), préchargement d'Inter, script emoji WordPress retiré ; VAO_VERSION 2.2.0
+- Résultat build : 73 Mo de sources → 10 Mo servis en WebP (témoignages 523 → 56 Ko, logo 199 → 36 Ko, savons 318 → 39 Ko, bannière mobile 75 Ko)
+
+### Non fait
+- Recette navigateur : site LocalWP arrêté (vérifié : syntaxe PHP/JS, 141 chemins d'images résolus)
+- Images de la médiathèque (ajoutées dans l'admin) : non concernées → extension WebP côté WordPress à prévoir
+
+### Commits
+- (à compléter au commit)
+
+## 2026-11-08 — Bannières malagasy, e-mail commercial, audit
+
+### Ce qui a été fait
+- Bannières MG : texte FR effacé à partir des photos sources sans texte (VAO/Fichier Illustrator/Web project 02 Header only_Dossier/Links, recalage automatique), slogans du Word client (« TEXTE sur VISUELS ») composés en Inter (600 / 500, mêmes lignes de base et couleurs que le FR) → img/header/*-mg.png (3840 px)
+- vao_hero_file() : en MG, une bannière à image du thème sert « nom-mg » si présent ; image de la médiathèque toujours prioritaire ; vao_hero_slides() mis en cache statique
+- E-mail Service Commercial : ventedirecte@vao.mg (espace retiré, confirmé par l'utilisateur)
+- Audit (agent) : lang="mg-MG" au lieu de mg_MG dans le sélecteur de langue, alt « VAO 20 ans » traduit, logo du pied de page en lazy
+- Recette vao.local : FR et MG sans erreur console, bannières MG servies en WebP 1920/960
+
+### Décisions
+- Contenus manquants (distributeurs, MAX, Germicide, photos HD) : abandonnés (utilisateur)
+- Découpe des slogans MG calquée sur le FR (grande / petite / grande / petite), réduction auto si la ligne déborde (06 : 88 %, 07 : 86 %)
+
+### Commits
+- (à compléter au commit)
+
+## 2026-11-08 — Recette complète (« site impeccable »)
+
+### Ce qui a été fait
+- Parcours automatique (puppeteer) des 14 pages FR / MG + 404 + recherche, en 1440 px et 390 px : 0 erreur console, 0 débordement, 0 image cassée
+- Accueil : titre SDOI passé en <h1> (aucun h1 avant) ; recherche : gammes et produits trouvés (FR / MG, sans accents) ; titres d'onglet recherche / 404 traduits ; pagination traduite
+- Gammes : « + » décoratif retiré quand la gamme a ≤ 3 produits
+- Revue du diff (agent) : en-tête CSV neutralisé, fputcsv compatible PHP 8.4, limite d'envois comptée après validation, visiteur informé « envoyé » dès que la demande est enregistrée
+- Test réel du formulaire « information » : demande enregistrée intacte (antislash, guillemets), purge planifiée ; demandes de test supprimées
+
+### À faire dans l'admin (hors code)
+- Réglages > Général : titre du site « vao » → « VAO », slogan, langue Français ; titre de la page des gammes « Tous nos gammes » → « Nos marques »
+- Après chaque mise en ligne : ouvrir wp-admin une fois (Polylang réécrit les traductions du dictionnaire)
+
+### Commits
+- (à compléter au commit)
+
+## 2026-11-08 — Admin : traduction malagasy simplifiée + guide
+
+### Ce qui a été fait
+- inc/admin-mg.php : champ « en malagasy » sous chaque texte du Personnaliser, nom / description MG dans la fiche gamme, poste / ancienneté / témoignage MG (collaborateurs), titre / texte MG (RSE) ; pré-remplis avec la traduction affichée ; prioritaires dans vao_t() (vao_mg_overrides) et conservés si le FR change
+- vao_items() : types traduits par Polylang (bannière, témoignages…) en MG élément par élément (traduction sinon original) — traduire une bannière ne masque plus les autres
+- inc/admin-guide.php : encadré « Guide du site VAO » en tête du tableau de bord (liens directs + mode d'emploi malagasy)
+- Rappel « Version malagasy : … » en haut des fiches bannière, témoignage, collaborateur, RSE ; VAO_VERSION 2.3.0
+- Tests : écrans admin rendus via WP en CLI (php -d mysqli.default_port=10005), traductions temporaires vérifiées sur le site MG puis supprimées ; parcours 14 pages sans erreur
+
+### Commits
+- (à compléter au commit)
+
+## 2026-11-08 — Cartes témoignages en malagasy
+
+### Ce qui a été fait
+- 8 cartes MG (img/temoignage/*-mg.png) : bandeau recalculé (dégradé linéaire ajusté), catégorie Inter 800, citation Inter 300 opsz 14 justifiée, signature light italique ; citations FR traduites par nous (À FAIRE VALIDER par le client), 2 citations déjà en malagasy conservées
+- vao_mg_theme_file() : toute image du thème a sa variante « -mg » servie en MG (bannières + témoignages)
+- Base locale : correspondance image / titre de 5 témoignages corrigée (alt faux) ; traduction MG vide en corbeille (n° 240, capture d'écran étrangère au site) supprimée avec son média
+- Aide admin témoignages mise à jour (cartes MG déjà livrées)
+
+### En attente
+- Fiche MG n° 243 (Haja) recréée par l'utilisateur avec la même capture d'écran : à supprimer pour retrouver la carte MG livrée
+
+### Commits
 - (à compléter au commit)

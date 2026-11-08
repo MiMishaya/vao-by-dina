@@ -92,6 +92,21 @@ function vao_form_files() {
 	return $files;
 }
 
+/**
+ * Limite le nombre d'envois par adresse IP (10 par tranche de 10 minutes),
+ * pour éviter qu'un robot qui passe le piège ne noie les boîtes de réception.
+ */
+function vao_form_rate_limited() {
+	$ip    = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+	$key   = 'vao_form_' . md5( $ip );
+	$count = (int) get_transient( $key );
+	if ( $count >= 10 ) {
+		return true;
+	}
+	set_transient( $key, $count + 1, 10 * MINUTE_IN_SECONDS );
+	return false;
+}
+
 function vao_handle_form() {
 	$forms = vao_forms();
 	$type  = isset( $_POST['vao_form'] ) ? sanitize_key( wp_unslash( $_POST['vao_form'] ) ) : '';
@@ -117,13 +132,15 @@ function vao_handle_form() {
 		exit;
 	}
 
-	$fields = isset( $_POST['vao'] ) && is_array( $_POST['vao'] ) ? wp_unslash( $_POST['vao'] ) : array();
+	// Nombre et longueur des champs bornés : les libellés et valeurs viennent du navigateur.
+	$fields = isset( $_POST['vao'] ) && is_array( $_POST['vao'] ) ? array_slice( wp_unslash( $_POST['vao'] ), 0, 30, true ) : array();
 	$values = array();
 	foreach ( $fields as $label => $value ) {
-		$label = sanitize_text_field( $label );
+		$label = mb_substr( sanitize_text_field( $label ), 0, 100 );
 		$value = is_array( $value )
-			? implode( ', ', array_filter( array_map( 'sanitize_text_field', $value ) ) )
+			? implode( ', ', array_filter( array_map( 'sanitize_text_field', array_slice( $value, 0, 20 ) ) ) )
 			: sanitize_textarea_field( $value );
+		$value = mb_substr( $value, 0, 5000 );
 		if ( '' !== $label && '' !== $value ) {
 			$values[ $label ] = $value;
 		}
@@ -136,12 +153,19 @@ function vao_handle_form() {
 		exit;
 	}
 
+	// Après la validation : un formulaire incomplet ne consomme pas le quota du visiteur.
+	if ( vao_form_rate_limited() ) {
+		wp_safe_redirect( add_query_arg( 'envoi', 'erreur', $redirect ) . $anchor );
+		exit;
+	}
+
 	$lines = array();
 	foreach ( $values as $label => $value ) {
 		$lines[] = $label . ' : ' . $value;
 	}
 
 	$attachments = array();
+	$file_names  = array();
 	$files       = vao_form_files();
 	if ( $files ) {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -166,6 +190,7 @@ function vao_handle_form() {
 		);
 		if ( empty( $upload['error'] ) ) {
 			$attachments[] = $upload['file'];
+			$file_names[]  = sanitize_file_name( $file['name'] );
 		} else {
 			// Message de WordPress dans la langue de l'admin (souvent l'anglais) : l'e-mail reste en français.
 			$lines[] = 'Fichier joint refusé (type non autorisé ou fichier invalide) : ' . sanitize_file_name( $file['name'] );
@@ -177,6 +202,10 @@ function vao_handle_form() {
 	}
 
 	$sent = wp_mail( vao_form_recipients( $type ), '[VAO] ' . $subject, implode( "\n", $lines ), array( 'Reply-To: ' . $reply_to ), $attachments );
+
+	$saved = vao_save_demande( $type, $values, $lang, $sent, $file_names );
+	// Demande enregistrée (menu « Demandes ») : le visiteur n'a pas à la renvoyer même si l'e-mail a échoué.
+	$sent = $sent || ( $saved && ! is_wp_error( $saved ) );
 
 	foreach ( $attachments as $file ) {
 		wp_delete_file( $file );

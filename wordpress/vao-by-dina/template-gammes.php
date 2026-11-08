@@ -171,7 +171,7 @@ foreach ( vao_gammes() as $vao_gamme ) {
 			$vao_spacer = '<div class="row-plus-spacer" aria-hidden="true"></div>';
 			$vao_plus   = $vao_rows
 				? '<button type="button" class="row-plus" aria-expanded="false" aria-controls="' . esc_attr( $vao_extra ) . '" aria-label="' . esc_attr( vao_t( 'Voir plus de produits' ) ) . '"><span aria-hidden="true">+</span></button>'
-				: '<span class="row-plus row-plus--deco" aria-hidden="true"><span>+</span></span>';
+				: $vao_spacer; // 3 produits ou moins : rien à déplier, pas de « + ».
 			$vao_text   = $vao_gamme_text( $vao_gamme );
 			?>
 			<section class="gamme gamme--<?php echo esc_attr( $vao_gamme->slug ); ?>" id="<?php echo esc_attr( $vao_gamme->slug ); ?>">

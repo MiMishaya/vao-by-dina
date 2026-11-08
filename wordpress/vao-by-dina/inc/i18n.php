@@ -26,6 +26,13 @@ function vao_t( $text ) {
 	if ( ! function_exists( 'pll__' ) || '' === (string) $text ) {
 		return $text;
 	}
+	// Malagasy saisi à côté du texte français dans l'admin (inc/admin-mg.php) : prioritaire.
+	if ( vao_is_mg() ) {
+		$admin = vao_mg_overrides();
+		if ( isset( $admin[ $text ] ) && '' !== $admin[ $text ] ) {
+			return $admin[ $text ];
+		}
+	}
 	$translated = pll__( $text );
 	// Chaîne pas encore traduite dans Langues > Traductions des chaînes : malagasy proposé par le thème.
 	if ( $translated === $text && vao_is_mg() ) {
@@ -109,7 +116,7 @@ function vao_language_switcher() {
 		printf(
 			'<a href="%s" lang="%s" hreflang="%s"%s>%s</a>',
 			esc_url( $language['url'] ),
-			esc_attr( $language['locale'] ),
+			esc_attr( str_replace( '_', '-', $language['locale'] ) ), // Attribut lang : « mg-MG », pas « mg_MG ».
 			esc_attr( $language['slug'] ),
 			$language['current_lang'] ? ' class="current" aria-current="true"' : '',
 			esc_html( strtoupper( $language['slug'] ) )
@@ -147,9 +154,9 @@ function vao_i18n_base() {
 			'Nos Marques'            => 'Ny Marikanay',
 			'Nous contacter'         => 'Hifandray aminay',
 			'Notre engagement'       => 'Ny fanoloran-tenanay',
-			'Notre gage de qualité'  => "Ny antoka ho an'ny kalitao",
+			'Notre gage de qualité'  => 'Ny fiantohana kalitao nataonay',
 			'Nos valeurs'            => 'Ny soatoavinay',
-			'Nos actions RSE'        => 'Ny asa RSE ataonay',
+			'Nos actions RSE'        => 'Hetsika RSE',
 			'Menu'                   => 'Menio',
 			'Rechercher'             => 'Hikaroka',
 			'Langue'                 => 'Fiteny',
@@ -158,11 +165,12 @@ function vao_i18n_base() {
 			'Suivant'                => 'Manaraka',
 			'Fermer'                 => 'Hidy',
 			'Retour en haut'         => 'Hiverina any ambony',
-			'Détergent en poudre'    => 'Detergent vovoka',
-			'Détergent en barre'     => 'Detergent bara',
+			// Noms des gammes : titres du texte client (MG), aussi utilisés pour les gammes en base.
+			'Détergent en poudre'    => 'Vovo-tsavony',
+			'Détergent en barre'     => 'Savony vaingana',
 			'Savon de toilette'      => 'Savony fandroana',
 			'Savon barre'            => 'Savony bara',
-			'Savon de ménage'        => 'Savony fanasan-damba',
+			'Savon de ménage'        => 'Savony ho an’ny tokantrano',
 			'Devenir distributeur'   => 'Ho mpaninjara',
 			"Demande d'informations" => 'Fangatahana fanazavana',
 			"Nos offres d'emploi"    => 'Ireo asa atolotray',
@@ -191,6 +199,7 @@ function vao_i18n_base() {
 			"Retour à l'accueil"          => "Hiverina amin'ny fandraisana",
 			'Aucun résultat.'             => 'Tsy nisy valiny.',
 			'Découvrez tous nos produits' => 'Jereo ny vokatray rehetra',
+			'Pages'                       => 'Pejy',
 		),
 		'Formulaires'   => array(
 			'CANDIDATURE SPONTANÉE – SDOI'                           => 'FANGATAHANA ASA – SDOI',
@@ -260,7 +269,7 @@ function vao_i18n_base() {
 			'Vous souhaitez distribuer nos produits ? Remplissez ce formulaire pour nous présenter votre projet et devenir l’un de nos revendeurs.' => "Te hizara ny vokatray ve ianao ? Fenoy ity taratasy ity hampahafantarana anay ny tetikasanao ary ho iray amin'ireo mpivarotra anay.",
 			'DEMANDE D’ÉCHANTILLON'                           => 'FANGATAHANA SANTIONANY',
 			'Vous souhaitez découvrir nos produits ? Faites votre demande d’échantillon en remplissant simplement ce formulaire.' => 'Te hahafantatra ny vokatray ve ianao ? Angataho ny santionany amin\'ny famenoana fotsiny ity taratasy ity.',
-			"Depuis plus de 20 ans, SDOI s'inscrit comme un acteur engagé dans le développement de l'industrie de l'hygiène et de l'entretien à Madagascar. Portée par une volonté forte de valoriser le « Vita Malagasy », l'entreprise place la production locale et l'innovation industrielle au cœur de sa stratégie." => "Nandritra ny 20 taona mahery, ny SDOI dia mpandray anjara mavitrika amin'ny fampandrosoana ny indostrian'ny fahadiovana sy ny fikarakarana eto Madagasikara. Entanin'ny faniriana mafy hanome lanja ny « Vita Malagasy », ny orinasa dia mametraka ny famokarana eto an-toerana sy ny fanavaozana ara-indostria ho fototry ny paikady arahiny.",
+			"Depuis plus de 20 ans, SDOI s'inscrit comme un acteur engagé dans le développement de l'industrie de l'hygiène et de l'entretien à Madagascar. Portée par une volonté forte de valoriser le « Vita Malagasy », l'entreprise place la production locale et l'innovation industrielle au cœur de sa stratégie." => 'Nandritra ny 20 taona mahery, ny SDOI dia nandray anjara mavitrika tamin’ny fampandrosoana ny sehatry ny indostrian’ny fahadiovana sy ny fikojakojana eto Madagasikara. Entin’ny finiavana hanandratra ny vokatra « Vita Malagasy », dia apetraky ny orinasa ho laharam-pahamehana ny famokarana eto an-toerana sy ny fanavaozana ara-indostria.',
 			'Nos produits'                                    => 'Ny vokatray',
 		),
 	);
@@ -443,9 +452,16 @@ function vao_pll_setup() {
 add_action( 'admin_init', 'vao_pll_setup' );
 
 /**
- * Pré-remplit les traductions malagasy encore vides (Langues > Traductions des chaînes).
+ * Version des traductions malagasy validées par le client. La changer réécrit une fois dans Polylang
+ * toutes les chaînes du dictionnaire, y compris celles déjà remplies (propositions antérieures).
  */
-function vao_pll_prefill( $language ) {
+const VAO_MG_REVISION = 'client-2026-11-03';
+
+/**
+ * Pré-remplit les traductions malagasy encore vides (Langues > Traductions des chaînes).
+ * $force : remplace aussi les traductions existantes par celles du dictionnaire.
+ */
+function vao_pll_prefill( $language, $force = false ) {
 	if ( ! class_exists( 'PLL_MO' ) ) {
 		return;
 	}
@@ -457,7 +473,7 @@ function vao_pll_prefill( $language ) {
 	}
 	$mo->import_from_db( $language );
 	foreach ( $translations as $fr => $mg ) {
-		if ( '' !== $mg && $mg !== $fr && $mo->translate( $fr ) === $fr ) {
+		if ( '' !== $mg && $mg !== $fr && ( $force || $mo->translate( $fr ) === $fr ) ) {
 			$mo->add_entry( $mo->make_entry( $fr, $mg ) );
 		}
 	}
@@ -476,11 +492,13 @@ function vao_pll_refresh_prefill() {
 	if ( ! $mg ) {
 		return;
 	}
-	$hash = md5( serialize( vao_i18n_flat() ) );
-	if ( get_option( 'vao_pll_prefill_hash' ) === $hash ) {
+	$hash  = md5( serialize( vao_i18n_flat() ) );
+	$force = get_option( 'vao_pll_mg_revision' ) !== VAO_MG_REVISION;
+	if ( ! $force && get_option( 'vao_pll_prefill_hash' ) === $hash ) {
 		return;
 	}
-	vao_pll_prefill( $mg );
+	vao_pll_prefill( $mg, $force );
 	update_option( 'vao_pll_prefill_hash', $hash );
+	update_option( 'vao_pll_mg_revision', VAO_MG_REVISION );
 }
 add_action( 'admin_init', 'vao_pll_refresh_prefill', 20 );

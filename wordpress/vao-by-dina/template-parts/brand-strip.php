@@ -14,7 +14,7 @@ $vao_muted = ! empty( $args['muted'] );
 <div class="brand-strip<?php echo $vao_muted ? ' muted' : ''; ?>">
 	<div class="brand-track">
 		<?php foreach ( $vao_brands as $vao_brand ) : ?>
-			<img src="<?php echo esc_url( vao_post_img( $vao_brand, 'medium' ) ); ?>" alt="<?php echo esc_attr( get_the_title( $vao_brand ) ); ?>" loading="lazy">
+			<img src="<?php echo esc_url( vao_post_img( $vao_brand, 'medium' ) ); ?>" alt="<?php echo esc_attr( vao_post_title( $vao_brand ) ); ?>" loading="lazy">
 		<?php endforeach; ?>
 		<?php foreach ( $vao_brands as $vao_brand ) : ?>
 			<img src="<?php echo esc_url( vao_post_img( $vao_brand, 'medium' ) ); ?>" alt="" aria-hidden="true" loading="lazy">
