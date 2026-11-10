@@ -19,11 +19,11 @@ return array(
 		// Demande d'informations.
 		'1. Informations sur le demandeur'                                       => '1. Mombamomba ny mpangataka',
 		'Date de la demande :'                                                   => 'Daty nangatahana :',
-		'Nom de la société / Client :'                                           => "Anaran'ny orinasa / Mpanjifa :",
-		'Nom & Prénom du contact :'                                              => "Anarana sy fanampin'anaran'ny olona hifandraisana :",
+		'Nom de la société / Client :'                                           => 'Anaran’ny orinasa / Mpanjifa :',
+		'Nom & Prénom du contact :'                                              => 'Anarana sy fanampin’anaran’ny olona hifandraisana :',
 		'Adresse E-mail :'                                                       => 'Adiresy mailaka :',
 		'Type de client :'                                                       => 'Karazana mpanjifa :',
-		'2. Spécifications du produit recherché'                                 => "2. Antsipirian'ny vokatra tadiavina",
+		'2. Spécifications du produit recherché'                                 => '2. Antsipirian’ny vokatra tadiavina',
 		'Catégorie'                                                              => 'Sokajy',
 		'Sélectionner…'                                                          => 'Safidio…',
 		'Gamme / Type Format / Parfum'                                           => 'Karazany / Endrika / Hanitra',
@@ -33,7 +33,7 @@ return array(
 		'3. Informations souhaitées'                                             => '3. Fanazavana tadiavina',
 		'Grille tarifaire dégressive'                                            => 'Lisitry ny vidiny mihena araka ny habetsahana',
 		'Conditions de livraison & Délais'                                       => 'Fepetra sy fotoana fanaterana',
-		'Possibilité de personnalisation'                                        => 'Fahafahana manamboatra araka ny filana',
+		'Possibilité de personnalisation'                                        => 'Fahafahana manamboatra araka ny filàna',
 		'Fiche Technique / Compositions (MSDS)'                                  => 'Taratasy teknika / Singa mandrafitra (MSDS)',
 		'Échantillons de démonstration'                                          => 'Santionany fanandramana',
 		'Certifications & Normes de qualité'                                     => 'Fanamarinana sy fenitra kalitao',
@@ -41,7 +41,7 @@ return array(
 
 		// Candidature.
 		'Nom * :'                                                                => 'Anarana * :',
-		'Prénoms * :'                                                            => "Fanampin'anarana * :",
+		'Prénoms * :'                                                            => 'Fanampin’anarana * :',
 		'E-mail * :'                                                             => 'Mailaka * :',
 		'Téléphone * :'                                                          => 'Finday * :',
 
@@ -50,13 +50,14 @@ return array(
 		'Formats acceptés : PDF, DOC, DOCX, JPG, PNG – 5 Mo maximum par fichier.' => 'Endrika ekena : PDF, DOC, DOCX, JPG, PNG – 5 Mo farafahabetsany isaky ny rakitra.',
 		'Fichier de plus de 5 Mo non ajouté : %s'                                => 'Tsy nampidirina ny rakitra mihoatra ny 5 Mo : %s',
 		'5 fichiers au maximum : les fichiers en trop n’ont pas été ajoutés.'    => 'Rakitra 5 farafahabetsany : tsy nampidirina ireo rakitra tafahoatra.',
+		'8 Mo au total au maximum : les fichiers en trop n’ont pas été ajoutés.' => '8 Mo farafahabetsany raha atambatra : tsy nampidirina ireo rakitra tafahoatra.',
 
 		// Message renvoyé par inc/forms.php quand la validation serveur échoue.
-		'Merci de remplir les champs obligatoires avec une adresse e-mail valide.' => "Fenoy azafady ireo saha tsy maintsy fenoina, miaraka amin'ny adiresy mailaka marina.",
+		'Merci de remplir les champs obligatoires avec une adresse e-mail valide.' => 'Fenoy azafady ireo saha tsy maintsy fenoina, miaraka amin’ny adiresy mailaka marina.',
 
 		// Offres d'emploi.
 		'Postuler'                                                               => 'Hangataka',
-		"Aucune offre d'emploi n'est publiée pour le moment."                    => "Tsy misy tolotra asa navoaka amin'izao fotoana izao.",
+		"Aucune offre d'emploi n'est publiée pour le moment."                    => 'Tsy misy tolotra asa navoaka amin’izao fotoana izao.',
 		'Envoyez-nous une candidature spontanée'                                 => 'Alefaso aminay ny fangatahanao asa',
 	),
 );

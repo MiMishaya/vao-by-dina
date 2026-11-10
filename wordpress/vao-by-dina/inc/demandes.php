@@ -5,6 +5,7 @@
  * Stockage dans wp_posts / wp_postmeta (type vao_demande), sans table dédiée.
  * Méta : _vao_type, _vao_fields (libellé => valeur), _vao_lang, _vao_mail (ok|erreur), _vao_files (noms des fichiers joints).
  * Les pièces jointes ne sont pas conservées (seulement leurs noms) : données personnelles (CV) déjà transmises par e-mail.
+ * Exception : si l'e-mail a échoué, elles sont gardées (_vao_files_kept, uploads/vao-demandes) et supprimées avec la demande.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -257,7 +258,16 @@ function vao_demande_detail_box( $post ) {
 	foreach ( $fields as $label => $value ) {
 		echo '<tr><th>' . esc_html( $label ) . '</th><td>' . nl2br( esc_html( $value ) ) . '</td></tr>';
 	}
-	if ( array_filter( $files ) ) {
+	$kept = (array) get_post_meta( $post->ID, '_vao_files_kept', true );
+	if ( array_filter( $kept ) ) {
+		// E-mail en échec : les fichiers ont été gardés sur le serveur.
+		echo '<tr><th>Fichiers joints (e-mail non envoyé : fichiers conservés)</th><td>';
+		foreach ( array_values( array_filter( $kept ) ) as $n => $path ) {
+			$url = wp_nonce_url( admin_url( 'admin-post.php?action=vao_demande_file&id=' . $post->ID . '&n=' . $n ), 'vao_demande_file_' . $post->ID );
+			echo '<a class="button" style="margin:0 6px 6px 0" href="' . esc_url( $url ) . '">' . esc_html( isset( $files[ $n ] ) ? $files[ $n ] : basename( $path ) ) . '</a>';
+		}
+		echo '</td></tr>';
+	} elseif ( array_filter( $files ) ) {
 		echo '<tr><th>Fichiers joints (transmis par e-mail, non conservés)</th><td>' . esc_html( implode( ', ', $files ) ) . '</td></tr>';
 	}
 	echo '</tbody></table>';
@@ -269,6 +279,48 @@ function vao_demande_detail_box( $post ) {
 	}
 	echo '</p>';
 }
+
+/**
+ * Téléchargement d'une pièce jointe conservée (administrateurs seulement).
+ */
+function vao_demande_file() {
+	$id = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0;
+	$n  = isset( $_GET['n'] ) ? (int) $_GET['n'] : -1;
+	if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'vao_demande_file_' . $id ) || 'vao_demande' !== get_post_type( $id ) ) {
+		wp_die( 'Accès refusé.', '', array( 'response' => 403 ) );
+	}
+	$kept  = array_values( array_filter( (array) get_post_meta( $id, '_vao_files_kept', true ) ) );
+	$names = (array) get_post_meta( $id, '_vao_files', true );
+	$path  = isset( $kept[ $n ] ) ? $kept[ $n ] : '';
+	// Uniquement des fichiers du dossier des demandes.
+	$base = trailingslashit( wp_get_upload_dir()['basedir'] ) . 'vao-demandes/';
+	if ( ! $path || 0 !== strpos( wp_normalize_path( $path ), wp_normalize_path( $base ) ) || ! is_file( $path ) ) {
+		wp_die( 'Fichier introuvable.', '', array( 'response' => 404 ) );
+	}
+	$name = isset( $names[ $n ] ) ? sanitize_file_name( $names[ $n ] ) : basename( $path );
+	nocache_headers();
+	header( 'Content-Type: application/octet-stream' );
+	header( 'Content-Disposition: attachment; filename="' . $name . '"' );
+	header( 'Content-Length: ' . filesize( $path ) );
+	readfile( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	exit;
+}
+add_action( 'admin_post_vao_demande_file', 'vao_demande_file' );
+
+/**
+ * Suppression d'une demande (corbeille vidée, purge à 12 mois) : ses fichiers conservés aussi.
+ */
+function vao_demande_delete_files( $post_id ) {
+	if ( 'vao_demande' !== get_post_type( $post_id ) ) {
+		return;
+	}
+	foreach ( array_filter( (array) get_post_meta( $post_id, '_vao_files_kept', true ) ) as $path ) {
+		if ( is_file( $path ) ) {
+			wp_delete_file( $path );
+		}
+	}
+}
+add_action( 'before_delete_post', 'vao_demande_delete_files' );
 
 /* -------------------------------------------------------------------------
  * Export CSV

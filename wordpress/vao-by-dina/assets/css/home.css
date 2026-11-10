@@ -204,6 +204,8 @@
   display: flex; justify-content: space-between;
 }
 .home-engagement-visual.is-custom .home-engagement-icons { position: static; margin: 12px auto 0; width: 55%; }
+/* Écart minimal : sur téléphone les trois pastilles se touchaient. */
+.home-engagement-icons { gap: 12px; }
 .home-engagement-icons span {
   display: flex; align-items: center; justify-content: center;
   width: 77px; height: 77px;
@@ -265,8 +267,10 @@
 }
 .coverflow-arrow svg { width: 32px; height: 56px; }
 .coverflow-arrow:hover, .coverflow-arrow:focus-visible { color: var(--vao-violet); }
-.coverflow-prev { left: 16px; }
-.coverflow-next { right: 12px; }
+/* Sur très grand écran les flèches restaient aux bords de l'écran, loin de l'éventail (1224 px max) ;
+   le calcul redonne exactement 16 / 12 px à 1440 px. */
+.coverflow-prev { left: max(16px, calc(50% - 612px - 92px)); }
+.coverflow-next { right: max(12px, calc(50% - 612px - 96px)); }
 
 .home-avis-subtitle { margin: 2.2rem 0 0.8rem; }
 .home-reviews .vao-carousel-track { gap: 1rem; align-items: center; }
@@ -340,7 +344,9 @@
   color: #fff;
   text-align: center;
 }
-.team-card h3 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 14px; }
+/* Le titre absorbe la hauteur libre : téléphones et e-mails restent alignés d'une carte à l'autre
+   quand un intitulé passe sur deux lignes (malagasy). */
+.team-card h3 { flex: 1 0 auto; font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 14px; }
 .team-card h3.pink { color: #e0338a; }
 .team-card h3.yellow { color: #fbe27a; }
 .team-card h3.orange { color: #f39a1e; }
@@ -356,6 +362,18 @@
   .home-team-grid { gap: 2rem; }
   .home-histoire-text { padding: 0 1.5rem; }
 }
+/* Tablette : le texte des cartes formulaires (10 px justifié) devenait illisible avec de grands blancs. */
+@media (min-width: 761px) and (max-width: 1199px) {
+  .form-card-text { font-size: 12px; text-align: left; }
+}
+/* Trois colonnes étroites : les e-mails en 20 px étaient coupés au milieu. */
+@media (min-width: 761px) and (max-width: 960px) {
+  .team-card h3 { font-size: 20px; line-height: 28px; }
+  .team-card a, .team-card span { font-size: 16px; }
+}
+/* Le surtitre malagasy, plus long, se coupait sur son trait d'union dans la colonne du logo. */
+.home-sdoi-surtitre:lang(mg) { white-space: nowrap; font-size: clamp(16px, 1.45vw, 20px); }
+@media (max-width: 760px) { .home-sdoi-surtitre:lang(mg) { white-space: normal; font-size: 18px; } }
 
 /* Frise verticale : icône à gauche, titre et texte à droite, sur une ligne dégradée */
 @media (max-width: 1023px) {
@@ -456,6 +474,9 @@
   .form-card-text { font-size: 12px; }
   .home-team { padding-top: 2.5rem; }
   .home-team-intro { font-size: 16px; line-height: 1.6; margin-bottom: 1.5rem; }
+  /* Colonne étroite : le justifié creusait de grands blancs (surtout avec les mots malagasy). */
+  .home-sdoi-text p, .home-histoire-text, .engagement-card p, .form-card-text, .home-team-intro { text-align: left; }
+  .home-engagement-visual.is-custom .home-engagement-icons { width: auto; justify-content: center; gap: 16px; }
   .team-card h3 { font-size: 21px; margin-bottom: 0.6rem; }
   .team-card a, .team-card span { font-size: 18px; }
 }

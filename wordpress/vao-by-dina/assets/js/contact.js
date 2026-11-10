@@ -132,8 +132,11 @@
   /* ---------- Pièces jointes : noms des fichiers, 5 Mo et 5 fichiers maximum (comme inc/forms.php) ---------- */
   var MAX_SIZE = 5 * 1024 * 1024;
   var MAX_FILES = 5;
+  // Total limité : au-delà de la limite du serveur (post_max_size), tout le formulaire serait perdu.
+  var MAX_TOTAL = 8 * 1024 * 1024;
   var msgSize = root.getAttribute('data-msg-size') || '%s';
   var msgCount = root.getAttribute('data-msg-count') || '';
+  var msgTotal = root.getAttribute('data-msg-total') || '';
 
   function formatSize(bytes) {
     return bytes >= 1024 * 1024
@@ -162,6 +165,15 @@
       if (kept.length > MAX_FILES) {
         kept = kept.slice(0, MAX_FILES);
         messages.push(msgCount);
+      }
+      var total = 0;
+      var withinTotal = kept.filter(function (file) {
+        total += file.size;
+        return total <= MAX_TOTAL;
+      });
+      if (withinTotal.length !== kept.length) {
+        kept = withinTotal;
+        messages.push(msgTotal);
       }
 
       if (kept.length !== files.length) {

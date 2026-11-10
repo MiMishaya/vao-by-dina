@@ -22,6 +22,31 @@ function vao_dashboard_guide_register() {
 }
 add_action( 'wp_dashboard_setup', 'vao_dashboard_guide_register' );
 
+/**
+ * Pages indispensables au thème qui ont disparu (corbeille, brouillon) : liens cassés sur tout le site.
+ */
+function vao_missing_pages() {
+	$missing = array();
+	foreach ( vao_pages() as $slug => $page ) {
+		if ( 'accueil' !== $slug && ! vao_theme_page( $slug ) ) {
+			$missing[] = $page[0];
+		}
+	}
+	return $missing;
+}
+
+function vao_missing_pages_notice() {
+	if ( ! current_user_can( 'edit_pages' ) ) {
+		return;
+	}
+	$missing = vao_missing_pages();
+	if ( $missing ) {
+		echo '<div class="notice notice-error"><p><strong>Pages du site introuvables :</strong> ' . esc_html( implode( ', ', $missing ) )
+			. '. Restaurez-les depuis Pages &gt; Corbeille (ou republiez-les) : sans elles, des liens du site ne fonctionnent plus.</p></div>';
+	}
+}
+add_action( 'admin_notices', 'vao_missing_pages_notice' );
+
 function vao_dashboard_guide() {
 	$list = function ( $type ) {
 		return admin_url( 'edit.php?post_type=' . $type );

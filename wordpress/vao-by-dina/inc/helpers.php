@@ -77,13 +77,7 @@ function vao_nav() {
 			'Nos Marques',
 			vao_url( 'gammes' ),
 			'sun',
-			array(
-				array( 'Savon de ménage', vao_url( 'gammes', 'menage' ) ),
-				array( 'Savon barre', vao_url( 'gammes', 'savonbar' ) ),
-				array( 'Savon de toilette', vao_url( 'gammes', 'toilette' ) ),
-				array( 'Détergent en poudre', vao_url( 'gammes', 'detergent' ) ),
-				array( 'Détergent en barre', vao_url( 'gammes', 'detergent-barre' ) ),
-			),
+			vao_nav_gammes(),
 		),
 		'nous-contacter'  => array(
 			'Nous contacter',
@@ -97,6 +91,27 @@ function vao_nav() {
 			),
 		),
 	);
+}
+
+/**
+ * Sous-menu « Nos marques » : une entrée par gamme existante, dans l'ordre des gammes.
+ * Les gammes d'origine gardent le libellé de la maquette ; une gamme ajoutée par le client prend son nom,
+ * une gamme supprimée disparaît du menu.
+ */
+function vao_nav_gammes() {
+	$labels = array(
+		'menage'          => 'Savon de ménage',
+		'savonbar'        => 'Savon barre',
+		'toilette'        => 'Savon de toilette',
+		'detergent'       => 'Détergent en poudre',
+		'detergent-barre' => 'Détergent en barre',
+	);
+	$links  = array();
+	foreach ( vao_gammes() as $term ) {
+		$label   = isset( $labels[ $term->slug ] ) ? $labels[ $term->slug ] : $term->name;
+		$links[] = array( $label, vao_url( 'gammes', $term->slug ) );
+	}
+	return $links;
 }
 
 /**
@@ -156,7 +171,7 @@ function vao_url( $slug, $fragment = '', $lang = '' ) {
 	if ( 'accueil' === $slug ) {
 		$url = ( $lang && function_exists( 'pll_home_url' ) ) ? pll_home_url( $lang ) : home_url( '/' );
 	} else {
-		$page = get_page_by_path( $slug );
+		$page = vao_theme_page( $slug );
 		if ( $page && $lang && function_exists( 'pll_get_post' ) ) {
 			$translated = pll_get_post( $page->ID, $lang );
 			if ( $translated ) {
@@ -169,9 +184,42 @@ function vao_url( $slug, $fragment = '', $lang = '' ) {
 }
 
 /**
- * Fait passer un lien par l'écran de chargement.
+ * Page française du thème par son slug ; si le client a changé le slug, retrouvée par son modèle
+ * (pages à modèle dédié : gammes, contact, qui-sommes-nous, chargement). null si introuvable.
+ */
+function vao_theme_page( $slug ) {
+	static $cache = array();
+	if ( array_key_exists( $slug, $cache ) ) {
+		return $cache[ $slug ];
+	}
+	$page = get_page_by_path( $slug );
+	if ( $page && 'publish' !== $page->post_status ) {
+		$page = null;
+	}
+	$pages = vao_pages();
+	if ( ! $page && ! empty( $pages[ $slug ][1] ) ) {
+		$found = get_posts(
+			array(
+				'post_type'   => 'page',
+				'numberposts' => 1,
+				'meta_key'    => '_wp_page_template', // phpcs:ignore WordPress.DB.SlowDBQuery -- repli rare (slug modifié).
+				'meta_value'  => $pages[ $slug ][1], // phpcs:ignore WordPress.DB.SlowDBQuery
+				'lang'        => function_exists( 'pll_default_language' ) ? pll_default_language() : '',
+			)
+		);
+		$page = $found ? $found[0] : null;
+	}
+	$cache[ $slug ] = $page;
+	return $page;
+}
+
+/**
+ * Fait passer un lien par l'écran de chargement (lien direct si la page de chargement a été supprimée).
  */
 function vao_via_loading( $url ) {
+	if ( ! vao_theme_page( 'chargement' ) ) {
+		return $url;
+	}
 	return add_query_arg( 'to', rawurlencode( $url ), vao_url( 'chargement' ) );
 }
 
@@ -353,6 +401,15 @@ function vao_hero_slides() {
 			);
 		},
 		vao_items( 'vao_banniere' )
+	);
+	// Bannière sans image (image retirée dans l'admin) : ignorée plutôt qu'une diapositive vide.
+	$slides = array_values(
+		array_filter(
+			$slides,
+			function ( $slide ) {
+				return '' !== (string) $slide['src'];
+			}
+		)
 	);
 	return $slides;
 }

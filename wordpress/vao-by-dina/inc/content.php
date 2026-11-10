@@ -265,14 +265,6 @@ add_action( 'pre_get_posts', 'vao_admin_order' );
  * Champs des produits
  * ---------------------------------------------------------------------- */
 
-function vao_card_colors() {
-	return array(
-		'blue'   => 'Bleu',
-		'yellow' => 'Jaune',
-		'pink'   => 'Rose',
-	);
-}
-
 function vao_add_meta_boxes() {
 	add_meta_box( 'vao_produit_details', 'Détails du produit', 'vao_produit_metabox', 'vao_produit', 'normal', 'high' );
 	foreach ( array_keys( vao_meta_fields() ) as $post_type ) {
@@ -363,8 +355,6 @@ function vao_produit_metabox( $post ) {
 	$poids       = get_post_meta( $post->ID, '_vao_poids', true );
 	$cond        = get_post_meta( $post->ID, '_vao_conditionnement', true );
 	$alt         = get_post_meta( $post->ID, '_vao_alt', true );
-	$recommande  = get_post_meta( $post->ID, '_vao_recommande', true );
-	$couleur     = get_post_meta( $post->ID, '_vao_couleur', true );
 	?>
 	<p>
 		<label for="vao_poids"><strong>Poids / unité</strong> (ex. : 70g / unité)</label><br>
@@ -378,19 +368,8 @@ function vao_produit_metabox( $post ) {
 		<label for="vao_alt"><strong>Description de l'image</strong> (facultatif, pour l'accessibilité — par défaut : le nom du produit)</label><br>
 		<input type="text" id="vao_alt" name="vao_alt" value="<?php echo esc_attr( $alt ); ?>" class="widefat">
 	</p>
-	<hr>
-	<p>
-		<label><input type="checkbox" name="vao_recommande" value="1" <?php checked( $recommande, '1' ); ?>> Afficher dans « Produits recommandés » sur l'accueil</label>
-	</p>
-	<p>
-		<label for="vao_couleur">Couleur de la carte sur l'accueil :</label>
-		<select id="vao_couleur" name="vao_couleur">
-			<?php foreach ( vao_card_colors() as $value => $label ) : ?>
-				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $couleur, $value ); ?>><?php echo esc_html( $label ); ?></option>
-			<?php endforeach; ?>
-		</select>
-	</p>
-	<p class="description">La gamme se choisit dans l'encadré « Gammes » à droite. L'ordre d'affichage se règle avec le champ « Ordre » (Attributs).</p>
+	<?php // « Produits recommandés » et « Couleur de la carte » retirés : l'accueil actuel ne les utilise pas (3 visuels du Personnaliser). ?>
+	<p class="description">La gamme se choisit dans l'encadré « Gammes » à droite : <strong>un produit sans gamme n'apparaît pas sur le site</strong>. L'ordre d'affichage se règle avec le champ « Ordre » (Attributs).</p>
 	<?php
 }
 
@@ -405,11 +384,52 @@ function vao_produit_save( $post_id ) {
 		$value = isset( $_POST[ 'vao_' . $field ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'vao_' . $field ] ) ) : '';
 		update_post_meta( $post_id, '_vao_' . $field, $value );
 	}
-	update_post_meta( $post_id, '_vao_recommande', empty( $_POST['vao_recommande'] ) ? '' : '1' );
-	$couleur = isset( $_POST['vao_couleur'] ) ? sanitize_key( $_POST['vao_couleur'] ) : 'blue';
-	update_post_meta( $post_id, '_vao_couleur', array_key_exists( $couleur, vao_card_colors() ) ? $couleur : 'blue' );
 }
 add_action( 'save_post_vao_produit', 'vao_produit_save' );
+
+/**
+ * Avertissement sur la fiche d'un produit publié sans gamme (il n'apparaît nulle part sur le site).
+ */
+function vao_produit_sans_gamme_notice() {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( ! $screen || 'vao_produit' !== $screen->post_type || 'post' !== $screen->base ) {
+		return;
+	}
+	$post = get_post();
+	if ( $post && 'publish' === $post->post_status && ! has_term( '', 'vao_gamme', $post ) ) {
+		echo '<div class="notice notice-warning"><p><strong>Ce produit n\'a pas de gamme</strong> : il n\'est affiché nulle part sur le site. Cochez sa gamme dans l\'encadré « Gammes » à droite, puis mettez à jour.</p></div>';
+	}
+}
+add_action( 'admin_notices', 'vao_produit_sans_gamme_notice' );
+
+/**
+ * Vide le cache des pages (si une extension de cache est installée) après une modification de contenu :
+ * les types du thème ne sont pas publics, les extensions ne savent pas quelles pages les affichent.
+ */
+function vao_purge_page_cache() {
+	if ( function_exists( 'rocket_clean_domain' ) ) {
+		rocket_clean_domain(); // WP Rocket.
+	}
+	if ( function_exists( 'w3tc_flush_all' ) ) {
+		w3tc_flush_all(); // W3 Total Cache.
+	}
+	if ( function_exists( 'wp_cache_clear_cache' ) ) {
+		wp_cache_clear_cache(); // WP Super Cache.
+	}
+	do_action( 'litespeed_purge_all' ); // LiteSpeed Cache.
+	do_action( 'breeze_clear_all_cache' ); // Breeze.
+}
+
+function vao_purge_on_save( $post_id, $post ) {
+	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) || ! in_array( $post->post_type, vao_content_types(), true ) ) {
+		return;
+	}
+	vao_purge_page_cache();
+}
+add_action( 'save_post', 'vao_purge_on_save', 99, 2 );
+add_action( 'customize_save_after', 'vao_purge_page_cache' );
+add_action( 'edited_vao_gamme', 'vao_purge_page_cache', 99 );
+add_action( 'created_vao_gamme', 'vao_purge_page_cache', 99 );
 
 /**
  * Indique quelle image est utilisée tant qu'aucune image n'a été choisie dans la médiathèque.
@@ -431,16 +451,9 @@ function vao_theme_image_metabox( $post ) {
  * ---------------------------------------------------------------------- */
 
 function vao_gamme_options() {
-	return array(
-		'vao_titre_couleur'  => array(
-			'label'   => 'Couleur du titre',
-			'choices' => array( 'blanc' => 'Blanc', 'orange' => 'Orange' ),
-		),
-		'vao_bouton_couleur' => array(
-			'label'   => 'Couleur du bouton « + »',
-			'choices' => array( 'orange' => 'Orange', 'blue' => 'Bleu', 'yellow' => 'Jaune', 'brown' => 'Marron' ),
-		),
-	);
+	// « Couleur du titre » et « Couleur du bouton » retirées de l'admin : les couleurs viennent de la feuille
+	// de style de la page (assets/css/gammes.css), ces réglages n'avaient aucun effet.
+	return array();
 }
 
 function vao_gamme_add_fields() {

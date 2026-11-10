@@ -131,7 +131,7 @@ $vao_reviews      = vao_items( 'vao_avis' );
 				</div>
 				<span class="tl-icon" aria-hidden="true">
 					<?php if ( '20' === $vao_icon ) : ?>
-						<img src="<?php echo esc_url( vao_img( 'accueil/vingt-ans.png' ) ); ?>" alt="" width="69" height="54">
+						<img src="<?php echo esc_url( vao_img( vao_mg_theme_file( 'accueil/vingt-ans.png' ) ) ); ?>" alt="" width="69" height="54">
 					<?php elseif ( 'label' === $vao_icon ) : ?>
 						<img src="<?php echo esc_url( vao_img( 'accueil/label-malagasy-ny-antsika.png' ) ); ?>" alt="" width="59" height="45">
 					<?php else : ?>
@@ -203,6 +203,7 @@ $vao_reviews      = vao_items( 'vao_avis' );
 		<div class="home-temoignages" data-coverflow>
 			<div class="home-temoignages-stage">
 				<?php foreach ( $vao_testimonials as $vao_item ) : ?>
+					<?php if ( ! vao_post_img( $vao_item ) ) { continue; } // Carte sans image : ignorée. ?>
 					<figure class="temoignage-card">
 						<img src="<?php echo esc_url( vao_post_img( $vao_item, 'large' ) ); ?>" alt="<?php echo esc_attr( vao_post_alt( $vao_item ) ); ?>" width="1117" height="1540" loading="lazy">
 					</figure>
@@ -217,6 +218,7 @@ $vao_reviews      = vao_items( 'vao_avis' );
 			<div class="vao-carousel home-reviews" data-carousel data-autoplay="5000">
 				<div class="vao-carousel-track">
 					<?php foreach ( $vao_reviews as $vao_item ) : ?>
+						<?php if ( ! vao_post_img( $vao_item ) ) { continue; } ?>
 						<figure class="review-card">
 							<img src="<?php echo esc_url( vao_post_img( $vao_item, 'large' ) ); ?>" alt="<?php echo esc_attr( vao_post_alt( $vao_item ) ); ?>" loading="lazy">
 						</figure>

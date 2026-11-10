@@ -111,7 +111,8 @@ $vao_arrow  = array(
 
 <section class="contact" id="contact-page"
 	data-msg-size="<?php echo esc_attr( vao_t( 'Fichier de plus de 5 Mo non ajouté : %s' ) ); ?>"
-	data-msg-count="<?php echo esc_attr( vao_t( '5 fichiers au maximum : les fichiers en trop n’ont pas été ajoutés.' ) ); ?>">
+	data-msg-count="<?php echo esc_attr( vao_t( '5 fichiers au maximum : les fichiers en trop n’ont pas été ajoutés.' ) ); ?>"
+	data-msg-total="<?php echo esc_attr( vao_t( '8 Mo au total au maximum : les fichiers en trop n’ont pas été ajoutés.' ) ); ?>">
 	<h1 class="visually-hidden"><?php the_title(); ?></h1>
 
 	<nav class="contact-tabs" aria-label="<?php echo esc_attr( vao_t( 'Nous contacter' ) ); ?>">
@@ -132,7 +133,7 @@ $vao_arrow  = array(
 				<h2 class="visually-hidden"><?php vao_e( 'Devenir distributeur' ); ?></h2>
 				<div class="contact-card">
 					<?php $vao_photo( 'form_img_distributeur', 'Devenir distributeur' ); ?>
-					<form class="contact-form contact-form--distributeur" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
+					<form class="contact-form contact-form--distributeur" method="post" action="<?php echo esc_url( vao_form_action( 'distributeur' ) ); ?>" enctype="multipart/form-data">
 						<?php vao_form_fields( 'distributeur' ); ?>
 						<?php vao_form_notice( 'distributeur' ); ?>
 
@@ -202,7 +203,7 @@ $vao_arrow  = array(
 				<h2 class="visually-hidden"><?php vao_e( "Demande d'informations" ); ?></h2>
 				<div class="contact-card">
 					<?php $vao_photo( 'form_img_information', "Demande d'informations" ); ?>
-					<form class="contact-form contact-form--information" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
+					<form class="contact-form contact-form--information" method="post" action="<?php echo esc_url( vao_form_action( 'information' ) ); ?>" enctype="multipart/form-data">
 						<?php vao_form_fields( 'information' ); ?>
 						<?php vao_form_notice( 'information' ); ?>
 
@@ -309,7 +310,7 @@ $vao_arrow  = array(
 				<h2 class="visually-hidden"><?php vao_e( 'Candidature spontanée' ); ?></h2>
 				<div class="contact-card">
 					<?php $vao_photo( 'form_img_candidature', 'Candidature spontanée' ); ?>
-					<form class="contact-form contact-form--candidature" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
+					<form class="contact-form contact-form--candidature" method="post" action="<?php echo esc_url( vao_form_action( 'candidature' ) ); ?>" enctype="multipart/form-data">
 						<?php vao_form_fields( 'candidature' ); ?>
 						<?php vao_form_notice( 'candidature' ); ?>
 

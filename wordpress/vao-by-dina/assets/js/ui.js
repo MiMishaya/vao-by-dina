@@ -152,3 +152,26 @@
     init();
   }
 })();
+
+// Messages de validation des formulaires dans la langue de la page : ceux du navigateur suivent
+// la langue du navigateur (« Veuillez renseigner ce champ. » sur le site malagasy).
+(function () {
+  var M = (window.VAO_UI && window.VAO_UI.valid) || null;
+  if (!M) return;
+  document.addEventListener('invalid', function (e) {
+    var f = e.target;
+    if (!f || !f.validity || !f.setCustomValidity) return;
+    f.setCustomValidity('');
+    if (f.validity.valueMissing) {
+      f.setCustomValidity(f.type === 'checkbox' ? M.check : (f.tagName === 'SELECT' ? M.select : M.required));
+    } else if (f.validity.typeMismatch && f.type === 'email') {
+      f.setCustomValidity(M.email);
+    }
+  }, true);
+  // Le message personnalisé bloquerait l'envoi : on l'efface dès que le champ change.
+  ['input', 'change'].forEach(function (type) {
+    document.addEventListener(type, function (e) {
+      if (e.target && e.target.setCustomValidity) e.target.setCustomValidity('');
+    }, true);
+  });
+})();

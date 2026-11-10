@@ -57,15 +57,54 @@ function vao_form_notice( $type ) {
 		return;
 	}
 	$status = sanitize_key( wp_unslash( $_GET['envoi'] ) );
+	$email  = vao_mod( 'email' );
 	if ( 'ok' === $status ) {
 		echo '<div class="form-notice ok" role="status">' . esc_html( vao_t( 'Merci, votre demande a bien été envoyée.' ) ) . '</div>';
 	} elseif ( 'incomplet' === $status ) {
 		echo '<div class="form-notice erreur" role="alert">' . esc_html( vao_t( 'Merci de remplir les champs obligatoires avec une adresse e-mail valide.' ) ) . '</div>';
-	} else {
+	} elseif ( 'lourd' === $status ) {
+		echo '<div class="form-notice erreur" role="alert">' . esc_html( vao_t( 'Les fichiers joints sont trop lourds (8 Mo au total au maximum). Merci de réduire leur taille et de renvoyer le formulaire.' ) ) . '</div>';
+	} elseif ( $email ) {
 		echo '<div class="form-notice erreur" role="alert">'
-			. esc_html( sprintf( vao_t( "Une erreur est survenue lors de l'envoi. Merci de réessayer ou de nous écrire à %s." ), vao_mod( 'email' ) ) )
+			. esc_html( sprintf( vao_t( "Une erreur est survenue lors de l'envoi. Merci de réessayer ou de nous écrire à %s." ), $email ) )
 			. '</div>';
+	} else {
+		echo '<div class="form-notice erreur" role="alert">' . esc_html( vao_t( "Une erreur est survenue lors de l'envoi. Merci de réessayer." ) ) . '</div>';
 	}
+}
+
+/**
+ * Adresse d'envoi d'un formulaire. Le type et la langue sont aussi dans l'URL : si les fichiers dépassent
+ * la limite du serveur (post_max_size), PHP vide $_POST et on peut quand même répondre au bon formulaire.
+ */
+function vao_form_action( $type ) {
+	return add_query_arg(
+		array(
+			'action'   => 'vao_form',
+			'vao_form' => $type,
+			'vao_lang' => vao_lang(),
+		),
+		admin_url( 'admin-post.php' )
+	);
+}
+
+/**
+ * Dossier des pièces jointes reçues : hors des dossiers datés de la médiathèque, noms de fichiers
+ * imprévisibles (le serveur peut ignorer .htaccess, ex. nginx) et listing interdit.
+ */
+function vao_form_upload_dir( $dirs ) {
+	$dirs['subdir'] = '/vao-demandes';
+	$dirs['path']   = $dirs['basedir'] . $dirs['subdir'];
+	$dirs['url']    = $dirs['baseurl'] . $dirs['subdir'];
+	if ( ! is_dir( $dirs['path'] ) && wp_mkdir_p( $dirs['path'] ) ) {
+		file_put_contents( $dirs['path'] . '/.htaccess', "Require all denied\nDeny from all\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		file_put_contents( $dirs['path'] . '/index.php', "<?php\n// Silence.\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	}
+	return $dirs;
+}
+
+function vao_form_unique_filename( $dir, $name, $ext ) {
+	return wp_generate_password( 24, false ) . '-' . sanitize_file_name( pathinfo( $name, PATHINFO_FILENAME ) ) . $ext;
 }
 
 /**
@@ -109,14 +148,25 @@ function vao_form_rate_limited() {
 
 function vao_handle_form() {
 	$forms = vao_forms();
-	$type  = isset( $_POST['vao_form'] ) ? sanitize_key( wp_unslash( $_POST['vao_form'] ) ) : '';
+	// phpcs:disable WordPress.Security.NonceVerification -- type et langue seulement, le nonce est vérifié plus bas.
+	$type  = isset( $_REQUEST['vao_form'] ) ? sanitize_key( wp_unslash( $_REQUEST['vao_form'] ) ) : '';
+	$lang  = isset( $_REQUEST['vao_lang'] ) ? sanitize_key( wp_unslash( $_REQUEST['vao_lang'] ) ) : '';
+	// phpcs:enable
 	$nonce = isset( $_POST['_vao_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_vao_nonce'] ) ) : '';
 
-	if ( ! isset( $forms[ $type ] ) || ! wp_verify_nonce( $nonce, 'vao_form_' . $type ) ) {
+	if ( ! isset( $forms[ $type ] ) ) {
 		wp_die( 'Requête invalide.', '', array( 'response' => 400 ) );
 	}
 	list( $subject, $slug, $fragment, , $required ) = $forms[ $type ];
-	$lang = isset( $_POST['vao_lang'] ) ? sanitize_key( wp_unslash( $_POST['vao_lang'] ) ) : '';
+
+	// Envoi plus lourd que post_max_size : PHP a vidé $_POST et $_FILES.
+	$too_big = empty( $_POST ) && ! empty( $_SERVER['CONTENT_LENGTH'] );
+	// Jeton expiré (page restée en cache plus de 12 h) : bloquant seulement pour un utilisateur connecté.
+	// Pour un visiteur, le jeton n'apporte rien (pas de session à protéger) et le piège anti-robots
+	// + la limite par IP suffisent ; refuser ferait perdre sa saisie au visiteur.
+	if ( ! $too_big && is_user_logged_in() && ! wp_verify_nonce( $nonce, 'vao_form_' . $type ) ) {
+		wp_die( 'Requête invalide.', '', array( 'response' => 400 ) );
+	}
 	if ( $slug ) {
 		$back = vao_url( $slug, '', $lang );
 	} else {
@@ -125,6 +175,11 @@ function vao_handle_form() {
 	}
 	$redirect = add_query_arg( array( 'form' => $type ), $back );
 	$anchor   = '#' . $fragment;
+
+	if ( $too_big ) {
+		wp_safe_redirect( add_query_arg( 'envoi', 'lourd', $redirect ) . $anchor );
+		exit;
+	}
 
 	// Robot détecté : on fait comme si tout s'était bien passé.
 	if ( ! empty( $_POST['vao_website'] ) ) {
@@ -169,6 +224,7 @@ function vao_handle_form() {
 	$files       = vao_form_files();
 	if ( $files ) {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
+		add_filter( 'upload_dir', 'vao_form_upload_dir' );
 	}
 	foreach ( array_slice( $files, 0, 5 ) as $file ) {
 		if ( $file['size'] > 5 * MB_IN_BYTES ) {
@@ -178,8 +234,9 @@ function vao_handle_form() {
 		$upload = wp_handle_upload(
 			$file,
 			array(
-				'test_form' => false,
-				'mimes'     => array(
+				'test_form'                => false,
+				'unique_filename_callback' => 'vao_form_unique_filename',
+				'mimes'                    => array(
 					'pdf'      => 'application/pdf',
 					'jpg|jpeg' => 'image/jpeg',
 					'png'      => 'image/png',
@@ -196,6 +253,7 @@ function vao_handle_form() {
 			$lines[] = 'Fichier joint refusé (type non autorisé ou fichier invalide) : ' . sanitize_file_name( $file['name'] );
 		}
 	}
+	remove_filter( 'upload_dir', 'vao_form_upload_dir' );
 
 	if ( $lang ) {
 		$lines[] = 'Langue du formulaire : ' . strtoupper( $lang );
@@ -204,12 +262,19 @@ function vao_handle_form() {
 	$sent = wp_mail( vao_form_recipients( $type ), '[VAO] ' . $subject, implode( "\n", $lines ), array( 'Reply-To: ' . $reply_to ), $attachments );
 
 	$saved = vao_save_demande( $type, $values, $lang, $sent, $file_names );
-	// Demande enregistrée (menu « Demandes ») : le visiteur n'a pas à la renvoyer même si l'e-mail a échoué.
-	$sent = $sent || ( $saved && ! is_wp_error( $saved ) );
+	$saved = $saved && ! is_wp_error( $saved ) ? (int) $saved : 0;
 
-	foreach ( $attachments as $file ) {
-		wp_delete_file( $file );
+	if ( ! $sent && $saved && $attachments ) {
+		// E-mail en échec : les fichiers (CV…) restent sur le serveur, téléchargeables depuis la demande
+		// (menu « Demandes »), et sont supprimés avec elle.
+		update_post_meta( $saved, '_vao_files_kept', wp_slash( $attachments ) ); // update_post_meta() retire les antislashs (chemins Windows).
+	} else {
+		foreach ( $attachments as $file ) {
+			wp_delete_file( $file );
+		}
 	}
+	// Demande enregistrée : le visiteur n'a pas à la renvoyer même si l'e-mail a échoué.
+	$sent = $sent || $saved;
 
 	wp_safe_redirect( add_query_arg( 'envoi', $sent ? 'ok' : 'erreur', $redirect ) . $anchor );
 	exit;

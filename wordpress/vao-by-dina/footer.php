@@ -60,14 +60,18 @@ $vao_linkedin = vao_mod( 'linkedin_url' );
 	<div class="footer-bottom">
 		<p><?php echo esc_html( gmdate( 'Y' ) ); ?> &copy; <?php vao_e( 'Savons et Détergents de l’Océan Indien' ); ?></p>
 		<p class="footer-contact">
+			<?php if ( $vao_phone ) : ?>
 			<a href="<?php echo esc_url( vao_tel_link( $vao_phone ) ); ?>">
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
 				<?php echo esc_html( $vao_phone ); ?>
 			</a>
+			<?php endif; ?>
+			<?php if ( $vao_email ) : ?>
 			<a href="<?php echo esc_url( 'mailto:' . $vao_email ); ?>">
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
 				<?php echo esc_html( $vao_email ); ?>
 			</a>
+			<?php endif; ?>
 		</p>
 		<p class="footer-legal">
 			<a href="<?php echo esc_url( vao_url( 'politique-de-confidentialite' ) ); ?>"><?php vao_e( 'Politique de confidentialité' ); ?></a>

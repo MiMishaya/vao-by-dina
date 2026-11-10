@@ -5,7 +5,8 @@
  * get_template_part( 'template-parts/brand-strip', null, array( 'muted' => true ) ) : version grisée.
  */
 
-$vao_brands = vao_items( 'vao_marque' );
+// Logo sans image (retirée dans l'admin) : ignoré.
+$vao_brands = array_filter( vao_items( 'vao_marque' ), 'vao_post_img' );
 if ( ! $vao_brands ) {
 	return;
 }

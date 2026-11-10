@@ -9,7 +9,7 @@
 return array(
 	'Nos marques' => array(
 		'NOS GAMMES de PRODUITS' => 'NY KARAZANA VOKATRAY',
-		'Détergent'              => 'Detergent',
+		'Détergent'              => 'Vovo-tsavony',
 		'Et nos %s'              => 'Ary koa ny %s anay',
 		'<strong>Le bon vieux réflexe de nos mamans, l’efficacité en plus !</strong>Que ce soit pour la grande lessive du week-end ou le petit coup de propre du soir, nos savons Blanc, Mavo, Marron et Or sont là pour vous simplifier la vie. Ils moussent bien, attrapent la saleté sans effort et s’adaptent à toutes les tâches du foyer.'
 			=> implode(

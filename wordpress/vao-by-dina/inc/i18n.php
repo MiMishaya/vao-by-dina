@@ -88,7 +88,10 @@ function vao_is_mg() {
  * Types de contenu traduits élément par élément (leurs images contiennent du texte).
  */
 function vao_translated_types() {
-	return array( 'vao_banniere', 'vao_temoignage', 'vao_collaborateur', 'vao_rse', 'vao_offre' );
+	// Seulement les images avec du texte. Collaborateurs et RSE se traduisent par leurs champs « en malagasy »
+	// (inc/admin-mg.php), les offres restent en français : communs aux deux langues, ils ne peuvent pas être
+	// créés par erreur dans la mauvaise langue et disparaître du site français.
+	return array( 'vao_banniere', 'vao_temoignage' );
 }
 
 /**
@@ -163,7 +166,7 @@ function vao_i18n_base() {
 			'Catalogue'              => 'Katalaogy',
 			'Précédent'              => 'Teo aloha',
 			'Suivant'                => 'Manaraka',
-			'Fermer'                 => 'Hidy',
+			'Fermer'                 => 'Akatony',
 			'Retour en haut'         => 'Hiverina any ambony',
 			// Noms des gammes : titres du texte client (MG), aussi utilisés pour les gammes en base.
 			'Détergent en poudre'    => 'Vovo-tsavony',
@@ -189,14 +192,14 @@ function vao_i18n_base() {
 			'Conditions générales'                        => 'Fepetra ankapobeny',
 		),
 		'Gammes'        => array(
-			'Détergent'             => 'Detergent',
+			'Détergent'             => 'Vovo-tsavony',
 			'Savon Bar'             => 'Savony bara',
 			'Voir plus de produits' => 'Hijery vokatra hafa',
 		),
 		'Recherche'     => array(
-			'Résultats pour « %s »'       => "Valin'ny fikarohana « %s »",
+			'Résultats pour « %s »'       => 'Valin’ny fikarohana « %s »',
 			'Page introuvable'            => 'Tsy hita ny pejy',
-			"Retour à l'accueil"          => "Hiverina amin'ny fandraisana",
+			"Retour à l'accueil"          => 'Hiverina amin’ny fandraisana',
 			'Aucun résultat.'             => 'Tsy nisy valiny.',
 			'Découvrez tous nos produits' => 'Jereo ny vokatray rehetra',
 			'Pages'                       => 'Pejy',
@@ -204,8 +207,8 @@ function vao_i18n_base() {
 		'Formulaires'   => array(
 			'CANDIDATURE SPONTANÉE – SDOI'                           => 'FANGATAHANA ASA – SDOI',
 			'1. Informations personnelles'                           => '1. Mombamomba anao',
-			'Nom complet ou Raison sociale :'                        => "Anarana feno na anaran'ny orinasa :",
-			'Nom du responsable :'                                   => "Anaran'ny tompon'andraikitra :",
+			'Nom complet ou Raison sociale :'                        => 'Anarana feno na anaran’ny orinasa :',
+			'Nom du responsable :'                                   => 'Anaran’ny tompon’andraikitra :',
 			'E-mail :'                                               => 'Mailaka :',
 			'Téléphone :'                                            => 'Finday :',
 			'2. Localisation'                                        => '2. Toerana',
@@ -217,7 +220,7 @@ function vao_i18n_base() {
 			'Libre-service'                                          => 'Libre-service',
 			'Épicerie'                                               => 'Epicerie',
 			'Grossiste'                                              => 'Mpivarotra ambongadiny',
-			'Nom du magasin :'                                       => "Anaran'ny fivarotana :",
+			'Nom du magasin :'                                       => 'Anaran’ny fivarotana :',
 			"Année d'expérience :"                                   => 'Taona niasana :',
 			"Produits d'intérêt :"                                   => 'Vokatra mahaliana anao :',
 			'Capacité de stockage :'                                 => 'Fahafahana mitahiry entana :',
@@ -228,13 +231,13 @@ function vao_i18n_base() {
 			'N° STAT :'                                              => 'Laharana STAT :',
 			'5. Pièces à fournir'                                    => '5. Antontan-taratasy omena',
 			'Veuillez joindre les documents suivants :'              => 'Ampiarahonao ireto antontan-taratasy ireto :',
-			'Copie NIF'                                              => "Kopian'ny NIF",
-			'Copie STAT'                                             => "Kopian'ny STAT",
-			'Copie RCS'                                              => "Kopian'ny RCS",
+			'Copie NIF'                                              => 'Kopian’ny NIF',
+			'Copie STAT'                                             => 'Kopian’ny STAT',
+			'Copie RCS'                                              => 'Kopian’ny RCS',
 			'Importer un fichier'                                    => 'Hampiditra rakitra',
 			'Envoyer'                                                => 'Alefa',
 			'Autre'                                                  => 'Hafa',
-			'Raison sociale :'                                       => "Anaran'ny orinasa ara-dalàna :",
+			'Raison sociale :'                                       => 'Anaran’ny orinasa ara-dalàna :',
 			'Quantité souhaitée :'                                   => 'Habetsahana tadiavina :',
 			'Message complémentaire'                                 => 'Hafatra fanampiny',
 			'Nom *'                                                  => 'Anarana *',
@@ -247,28 +250,34 @@ function vao_i18n_base() {
 			"Années d'expérience :"                                  => 'Taona niasana :',
 			'Disponibilité :'                                        => 'Fotoana ahafahana manomboka :',
 			'3. Motivation'                                          => '3. Antony',
-			'Pourquoi souhaitez-vous rejoindre SDOI ?'               => "Nahoana ianao no te hiditra ao amin'ny SDOI ?",
+			'Pourquoi souhaitez-vous rejoindre SDOI ?'               => 'Nahoana ianao no te hiditra ao amin’ny SDOI ?',
 			'4. Pièces jointes'                                      => '4. Antontan-taratasy miaraka',
 			'CV'                                                     => 'CV',
 			'Lettre de motivation'                                   => 'Taratasy fanehoana faniriana',
 			'Autres'                                                 => 'Hafa',
+			'Merci de remplir ce champ.'                             => 'Fenoy azafady ity saha ity.',
+			'Merci de cocher cette case pour continuer.'             => 'Asio marika azafady ity boaty ity raha hanohy.',
+			'Merci de choisir une option.'                           => 'Misafidiana iray azafady.',
+			'Merci de saisir une adresse e-mail valide.'             => 'Ampidiro azafady adiresy mailaka marina.',
 			'Merci, votre demande a bien été envoyée.'               => 'Misaotra, voaray soa aman-tsara ny fangatahanao.',
-			"Une erreur est survenue lors de l'envoi. Merci de réessayer ou de nous écrire à %s." => "Nisy olana nandritra ny fandefasana. Andramo indray azafady, na manorata aminay amin'ny %s.",
+			"Une erreur est survenue lors de l'envoi. Merci de réessayer ou de nous écrire à %s." => 'Nisy olana nandritra ny fandefasana. Andramo indray azafady, na manorata aminay amin’ny %s.',
+			"Une erreur est survenue lors de l'envoi. Merci de réessayer." => 'Nisy olana nandritra ny fandefasana. Andramo indray azafady.',
+			'Les fichiers joints sont trop lourds (8 Mo au total au maximum). Merci de réduire leur taille et de renvoyer le formulaire.' => 'Mavesatra loatra ireo rakitra natambatra (8 Mo farafahabetsany raha atambatra). Ahenao azafady ny habeny dia alefaso indray ny taratasy.',
 		),
 		// Valeurs par défaut de Apparence > Personnaliser > Thème VAO.
 		'Personnaliser' => array(
 			'Une identité ancrée'                             => 'Maha-izy anay miorim-paka',
-			"Plus de 20 ans au service de l'hygiène à Madagascar." => 'Maherin\'ny 20 taona manompo ny fahadiovana eto Madagasikara.',
-			'Des savons pensés pour le quotidien des Malagasy' => "Savony noforonina ho an'ny fiainana andavanandron'ny Malagasy",
+			"Plus de 20 ans au service de l'hygiène à Madagascar." => 'Maherin’ny 20 taona manompo ny fahadiovana eto Madagasikara.',
+			'Des savons pensés pour le quotidien des Malagasy' => 'Savony noforonina ho an’ny fiainana andavanandron’ny Malagasy',
 			'Produits recommandés'                            => 'Vokatra atolotray',
 			'Découvrir'                                       => 'Hijery',
 			'Accédez à nos formulaires'                       => 'Ireo taratasy fangatahana',
-			'Vous souhaitez rejoindre nos équipes ? Envoyez-nous votre candidature spontanée et partagez avec nous votre profil et vos motivations.' => "Te hiditra ao amin'ny ekipanay ve ianao ? Alefaso aminay ny fangatahanao asa ary ampahafantaro anay ny momba anao sy ny antony tianao hiarahana miasa aminay.",
+			'Vous souhaitez rejoindre nos équipes ? Envoyez-nous votre candidature spontanée et partagez avec nous votre profil et vos motivations.' => 'Te hiditra ao amin’ny ekipanay ve ianao ? Alefaso aminay ny fangatahanao asa ary ampahafantaro anay ny momba anao sy ny antony tianao hiarahana miasa aminay.',
 			'Cliquez ici'                                     => 'Tsindrio eto',
 			'DEVENIR REVENDEUR'                               => 'HO MPIVAROTRA',
-			'Vous souhaitez distribuer nos produits ? Remplissez ce formulaire pour nous présenter votre projet et devenir l’un de nos revendeurs.' => "Te hizara ny vokatray ve ianao ? Fenoy ity taratasy ity hampahafantarana anay ny tetikasanao ary ho iray amin'ireo mpivarotra anay.",
+			'Vous souhaitez distribuer nos produits ? Remplissez ce formulaire pour nous présenter votre projet et devenir l’un de nos revendeurs.' => 'Te hizara ny vokatray ve ianao ? Fenoy ity taratasy ity hampahafantarana anay ny tetikasanao ary ho iray amin’ireo mpivarotra anay.',
 			'DEMANDE D’ÉCHANTILLON'                           => 'FANGATAHANA SANTIONANY',
-			'Vous souhaitez découvrir nos produits ? Faites votre demande d’échantillon en remplissant simplement ce formulaire.' => 'Te hahafantatra ny vokatray ve ianao ? Angataho ny santionany amin\'ny famenoana fotsiny ity taratasy ity.',
+			'Vous souhaitez découvrir nos produits ? Faites votre demande d’échantillon en remplissant simplement ce formulaire.' => 'Te hahafantatra ny vokatray ve ianao ? Angataho ny santionany amin’ny famenoana fotsiny ity taratasy ity.',
 			"Depuis plus de 20 ans, SDOI s'inscrit comme un acteur engagé dans le développement de l'industrie de l'hygiène et de l'entretien à Madagascar. Portée par une volonté forte de valoriser le « Vita Malagasy », l'entreprise place la production locale et l'innovation industrielle au cœur de sa stratégie." => 'Nandritra ny 20 taona mahery, ny SDOI dia nandray anjara mavitrika tamin’ny fampandrosoana ny sehatry ny indostrian’ny fahadiovana sy ny fikojakojana eto Madagasikara. Entin’ny finiavana hanandratra ny vokatra « Vita Malagasy », dia apetraky ny orinasa ho laharam-pahamehana ny famokarana eto an-toerana sy ny fanavaozana ara-indostria.',
 			'Nos produits'                                    => 'Ny vokatray',
 		),
@@ -455,7 +464,7 @@ add_action( 'admin_init', 'vao_pll_setup' );
  * Version des traductions malagasy validées par le client. La changer réécrit une fois dans Polylang
  * toutes les chaînes du dictionnaire, y compris celles déjà remplies (propositions antérieures).
  */
-const VAO_MG_REVISION = 'client-2026-11-03';
+const VAO_MG_REVISION = 'client-2026-11-08';
 
 /**
  * Pré-remplit les traductions malagasy encore vides (Langues > Traductions des chaînes).
@@ -471,13 +480,19 @@ function vao_pll_prefill( $language, $force = false ) {
 	if ( ! method_exists( $mo, 'import_from_db' ) || ! method_exists( $mo, 'make_entry' ) || ! method_exists( $mo, 'export_to_db' ) ) {
 		return;
 	}
-	$mo->import_from_db( $language );
-	foreach ( $translations as $fr => $mg ) {
-		if ( '' !== $mg && $mg !== $fr && ( $force || $mo->translate( $fr ) === $fr ) ) {
-			$mo->add_entry( $mo->make_entry( $fr, $mg ) );
+	// API interne de Polylang : si une mise à jour de l'extension la change, on renonce au pré-remplissage
+	// plutôt que de bloquer tout l'admin (appelé sur admin_init).
+	try {
+		$mo->import_from_db( $language );
+		foreach ( $translations as $fr => $mg ) {
+			if ( '' !== $mg && $mg !== $fr && ( $force || $mo->translate( $fr ) === $fr ) ) {
+				$mo->add_entry( $mo->make_entry( $fr, $mg ) );
+			}
 		}
+		$mo->export_to_db( $language );
+	} catch ( \Throwable $e ) {
+		return;
 	}
-	$mo->export_to_db( $language );
 }
 
 /**

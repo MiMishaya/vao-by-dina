@@ -143,6 +143,17 @@ button.qsn-small-item { cursor: pointer; }
 .qsn-panel .vao-carousel-arrow { color: #b4b4b4; background: none; }
 .qsn-panel .vao-carousel-prev { left: 12px; }
 .qsn-panel .vao-carousel-next { right: 12px; }
+/* Quand la marge latérale devient plus étroite que les flèches (12 + 36 px), elles recouvraient les listes :
+   marge élargie et zone des flèches entièrement masquée, le fondu ne commence qu'après. */
+@media (max-width: 1320px) {
+  .qsn-panel .vao-carousel-track {
+    --qsn-pad: max(var(--qsn-gutter), 60px);
+    padding: 0 var(--qsn-pad);
+    scroll-padding-inline: var(--qsn-pad);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0 48px, #000 var(--qsn-pad), #000 calc(100% - var(--qsn-pad)), transparent calc(100% - 48px));
+    mask-image: linear-gradient(90deg, transparent 0 48px, #000 var(--qsn-pad), #000 calc(100% - var(--qsn-pad)), transparent calc(100% - 48px));
+  }
+}
 .qsn-panel ul { list-style: none; }
 .qsn-panel li { white-space: nowrap; }
 
@@ -220,6 +231,8 @@ button.qsn-small-item { cursor: pointer; }
   white-space: nowrap;
   color: #fff;
 }
+/* « KALITAO VOAMARINA » est ~12 % plus long que le titre français : même largeur occupée, sans débordement. */
+.qsn-certif-title:lang(mg) { font-size: clamp(1.2rem, 6.85vw, 98px); }
 .qsn-certif {
   display: grid;
   grid-template-columns: 444fr 698fr;
@@ -268,6 +281,9 @@ button.qsn-small-item { cursor: pointer; }
   color: #7b35c1;
   transition: color 0.2s ease;
 }
+/* Intitulés malagasy plus longs : coupés sur un trait d'union ou collés aux bords arrondis de la pastille. */
+.qsn-pill:lang(mg) { padding: 12px 26px 12px 24px; gap: 14px; }
+.qsn-pill:lang(mg) h3 { font-size: clamp(14px, 1.25vw, 18px); }
 .qsn-valeur p {
   max-width: 320px;
   margin: 22px auto 0;
@@ -284,15 +300,31 @@ button.qsn-small-item { cursor: pointer; }
 
 /* ============== TÉMOIGNAGES COLLABORATEURS ============== */
 .qsn-collab .section-subtitle { margin: 0 0 24px 30px; font-size: clamp(1.1rem, 1.6vw, 23px); }
+/* Les cartes démarrent après la zone des flèches (16 + 44 px), entièrement masquée : la flèche gauche
+   recouvrait le nom de la 1re carte et le fondu en effaçait le bord. */
 .qsn-collab .vao-carousel-track {
-  --qsn-fade-w: clamp(30px, 8vw, 120px);
+  --qsn-arrow-zone: 60px;
+  --qsn-pad: 76px;
   gap: 31px;
-  padding: 0.5rem clamp(1rem, 1.6vw, 24px) 1rem;
-  -webkit-mask-image: var(--qsn-fade);
-  mask-image: var(--qsn-fade);
+  padding: 0.5rem var(--qsn-pad) 1rem;
+  scroll-padding-inline: var(--qsn-pad);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0 var(--qsn-arrow-zone), #000 var(--qsn-pad), #000 calc(100% - var(--qsn-pad)), transparent calc(100% - var(--qsn-arrow-zone)));
+  mask-image: linear-gradient(90deg, transparent 0 var(--qsn-arrow-zone), #000 var(--qsn-pad), #000 calc(100% - var(--qsn-pad)), transparent calc(100% - var(--qsn-arrow-zone)));
 }
 .qsn-collab .vao-carousel-prev { left: 16px; }
 .qsn-collab .vao-carousel-next { right: 16px; }
+@media (max-width: 1320px) {
+  .qsn-collab .vao-carousel-track { --qsn-arrow-zone: 52px; --qsn-pad: 64px; }
+}
+@media (max-width: 600px) {
+  .qsn-collab .vao-carousel-track { --qsn-arrow-zone: 38px; --qsn-pad: 44px; gap: 16px; }
+  .qsn-collab .vao-carousel-prev { left: 2px; }
+  .qsn-collab .vao-carousel-next { right: 2px; }
+  .qsn-collab-card { flex-basis: 100%; }
+  /* Colonnes plus larges que l'écran : les lignes étaient coupées à droite. */
+  .qsn-panel .vao-carousel-track > * { max-width: 100%; }
+  .qsn-panel li { white-space: normal; }
+}
 .qsn-collab .vao-carousel-arrow { color: #b4b4b4; background: none; }
 .qsn-collab-card {
   flex: 0 0 329px;
@@ -317,7 +349,8 @@ button.qsn-small-item { cursor: pointer; }
 }
 .qsn-collab-body { flex: 1; display: flex; flex-direction: column; padding: 10px 21px 16px; }
 .qsn-collab-body h3 { font-size: 17px; font-weight: 700; line-height: 1.3; margin-bottom: 6px; }
-.qsn-collab-text { font-size: 10.5px; line-height: 17px; text-align: justify; hyphens: auto; }
+/* 12 px minimum de lisibilité : les cartes gardent leur largeur et s'allongent si le texte est long (malagasy). */
+.qsn-collab-text { font-size: 12px; line-height: 18px; text-align: justify; hyphens: auto; }
 .qsn-collab-meta {
   margin-top: auto;
   padding-top: 14px;

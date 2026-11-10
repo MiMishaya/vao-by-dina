@@ -346,6 +346,20 @@ select.contact-input {
   .contact-arrow-col { display: none; }
   .contact-card { min-height: 0; }
   .contact-form { padding: 2rem 2rem 1.8rem; }
+  /* Tailles compactes de la maquette bureau (11 px, champs de 22 px) trop petites au doigt :
+     16 px évite le zoom automatique d'iOS au focus. */
+  .contact-label { font-size: 13px; }
+  .contact-legend { font-size: 14px; margin-bottom: 0.5rem; }
+  .contact-row + .contact-row, .contact-form--information .contact-row + .contact-row { margin-top: 0.6rem; }
+  .contact-input { height: 40px; font-size: 16px; }
+  textarea.contact-input { height: auto; }
+  .contact-checks { gap: 0.5rem 1.2rem; padding: 0.55rem 0.9rem; font-size: 13px; }
+  .contact-checks--grid { padding: 0 0 0 4px; }
+  .contact-checks input { width: 16px; height: 16px; }
+  .contact-upload { font-size: 13px; }
+  .contact-hint { font-size: 12px; }
+  .contact-submit { --submit-w: 160px; height: 40px; font-size: 14px; }
+  .contact-form--information .contact-submit { --submit-w: 210px; }
 }
 @media (max-width: 860px) {
   .contact-card, .offre { grid-template-columns: 1fr; }
@@ -358,7 +372,8 @@ select.contact-input {
 @media (max-width: 760px) {
   .contact { padding-top: 1.25rem; }
   .contact-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1.25rem; }
-  .contact-tab { white-space: normal; text-align: center; font-size: 12px; padding: 0.5rem; }
+  /* min-height : cible tactile ≥ 44 px même pour les onglets sur une seule ligne. */
+  .contact-tab { display: flex; align-items: center; justify-content: center; min-height: 44px; white-space: normal; text-align: center; font-size: 12px; padding: 0.5rem; }
   .contact-tab.active { font-size: 13px; padding: 0.5rem; }
 }
 @media (max-width: 560px) {

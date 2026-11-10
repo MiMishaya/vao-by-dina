@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'VAO_VERSION', '2.3.0' );
+define( 'VAO_VERSION', '2.4.0' );
 
 require get_template_directory() . '/inc/helpers.php';
 require get_template_directory() . '/inc/i18n.php';
@@ -70,6 +70,12 @@ function vao_assets() {
 			'prev'  => vao_t( 'Précédent' ),
 			'next'  => vao_t( 'Suivant' ),
 			'close' => vao_t( 'Fermer' ),
+			'valid' => array(
+				'required' => vao_t( 'Merci de remplir ce champ.' ),
+				'check'    => vao_t( 'Merci de cocher cette case pour continuer.' ),
+				'select'   => vao_t( 'Merci de choisir une option.' ),
+				'email'    => vao_t( 'Merci de saisir une adresse e-mail valide.' ),
+			),
 		)
 	);
 
