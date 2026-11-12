@@ -228,3 +228,5 @@
 - MG frise 2008 : « Fampiroboroboana » → « Fandrosoana » ; « Tout voir… » centré sous les références
 - Soulignement au survol retiré partout (consentement newsletter, cartes contact, liens du pied de page, « Tout voir ») ; VAO_VERSION 2.5.1
 - En attente client : liste distributeurs, page produits complète ; recherche toujours à tester (site local arrêté)
+- Recherche sans page de résultats (demande client) : vao_search_redirect() (template_redirect) → gamme trouvée, sinon 1er produit (#produit-ID, rangée « + » dépliée et halo par gammes.js), sinon 1re page WP ; page « Aucun résultat » seulement si rien ; VAO_VERSION 2.5.2
+- Pages « Politique de confidentialité » / « Conditions générales » retirées de vao_pages() (plus créées ni signalées manquantes) ; case newsletter en texte simple sans lien ; pages existantes à mettre à la corbeille dans wp-admin (FR + MG)

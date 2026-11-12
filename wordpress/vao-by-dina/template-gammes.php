@@ -92,7 +92,8 @@ $vao_product_row = function ( $products, $after ) use ( $vao_img_tag, $vao_logos
 		$poids = get_post_meta( $product->ID, '_vao_poids', true );
 		$cond  = get_post_meta( $product->ID, '_vao_conditionnement', true );
 		?>
-		<article class="prod-card prod-card--<?php echo esc_attr( sanitize_title( $logo ? $logo : $title ) ); ?>">
+		<?php // id : cible de la recherche du site (vao_search_catalogue), qui mène directement au produit. ?>
+		<article class="prod-card prod-card--<?php echo esc_attr( sanitize_title( $logo ? $logo : $title ) ); ?>" id="produit-<?php echo (int) $product->ID; ?>">
 			<div class="prod-thumb"><?php echo $vao_img_tag( $product, 'medium_large', vao_post_alt( $product ) ); // Balise construite et échappée par $vao_img_tag. ?></div>
 			<div class="prod-info">
 				<h3 class="prod-name">

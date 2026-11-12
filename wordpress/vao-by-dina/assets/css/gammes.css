@@ -62,6 +62,16 @@
   gap: 1.3rem;
 }
 
+/* Produit trouvé par la recherche (gammes.js) : halo bref pour le repérer dans la grille. */
+.prod-card.is-found { animation: prodFound 2.4s ease-out; }
+@keyframes prodFound {
+  0%, 40% { box-shadow: 0 0 0 4px var(--vao-orange), 0 10px 26px rgba(0, 0, 0, 0.18); }
+  100% { box-shadow: 0 0 0 4px transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .prod-card.is-found { animation: none; outline: 4px solid var(--vao-orange); }
+}
+
 .prod-card {
   display: flex;
   flex-direction: column;

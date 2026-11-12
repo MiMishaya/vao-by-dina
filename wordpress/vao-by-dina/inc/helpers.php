@@ -50,8 +50,7 @@ function vao_pages() {
 		'gammes'                       => array( 'Nos marques', 'template-gammes.php', 'Ny marikanay', 'vokatra' ),
 		'nous-contacter'               => array( 'Nous contacter', 'template-contact.php', 'Hifandray aminay', 'hifandray' ),
 		'chargement'                   => array( 'Chargement', 'template-chargement.php', 'Miandry', 'miandry' ),
-		'politique-de-confidentialite' => array( 'Politique de confidentialité', '', 'Politika momba ny tsiambaratelo', 'politika-tsiambaratelo' ),
-		'conditions-generales'         => array( 'Conditions générales', '', 'Fepetra ankapobeny', 'fepetra-ankapobeny' ),
+		// Pages « Politique de confidentialité » et « Conditions générales » retirées (client, nov. 2026) : sans contenu.
 	);
 }
 
@@ -451,11 +450,36 @@ function vao_search_catalogue( $query ) {
 		// Nom du produit seulement : une gamme trouvée est déjà listée au-dessus.
 		if ( $match( array( $product->post_title, $alt ) ) ) {
 			$label               = trim( get_the_title( $product ) . ( $term ? ' – ' . vao_t( $term->name ) : '' ) );
-			$found['produits'][] = array( $label, vao_url( 'gammes', $term ? $term->slug : '' ) );
+			$found['produits'][] = array( $label, vao_url( 'gammes', 'produit-' . $product->ID ) );
 		}
 	}
 	return $found;
 }
+
+/**
+ * Recherche : pas de page de résultats (demande client), le visiteur arrive directement sur la gamme trouvée,
+ * sinon sur le premier produit, sinon sur la première page du site qui contient le mot.
+ * Sans aucun résultat, la page « Aucun résultat » (index.php) reste affichée.
+ */
+function vao_search_redirect() {
+	if ( ! is_search() || is_admin() ) {
+		return;
+	}
+	$found = vao_search_catalogue( get_search_query( false ) );
+	$url   = '';
+	if ( $found['gammes'] ) {
+		$url = $found['gammes'][0][1];
+	} elseif ( $found['produits'] ) {
+		$url = $found['produits'][0][1];
+	} elseif ( have_posts() ) {
+		$url = get_permalink( $GLOBALS['wp_query']->posts[0] );
+	}
+	if ( $url ) {
+		wp_safe_redirect( $url );
+		exit;
+	}
+}
+add_action( 'template_redirect', 'vao_search_redirect' );
 
 /**
  * Affiche une liste de liens <a>. Les liens vers la page des gammes passent par l'écran de chargement.

@@ -39,7 +39,7 @@ $vao_linkedin = vao_mod( 'linkedin_url' );
 				<input type="tel" name="vao[Téléphone]" placeholder="<?php echo esc_attr( vao_t( 'Téléphone' ) ); ?>" aria-label="<?php echo esc_attr( vao_t( 'Téléphone' ) ); ?>" autocomplete="tel">
 				<label class="footer-consent">
 					<input type="checkbox" name="vao[Consentement]" value="Oui" required>
-					<a href="<?php echo esc_url( vao_url( 'politique-de-confidentialite' ) ); ?>"><?php vao_e( "J'accepte la politique de confidentialité" ); ?></a>
+					<span><?php vao_e( "J'accepte la politique de confidentialité" ); ?></span>
 				</label>
 			</div>
 			<button type="submit" class="footer-submit"><?php vao_e( "S'abonner" ); ?></button>
