@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'VAO_VERSION', '2.5.0' );
+define( 'VAO_VERSION', '2.5.1' );
 
 require get_template_directory() . '/inc/helpers.php';
 require get_template_directory() . '/inc/i18n.php';

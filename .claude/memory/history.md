@@ -222,3 +222,9 @@
 
 ### Commits
 - (à compléter au commit)
+
+## 2026-11-12 (suite) — 2e retour client
+- Chiffres clés : police Akzidenz-Grotesk Std Extra Bold (OTF du dossier maquette client → assets/fonts, @font-face dans fonts.css) — licence web à confirmer par le client
+- MG frise 2008 : « Fampiroboroboana » → « Fandrosoana » ; « Tout voir… » centré sous les références
+- Soulignement au survol retiré partout (consentement newsletter, cartes contact, liens du pied de page, « Tout voir ») ; VAO_VERSION 2.5.1
+- En attente client : liste distributeurs, page produits complète ; recherche toujours à tester (site local arrêté)

@@ -47,8 +47,9 @@
 .qsn-num-wrap { position: relative; display: inline-block; }
 .qsn-num {
   display: inline-block;
-  font-family: var(--vao-font-title);
-  font-weight: 900;
+  /* Police de la maquette demandée par le client (Akzidenz-Grotesk Std Extra Bold). */
+  font-family: 'Akzidenz-Grotesk Std', var(--vao-font-title);
+  font-weight: 800;
   /* Taille réduite d'environ 20 % : l'ancien compressage horizontal (scaleX) déformait les chiffres (retour client). */
   font-size: clamp(2.8rem, 7.2vw, 104px);
   line-height: 0.82;
@@ -103,8 +104,8 @@
 button.qsn-small-item { cursor: pointer; }
 .qsn-small-figure {
   display: flex; align-items: center; gap: 16px;
-  font-family: var(--qsn-font-alt);
-  font-weight: 900;
+  font-family: 'Akzidenz-Grotesk Std', var(--qsn-font-alt);
+  font-weight: 800;
   font-size: clamp(1.7rem, 3.9vw, 56px);
   line-height: 1.1;
   white-space: nowrap;
@@ -161,9 +162,10 @@ button.qsn-small-item { cursor: pointer; }
 .qsn-refs-inner { padding: 0 var(--qsn-gutter, 1.5rem); }
 .qsn-refs-list { columns: 180px auto; column-gap: 2rem; }
 .qsn-refs li { font-size: 16px; line-height: 28px; color: #858585; break-inside: avoid; }
+/* Centré sous la liste (retour client) ; display: table centre le lien sans l'étirer sur toute la largeur. */
 .qsn-refs-all {
-  display: inline-block;
-  margin-top: 0.6rem;
+  display: table;
+  margin: 0.8rem auto 0;
   font-style: italic;
   font-weight: 800;
   font-size: 16px;
@@ -171,7 +173,7 @@ button.qsn-small-item { cursor: pointer; }
   color: #5b7fb0;
   text-decoration: none;
 }
-.qsn-refs-all:hover, .qsn-refs-all:focus-visible { color: var(--vao-blue); text-decoration: underline; }
+.qsn-refs-all:hover, .qsn-refs-all:focus-visible { color: var(--vao-blue); }
 
 .qsn-distrib { --qsn-col-gap: clamp(2rem, 3.8vw, 55px); }
 .qsn-ville + .qsn-ville { margin-top: 28px; }

@@ -14,7 +14,7 @@ return array(
 		'Notre histoire'                                                  => 'Ny tantaranay',
 		'Les grandes étapes'                                              => 'Ireo dingana lehibe nanamarika ny tantaran’ny SDOI',
 		'Naissance'                                                       => 'Fananganana',
-		'Essor'                                                           => 'Fampiroboroboana',
+		'Essor'                                                           => 'Fandrosoana',
 		'Expansion'                                                       => 'Fanitarana',
 		'Label'                                                           => 'Fanamarinana',
 		'Expertise'                                                       => 'Faha-20 taona',

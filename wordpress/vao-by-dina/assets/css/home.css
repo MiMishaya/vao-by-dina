@@ -396,7 +396,6 @@
 .team-card h3.yellow { color: #fbe27a; }
 .team-card h3.orange { color: #f39a1e; }
 .team-card a, .team-card span { color: #fff; text-decoration: none; font-size: 20px; line-height: 24px; overflow-wrap: anywhere; }
-.team-card a:hover, .team-card a:focus-visible { text-decoration: underline; }
 
 /* ============== ÉCRANS MOYENS ============== */
 @media (max-width: 1200px) {

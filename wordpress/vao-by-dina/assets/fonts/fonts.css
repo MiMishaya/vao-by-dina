@@ -1,4 +1,13 @@
 /* Polices Inter, Poppins et Montserrat (SIL Open Font License), hébergées avec le thème : pas d'appel à Google Fonts. */
+/* Akzidenz-Grotesk Std Extra Bold : police commerciale fournie par le client (chiffres clés de Qui sommes-nous),
+   téléchargée seulement sur cette page. Usage web couvert par la licence du client, pas par le thème. */
+@font-face {
+  font-family: 'Akzidenz-Grotesk Std';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url(akzidenz-grotesk-std-xbd.otf) format('opentype');
+}
 /* latin-ext */
 @font-face {
   font-family: 'Inter';
