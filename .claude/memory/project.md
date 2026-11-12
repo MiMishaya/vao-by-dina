@@ -17,7 +17,7 @@
 ## Environnements
 - Hébergement annoncé par le client (2026-11-08) : VPS Pro chez Madagascar Internet — à rapprocher des relevés DNS ci-dessous (migration prévue ? mails restent chez ServerMada ?)
 - Prod : https://vao.mg (page « En construction » au 2026-11-03) — relevé DNS : hébergeur ServerMada (serveur priv25.servermada.com, Apache, DNS ns1/ns2.servermada.com) ; e-mails @vao.mg sur le même serveur (MX = vao.mg, SPF limité à cette IP) ; accès cPanel à obtenir du client
-- Preprod : à compléter (URL)
+- Preprod : https://preprod.vao.mg — corrections déployées par WinSCP (fichiers modifiés seuls dans wp-content/themes/vao-by-dina/, incrémenter VAO_VERSION dans functions.php) ; installation complète = ZIP de build.ps1 via wp-admin (Thèmes → Téléverser → « Remplacer l'actif »)
 - Variables / paramètres nécessaires : voir `.env.example` ou paramètres système — NOMS uniquement, jamais les valeurs
 
 ## Client / contexte métier

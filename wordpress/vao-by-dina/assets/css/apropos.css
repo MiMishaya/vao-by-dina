@@ -49,21 +49,22 @@
   display: inline-block;
   font-family: var(--vao-font-title);
   font-weight: 900;
-  font-size: clamp(3.4rem, 8.9vw, 128px);
+  /* Taille réduite d'environ 20 % : l'ancien compressage horizontal (scaleX) déformait les chiffres (retour client). */
+  font-size: clamp(2.8rem, 7.2vw, 104px);
   line-height: 0.82;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   background: var(--qsn-num-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  /* Chiffres étroits de la maquette : Poppins 900 compressé ; contour blanc comme sur la maquette */
-  transform: scaleX(0.72);
+  /* Contour blanc comme sur la maquette */
   filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff);
 }
-.is-main .qsn-num { font-size: clamp(5.6rem, 15vw, 216px); }
+.is-main .qsn-num { font-size: clamp(4.5rem, 12vw, 172px); }
 .qsn-ans {
   position: absolute;
-  top: 0.1em; left: 86%;
+  /* Collé au bord droit visible du « 20 » (sans scaleX, la boîte du chiffre = sa largeur réelle). */
+  top: 0.1em; left: 97%;
   font-family: 'Segoe Script', 'Brush Script MT', 'Comic Sans MS', cursive;
   font-size: clamp(1rem, 1.9vw, 27px);
   font-style: italic;
@@ -157,12 +158,12 @@ button.qsn-small-item { cursor: pointer; }
 .qsn-panel ul { list-style: none; }
 .qsn-panel li { white-space: nowrap; }
 
-.qsn-refs { --qsn-col-gap: clamp(2.5rem, 9.7vw, 140px); }
-.qsn-refs-col { display: flex; flex-direction: column; }
-.qsn-refs li { font-size: 16px; line-height: 28px; color: #858585; }
+.qsn-refs-inner { padding: 0 var(--qsn-gutter, 1.5rem); }
+.qsn-refs-list { columns: 180px auto; column-gap: 2rem; }
+.qsn-refs li { font-size: 16px; line-height: 28px; color: #858585; break-inside: avoid; }
 .qsn-refs-all {
-  margin-top: auto;
-  padding-left: 1.5rem;
+  display: inline-block;
+  margin-top: 0.6rem;
   font-style: italic;
   font-weight: 800;
   font-size: 16px;
@@ -187,11 +188,25 @@ button.qsn-small-item { cursor: pointer; }
   margin: clamp(3rem, 6vw, 80px) 0 clamp(3rem, 6vw, 80px);
   /* Les bords déchirés de la maquette (BG_Trash UP / BG-03, 5,35 % de la largeur) sont dans le padding. */
   padding: calc(5.35vw + clamp(1.2rem, 2vw, 26px)) 0 calc(5.35vw + clamp(1.5rem, 2.4vw, 34px));
-  background:
+  isolation: isolate;
+  color: #fff;
+}
+/* Fond sur un calque à part, bords découpés par masque au lieu d'être peints en blanc : le blanc cachait
+   les rayures du fond de page (bande visible), et le masque ne doit pas rogner le contenu. */
+.qsn > .qsn-qualite::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1;
+  background: #7d39b6;
+  -webkit-mask:
     url("../img/bg/dechire-haut.webp") center -1px / 100% auto no-repeat,
     url("../img/bg/dechire-bas.webp") center calc(100% + 1px) / 100% auto no-repeat,
-    #7d39b6;
-  color: #fff;
+    linear-gradient(#000, #000);
+  -webkit-mask-composite: xor;
+  mask:
+    url("../img/bg/dechire-haut.webp") center -1px / 100% auto no-repeat exclude,
+    url("../img/bg/dechire-bas.webp") center calc(100% + 1px) / 100% auto no-repeat exclude,
+    linear-gradient(#000, #000);
 }
 
 .qsn-gages {
@@ -209,6 +224,12 @@ button.qsn-small-item { cursor: pointer; }
   color: #333;
 }
 .qsn-gage-icon { width: 76px; height: 76px; margin: 0 auto 26px; color: #f39200; stroke-width: 1.9; }
+/* Icônes animées au survol de leur carte (demande client) : zoom + inclinaison de 10°. */
+.qsn-gage-icon, .qsn-pill-icon { transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.qsn-gage:hover .qsn-gage-icon, .qsn-valeur:hover .qsn-pill-icon { transform: scale(1.18) rotate(-10deg); }
+@media (prefers-reduced-motion: reduce) {
+  .qsn-gage-icon, .qsn-pill-icon { transition: none; }
+}
 .qsn-gage h3 {
   margin-bottom: 18px;
   font-weight: 800;
@@ -335,7 +356,8 @@ button.qsn-small-item { cursor: pointer; }
   background: linear-gradient(90deg, var(--c1, var(--vao-violet)), var(--c2, var(--vao-pink)));
   color: #fff;
 }
-.qsn-collab-photo { width: 100%; height: 226px; object-fit: cover; background: #eee; }
+/* Photos carrées (portraits) recadrées en bandeau : cadrage remonté sur les visages. */
+.qsn-collab-photo { width: 100%; height: 226px; object-fit: cover; object-position: 50% 30%; background: #eee; }
 .qsn-collab-avatar {
   display: flex; align-items: center; justify-content: center;
   background: linear-gradient(135deg, var(--vao-violet) 0%, var(--vao-pink) 60%, var(--vao-orange) 100%);
@@ -442,7 +464,7 @@ button.qsn-small-item { cursor: pointer; }
   .qsn-small { grid-template-columns: 1fr; gap: 0; margin-top: 20px; }
   .qsn-small-item { justify-self: stretch; }
   .qsn-collab-card { flex-basis: 78%; }
-  .qsn-refs { --qsn-col-gap: 2.5rem; }
+  .qsn-refs-list { columns: 140px auto; column-gap: 1.2rem; }
 }
 @media (max-width: 600px) {
   .qsn-intro-text { padding-left: 14px; }

@@ -67,7 +67,6 @@ function vao_nav() {
 			vao_url( 'qui-sommes-nous' ),
 			'user',
 			array(
-				array( 'Notre engagement', vao_url( 'accueil', 'engagement' ) ),
 				array( 'Notre gage de qualité', vao_url( 'qui-sommes-nous', 'qualite' ) ),
 				array( 'Nos valeurs', vao_url( 'qui-sommes-nous', 'valeurs' ) ),
 				array( 'Nos actions RSE', vao_url( 'qui-sommes-nous', 'rse' ) ),

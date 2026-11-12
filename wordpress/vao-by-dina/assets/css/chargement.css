@@ -27,7 +27,8 @@ body {
 .logo-wrap { position: absolute; top: 10.5vh; left: 0; right: 0; display: flex; justify-content: center; padding: 0 1rem; }
 .logo-img { width: min(65vw, 935px, 120vh); height: auto; }
 
-.products-wrap { position: absolute; bottom: -1vh; right: 1.5vw; width: min(65vw, 936px, 122vh); }
+/* Agrandi d'environ 10 % (retour client), limité pour ne pas passer sous la barre de chargement. */
+.products-wrap { position: absolute; bottom: -1vh; right: 1.5vw; width: min(72vw, 1040px, 132vh); }
 .products-img { display: block; width: 100%; height: auto; filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.35)); }
 
 /* Feuilles décoratives (positions relevées sur la maquette) */
@@ -41,6 +42,29 @@ body {
 .leaf--bl { left: -0.5vw; bottom: 8vh; width: max(34px, 4.4vw); transform: rotate(60deg); }
 .leaf--b1 { left: 22.5vw; bottom: 3vh; width: max(40px, 5.8vw); z-index: 1; }
 .leaf--br { right: 0; bottom: 5vh; width: max(40px, 5.8vw); z-index: 1; transform: scaleX(-1); }
+
+/* Feuilles qui tombent en se balançant (référence vidéo du client). translate / rotate s'ajoutent au transform
+   de position ci-dessus sans l'écraser ; à 50 % de l'animation la feuille est à sa place de la maquette,
+   d'où le délai négatif d'une demi-durée : l'écran s'ouvre sur la composition d'origine puis tout descend. */
+.leaf {
+  --dur: 13s; --off: 0s;
+  animation: leafFall var(--dur) linear calc(var(--dur) * -0.5 + var(--off)) infinite;
+}
+.leaf--tl { --dur: 12s; }
+.leaf--tr { --dur: 15s; --off: -0.6s; }
+.leaf--r1 { --dur: 11s; --off: -0.3s; }
+.leaf--l1 { --dur: 14s; --off: -0.8s; }
+.leaf--r2 { --dur: 12.5s; --off: -0.4s; }
+.leaf--bl { --dur: 13.5s; --off: -0.2s; }
+.leaf--b1 { --dur: 11.5s; --off: -0.7s; }
+.leaf--br { --dur: 14.5s; --off: -0.5s; }
+@keyframes leafFall {
+  0%   { translate: 0 -110vh; rotate: -25deg; animation-timing-function: ease-in-out; }
+  25%  { translate: 4vw -55vh; rotate: 15deg; animation-timing-function: ease-in-out; }
+  50%  { translate: 0 0; rotate: 0deg; animation-timing-function: ease-in-out; }
+  75%  { translate: -4vw 55vh; rotate: 20deg; animation-timing-function: ease-in-out; }
+  100% { translate: 0 110vh; rotate: -15deg; }
+}
 
 /* Bloc de chargement, entre le logo et les produits */
 .loading-block {
@@ -85,7 +109,8 @@ body {
   background: #fff;
   border-radius: 8px;
   width: 0%;
-  animation: progressFill 5s ease-in-out forwards;
+  /* 2,5 s : à 5 s, l'écran paraissait lent alors que la page des gammes est déjà prête. */
+  animation: progressFill 2.5s ease-in-out forwards;
 }
 
 @keyframes progressFill {
@@ -99,14 +124,14 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .loading-text, .progress-section { animation: none; }
+  .loading-text, .progress-section, .leaf { animation: none; }
 }
 
 /* Téléphones (portrait) : logo et produits pleine largeur, produits centrés */
 @media (max-width: 600px) {
   .logo-wrap { top: 12vh; }
   .logo-img { width: min(88vw, 420px); }
-  .products-wrap { right: auto; left: 50%; transform: translateX(-50%); width: min(110vw, 520px); bottom: 0; }
+  .products-wrap { right: auto; left: 50%; transform: translateX(-50%); width: min(122vw, 580px); bottom: 0; }
   .loading-block { top: 46vh; max-width: 340px; }
 }
 
@@ -114,7 +139,7 @@ body {
 @media (max-height: 480px) and (orientation: landscape) {
   .logo-wrap { top: 5vh; }
   .logo-img { width: min(50vw, 360px); }
-  .products-wrap { width: min(55vw, 420px); }
+  .products-wrap { width: min(60vw, 460px); }
   .loading-block { top: 50vh; max-width: 340px; }
   .loading-text { font-size: 22px; }
 }

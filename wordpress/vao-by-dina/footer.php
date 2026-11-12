@@ -73,11 +73,6 @@ $vao_linkedin = vao_mod( 'linkedin_url' );
 			</a>
 			<?php endif; ?>
 		</p>
-		<p class="footer-legal">
-			<a href="<?php echo esc_url( vao_url( 'politique-de-confidentialite' ) ); ?>"><?php vao_e( 'Politique de confidentialité' ); ?></a>
-			<span aria-hidden="true">|</span>
-			<a href="<?php echo esc_url( vao_url( 'conditions-generales' ) ); ?>"><?php vao_e( 'Conditions générales' ); ?></a>
-		</p>
 	</div>
 </footer>
 

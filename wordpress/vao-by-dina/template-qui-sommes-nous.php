@@ -80,7 +80,6 @@ $vao_references = array(
 	'VAO Lemon 800g', 'VAO Lemon 1kg', 'VAOLUX Camavel', 'VAOLUX Citron Vert', 'VAOLUX Rose', 'VAOMAGIC 120g', 'VAOMAGIC 220g', 'Vao Citron 250g', 'Vao Citron 500g', 'Vao Citron 1kg', 'Vao Line 125g', 'Vao Line 30g Exotique', 'Vao Line 30g Florale', 'Vao Line 30g Lavande',
 	'Vao Line 30g Lemon', 'Vao Line 30g Original', 'Vao Line 500g', 'Vao Line 800g', 'Z29+', 'Z-27', 'Z-27 MAVO', 'Z-20 MAVO', 'Z30 Marron', 'Z30+', 'Z30 Mavo',
 );
-$vao_ref_columns = array_chunk( $vao_references, 14 );
 
 $vao_chiffres = array(
 	// array( icône, largeur, hauteur, chiffre, libellé, id du panneau déplié au clic ).
@@ -173,21 +172,14 @@ $vao_rse_actions = vao_items( 'vao_rse' );
 	<!-- RÉFÉRENCES DE PRODUITS (dépliées par « + 60 », assets/js/apropos.js) -->
 	<section class="qsn-panel qsn-refs" id="references" aria-labelledby="qsn-refs-titre" hidden>
 		<h2 class="visually-hidden" id="qsn-refs-titre"><?php vao_e( 'Liste des références de produits' ); ?></h2>
-		<div class="vao-carousel" data-carousel>
-			<div class="vao-carousel-track">
-				<?php foreach ( $vao_ref_columns as $vao_i => $vao_col ) : ?>
-					<div class="qsn-refs-col">
-						<ul>
-							<?php foreach ( $vao_col as $vao_ref ) : ?>
-								<li><?php echo esc_html( $vao_ref ); ?></li>
-							<?php endforeach; ?>
-						</ul>
-						<?php if ( count( $vao_ref_columns ) - 1 === $vao_i ) : ?>
-							<a class="qsn-refs-all" href="<?php echo esc_url( vao_gamme_url() ); ?>"><?php vao_e( 'Tout voir…' ); ?></a>
-						<?php endif; ?>
-					</div>
+		<?php // Pleine largeur (demande client) : le nombre de colonnes suit la largeur de l'écran. ?>
+		<div class="qsn-refs-inner">
+			<ul class="qsn-refs-list">
+				<?php foreach ( $vao_references as $vao_ref ) : ?>
+					<li><?php echo esc_html( $vao_ref ); ?></li>
 				<?php endforeach; ?>
-			</div>
+			</ul>
+			<a class="qsn-refs-all" href="<?php echo esc_url( vao_gamme_url() ); ?>"><?php vao_e( 'Tout voir…' ); ?></a>
 		</div>
 	</section>
 
@@ -296,7 +288,7 @@ $vao_rse_actions = vao_items( 'vao_rse' );
 						?>
 						<article class="qsn-collab-card" style="--c1:<?php echo esc_attr( $vao_mix( $vao_step / 4 ) ); ?>;--c2:<?php echo esc_attr( $vao_mix( ( $vao_step + 1 ) / 4 ) ); ?>">
 							<?php if ( $vao_photo ) : ?>
-								<img class="qsn-collab-photo" src="<?php echo esc_url( $vao_photo ); ?>" alt="<?php echo esc_attr( vao_post_alt( $vao_collab ) ); ?>" width="685" height="469" loading="lazy">
+								<img class="qsn-collab-photo" src="<?php echo esc_url( $vao_photo ); ?>" alt="<?php echo esc_attr( vao_post_alt( $vao_collab ) ); ?>" width="696" height="696" loading="lazy">
 							<?php else : ?>
 								<div class="qsn-collab-photo qsn-collab-avatar" aria-hidden="true"><span><?php echo esc_html( $vao_initials( $vao_name ) ); ?></span></div>
 							<?php endif; ?>

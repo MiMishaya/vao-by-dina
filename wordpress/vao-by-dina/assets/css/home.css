@@ -49,15 +49,22 @@
 .home-histoire { padding: 24px 0 56px; }
 .home-histoire .section-title { margin-bottom: 16px; }
 
-/* Repère de 1440 × 260 px : toutes les positions sont en % de ce repère, les tailles en cqw. */
+/* Repère de 1440 × 260 px : toutes les positions sont en % de ce repère, les tailles en cqw.
+   --h / --oy : hauteur du repère et décalage de la vague, agrandis en malagasy (textes plus longs). */
 .timeline {
+  --h: 260; --oy: 0;
   position: relative;
   max-width: 1440px;
   margin: 0 auto;
-  aspect-ratio: 1440 / 260;
+  aspect-ratio: 1440 / var(--h);
   container-type: inline-size;
 }
-.timeline-art { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.timeline-art {
+  position: absolute; left: 0;
+  top: calc(var(--oy) / var(--h) * 100%);
+  width: 100%; height: calc(260 / var(--h) * 100%);
+  overflow: visible;
+}
 .timeline-wave { fill: none; stroke: url(#vao-timeline-gradient); stroke-width: 33; stroke-linecap: round; }
 .tl-links path { stroke: currentColor; stroke-width: 1.3; }
 .tl-dots circle { fill: currentColor; }
@@ -77,7 +84,7 @@
 .tl-head {
   position: absolute;
   left: calc(var(--x) / 1440 * 100%);
-  top: calc(var(--y) / 260 * 100%);
+  top: calc((var(--y) + var(--oy)) / var(--h) * 100%);
   transform: translateY(-50%);
   font-family: var(--vao-font);
   font-weight: 800;
@@ -90,7 +97,7 @@
 .tl-text {
   position: absolute;
   left: calc((var(--x) + 10) / 1440 * 100%);
-  top: calc(var(--ty) / 260 * 100%);
+  top: calc((var(--ty) + var(--oy)) / var(--h) * 100%);
   width: calc(var(--tw) / 1440 * 100%);
   font-size: 0.74cqw;
   line-height: 1.3;
@@ -100,10 +107,30 @@
 .tl-icon {
   position: absolute;
   left: calc(var(--ix) / 1440 * 100%);
-  top: calc(var(--iy) / 260 * 100%);
+  top: calc((var(--iy) + var(--oy)) / var(--h) * 100%);
   width: calc(var(--iw) / 1440 * 100%);
 }
 .tl-icon svg, .tl-icon img { display: block; width: 100%; height: auto; }
+
+/* Apparition unique à l'arrivée à l'écran (classe .tl-anim posée par home.js, absente sans JS ou avec
+   « réduire les animations ») : la vague se dessine, chaque étape apparaît quand le trait l'atteint.
+   Seuls opacity / transform / stroke-dashoffset sont animés : pas de recalcul de mise en page.
+   Pas de transform sur .tl-step : il deviendrait le repère des enfants en position absolue. */
+.tl-c1, .tl-s1 { --d: 0.1s; }
+.tl-c2, .tl-s2 { --d: 0.45s; }
+.tl-c3, .tl-s3 { --d: 0.8s; }
+.tl-c4, .tl-s4 { --d: 1.15s; }
+.tl-c5, .tl-s5 { --d: 1.5s; }
+.tl-anim .timeline-wave { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.6s linear; }
+.tl-anim .tl-links path, .tl-anim .tl-dots circle, .tl-anim .tl-step { opacity: 0; transition: opacity 0.5s ease var(--d); }
+.tl-anim .tl-head, .tl-anim .tl-text { translate: 0 0.6em; transition: translate 0.5s ease var(--d); }
+.tl-anim .tl-icon > * { scale: 0.6; transition: scale 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d); }
+.tl-anim.is-in .timeline-wave { stroke-dashoffset: 0; }
+.tl-anim.is-in .tl-links path, .tl-anim.is-in .tl-dots circle, .tl-anim.is-in .tl-step { opacity: 1; }
+.tl-anim.is-in .tl-head, .tl-anim.is-in .tl-text { translate: none; }
+.tl-anim.is-in .tl-icon > * { scale: none; }
+/* Remise à zéro instantanée avant de rejouer l'animation (home.js). */
+.tl-anim.tl-reset, .tl-anim.tl-reset * { transition: none !important; }
 
 .home-histoire-text {
   max-width: 1184px;
@@ -134,12 +161,26 @@
 /* ============== NOTRE ENGAGEMENT ============== */
 .home-engagement {
   padding: 93px 0 98px;
-  /* Fonds de la maquette : bords déchirés blancs (BG_Trash UP / BG-03) sur le dégradé orange. */
-  background:
+  position: relative;
+  isolation: isolate;
+}
+/* Dégradé orange sur un calque à part, bords déchirés (BG_Trash UP / BG-03) découpés par masque :
+   peints en blanc, ils cachaient les rayures du fond de page (bande visible) ; le masque ne doit pas
+   rogner le contenu (le collage remonte dans le bord haut). */
+.home-engagement::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1;
+  background: url("../img/bg/degrade-orange.webp") center / cover no-repeat, #e3a856;
+  -webkit-mask:
     url("../img/bg/dechire-haut.webp") center -1px / 100% auto no-repeat,
     url("../img/bg/dechire-bas.webp") center calc(100% + 1px) / 100% auto no-repeat,
-    url("../img/bg/degrade-orange.webp") center / cover no-repeat,
-    #e3a856;
+    linear-gradient(#000, #000);
+  -webkit-mask-composite: xor;
+  mask:
+    url("../img/bg/dechire-haut.webp") center -1px / 100% auto no-repeat exclude,
+    url("../img/bg/dechire-bas.webp") center calc(100% + 1px) / 100% auto no-repeat exclude,
+    linear-gradient(#000, #000);
 }
 .home-engagement-kicker {
   font-family: var(--vao-font-title);
@@ -331,6 +372,7 @@
 .form-card-link { margin-top: auto; padding-top: 12px; font-size: 12.5px; font-style: italic; }
 
 /* ============== CONTACTEZ L'ÉQUIPE ============== */
+/* Espace sous les cartes face à la vague du pied de page : géré par la marge du footer (main.css). */
 .home-team { padding: 46px 0 14px; }
 .home-team .container { max-width: calc(1034px + 3rem); }
 .home-team .section-title { margin-bottom: 14px; }
@@ -343,7 +385,10 @@
   background: #114684;
   color: #fff;
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+/* Pas d'icône dans ces cartes : c'est la carte qui grossit au survol (demande client, comme les icônes). */
+.team-card:hover { transform: scale(1.05); box-shadow: 0 10px 24px rgba(17, 70, 132, 0.3); }
 /* Le titre absorbe la hauteur libre : téléphones et e-mails restent alignés d'une carte à l'autre
    quand un intitulé passe sur deux lignes (malagasy). */
 .team-card h3 { flex: 1 0 auto; font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 14px; }
@@ -412,6 +457,21 @@
   }
   .tl-icon svg { width: 34px; }
   .tl-icon img { width: 44px; }
+}
+/* Malagasy (ordinateur) : même vague que le français demandé par le client, mais textes 2 à 3 fois plus longs.
+   Le repère est agrandi en haut et en bas ; les textes des étapes du haut passent au-dessus de leur titre
+   (sinon ils tombaient sur la vague) et les largeurs s'arrêtent avant l'icône de l'étape voisine. */
+@media (min-width: 1024px) {
+  .timeline:lang(mg) { --h: 420; --oy: 85; }
+  .tl-s1:lang(mg) { --tw: 180; }
+  .tl-s2:lang(mg) { --tw: 170; }
+  .tl-s3:lang(mg) { --tw: 176; }
+  .tl-s4:lang(mg) { --tw: 175; }
+  .tl-s5:lang(mg) { --tw: 200; }
+  .tl-s1 .tl-text:lang(mg), .tl-s3 .tl-text:lang(mg), .tl-s5 .tl-text:lang(mg) {
+    top: auto;
+    bottom: calc((var(--h) - var(--oy) - var(--y) + 16) / var(--h) * 100%);
+  }
 }
 
 @media (max-width: 860px) {
@@ -482,5 +542,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .temoignage-card, .selection-item img, .form-card { transition: none; }
+  .temoignage-card, .selection-item img, .form-card, .team-card { transition: none; }
+  .team-card:hover { transform: none; }
 }

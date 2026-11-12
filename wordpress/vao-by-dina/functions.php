@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'VAO_VERSION', '2.4.0' );
+define( 'VAO_VERSION', '2.5.0' );
 
 require get_template_directory() . '/inc/helpers.php';
 require get_template_directory() . '/inc/i18n.php';
@@ -58,7 +58,6 @@ function vao_assets() {
 	wp_enqueue_style( 'vao-main', "$uri/css/main.css", array( 'vao-fonts' ), VAO_VERSION );
 	wp_enqueue_style( 'vao-components', "$uri/css/components.css", array( 'vao-main' ), VAO_VERSION );
 	wp_enqueue_script( 'vao-header', "$uri/js/header.js", array(), VAO_VERSION, true );
-	wp_localize_script( 'vao-header', 'VAO_HEADER', array( 'loading' => vao_url( 'chargement' ) ) );
 	wp_enqueue_script( 'vao-hero', "$uri/js/hero-carousel.js", array(), VAO_VERSION, true );
 	wp_localize_script( 'vao-hero', 'VAO_HERO', array( 'slides' => vao_hero_slides() ) );
 	// Carrousels à flèches et galerie plein écran, partagés par les pages (voir assets/js/ui.js).

@@ -36,6 +36,41 @@ function vao_maybe_upgrade() {
 add_action( 'admin_init', 'vao_maybe_upgrade' );
 
 /**
+ * Photo d'origine d'un collaborateur livrée avec le thème (assets/img/collaborateurs/<prénom>.jpg), '' sinon.
+ */
+function vao_collab_photo( $name ) {
+	$first = strtolower( remove_accents( strtok( trim( $name ), ' ' ) ) );
+	$file  = 'collaborateurs/' . sanitize_file_name( $first ) . '.jpg';
+	return $first && file_exists( get_template_directory() . '/assets/img/' . $file ) ? $file : '';
+}
+
+/**
+ * Photos des collaborateurs (novembre 2026) : remplace les photos provisoires ou l'avatar à initiales
+ * sur les fiches existantes, sauf si une image a déjà été choisie dans l'admin. Une seule fois.
+ */
+function vao_maybe_upgrade_v3() {
+	if ( ! get_option( 'vao_content_installed' ) || get_option( 'vao_content_v3' ) || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	$posts = get_posts(
+		array(
+			'post_type'   => 'vao_collaborateur',
+			'post_status' => 'any',
+			'numberposts' => -1,
+			'lang'        => '', // Polylang : toutes les langues.
+		)
+	);
+	foreach ( $posts as $post ) {
+		$photo = vao_collab_photo( $post->post_title );
+		if ( $photo && ! has_post_thumbnail( $post ) ) {
+			update_post_meta( $post->ID, '_vao_theme_img', $photo );
+		}
+	}
+	update_option( 'vao_content_v3', VAO_VERSION );
+}
+add_action( 'admin_init', 'vao_maybe_upgrade_v3' );
+
+/**
  * Contenu v2 (refonte octobre 2026) : 5 gammes, avis, collaborateurs, actions RSE, offres d'emploi, distributeurs.
  * Une seule fois : ensuite, tout se gère dans l'admin.
  */
@@ -312,7 +347,7 @@ function vao_install_content_v2() {
 		vao_insert_item( 'vao_avis', sprintf( 'Avis consommateur %02d', $i ), $i, sprintf( 'avis/avis-%02d.jpg', $i ) );
 	}
 
-	// Témoignages des collaborateurs. Photos provisoires (extraites de la maquette) : à remplacer par les originaux.
+	// Témoignages des collaborateurs. Photos : vao_collab_photo() (originaux fournis par le client).
 	$collaborateurs = array(
 		array( 'Sariaka RAKOTOMANANTSOA', 'Responsable Marketing', '3 ans chez SDOI', 'maquette/collab-1.jpg', "Ce qui me plaît dans mon métier, c'est de faire évoluer une marque malgache en accord avec les attentes des consommateurs. J'aime concevoir des stratégies concrètes qui valorisent nos produits locaux et contribuent au développement de la marque. Voir une idée prendre vie sur le terrain et rencontrer son public, c'est ce qui me motive chaque jour." ),
 		array( 'Rija RAJAONERA', 'Commercial Grand compte', '1 an chez SDOI', 'maquette/collab-2.jpg', "Ce que j'aime chez SDOI, c'est la proximité avec le terrain. Nous sommes en contact direct avec les distributeurs, ce qui nous permet de mieux comprendre le marché et d'améliorer constamment notre approche. Chaque relation construite avec un grand compte est un pas de plus pour rapprocher nos marques des consommateurs. On sent vraiment qu'on participe à quelque chose de concret." ),
@@ -329,11 +364,8 @@ function vao_install_content_v2() {
 			'_vao_anciennete' => $c[2],
 			'_vao_texte'      => $c[4],
 		);
-		if ( $c[3] ) {
-			vao_insert_item( 'vao_collaborateur', $c[0], $i + 1, $c[3], $meta );
-		} else {
-			vao_insert_post( 'vao_collaborateur', $c[0], $i + 1, '', $meta );
-		}
+		$photo = vao_collab_photo( $c[0] );
+		vao_insert_item( 'vao_collaborateur', $c[0], $i + 1, $photo ? $photo : $c[3], $meta );
 	}
 
 	// Actions RSE.

@@ -181,3 +181,44 @@
 
 ### Commits
 - (à compléter au commit)
+
+## 2026-11-11 / 12 — Corrections visuelles, animations, conformité brief
+
+### Ce qui a été fait
+- Cartes « Contactez l'équipe » dégagées de la vague du pied de page (padding proportionnel à la vague)
+- Avis : défilement auto 7 s, actif même avec « réduire les animations », pause souris / focus clavier seulement (bug mobile corrigé)
+- Frise « Notre histoire » animée une fois à l'arrivée (tracé SVG + apparition des étapes) ; compteurs des chiffres clés (Qui sommes-nous)
+- Bords déchirés (accueil orange, Qui sommes-nous violet) passés en masque CSS sur ::before — ⚠️ écart maquette (papier blanc), à valider client
+- Frise conforme au Word client (TEXTE_SITEWEB_23102026) : 2008 « Blanc, Jaune, Marron, Or », 2026 « 20 ans : +10 marques… » (MG déjà conforme)
+- Écran de chargement : 5 s → 2,5 s ; VAO_VERSION 2.4.3
+
+### Décisions / infos
+- Brief = D:\PRIMANET\Preprod\VAO\28102026 (Word = organigramme + textes ; PDF = mêmes maquettes que Render)
+- Preprod : protection HTTP « vao » ≠ Web Disk agenceweb@vao.mg (dossier public_html/preprod.vao.mg) ; IP 102.17.231.217 bloquée après échecs WebDAV puis débloquée
+- Les 8 photos collaborateurs existent (VAO\Elément\Témoignage interne) mais le client complétera lui-même (utilisateur)
+
+### En attente client
+- Logo Germicide, logo + packshots MAX (seule une affiche existe), liste distributeurs, photos collaborateurs
+- Validation : bords déchirés, cartes avis MG, bannières MG
+
+### Commits
+- (à compléter au commit)
+
+## 2026-11-12 — Retours client (accueil, Qui sommes-nous, chargement, pied de page)
+
+### Ce qui a été fait
+- Frise « Notre histoire » rejouée toutes les 12 s tant qu'elle est visible ; en MG sur ordinateur, même vague que le FR (repère agrandi, textes du haut au-dessus des titres), frise verticale seulement < 1024 px
+- MG : « Découvrir plus » → « Ny vokatra rehetra » ; menu « Notre engagement » retiré ; liens « Politique de confidentialité | Conditions générales » retirés du pied de page (FR + MG)
+- Chiffres clés : scaleX supprimé (chiffres déformés), taille réduite ; références produits en liste multi-colonnes pleine largeur (plus de carrousel)
+- Survol : icônes gage de qualité / valeurs zoom + 10° ; cartes « Contactez l'équipe » zoom
+- Photos collaborateurs : originaux client (img/collaborateurs, 8 JPG) + mise à jour unique `vao_content_v3` (admin_init) qui les affecte aux fiches sans image choisie
+- Écran de chargement : affiché à chaque clic (fin du « une fois par navigateur »), produits agrandis, feuilles qui tombent en se balançant ; fond « feuilles » des pages animé (calque fixe, 90 s par motif)
+- Pied de page : marge = hauteur de la vague + 2rem (la vague recouvrait images / logos en fin de page) ; VAO_VERSION 2.5.0
+
+### À vérifier (site local arrêté pendant la session)
+- Rendu frise MG à 1024 / 1440 / 1920 px, chiffres clés (position de « ans »), références, chargement, pied de page
+- Recherche « pas encore fonctionnelle » (retour client) : code en place, non reproduit
+- Liens « Produits sélectionnés » / « Accédez à nos formulaires » : pointent déjà vers gamme / onglet du formulaire
+
+### Commits
+- (à compléter au commit)

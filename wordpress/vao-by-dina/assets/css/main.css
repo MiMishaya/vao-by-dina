@@ -40,15 +40,29 @@ body {
   background: #fff url("../img/bg/raillure.webp") center top / 100% auto repeat-y;
   overflow-x: clip;
 }
-/* Feuilles qui tombent le long des bords (BG_Leave's Fall), à partir du bas de la bannière (ratio 6000 / 2518). */
+/* Feuilles qui tombent le long des bords (BG_Leave's Fall), animées en continu (retour client).
+   Calque fixé à l'écran, plus haut d'un motif (922 × 1920 affiché sur 100vw) : il descend d'un motif puis
+   recommence, raccord invisible. Seul transform est animé (composité, pas de repeinture). La bannière,
+   l'en-tête et les sections à fond plein passent devant. */
 body::after {
+  --leaf-tile: calc(100vw * 1920 / 922);
   content: "";
-  position: absolute;
-  top: calc(120px + 41.97vw);
-  left: 0; right: 0; bottom: 0;
-  background: url("../img/bg/feuilles.webp") center top / 100% auto repeat-y;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: calc(100vh + var(--leaf-tile));
+  background: url("../img/bg/feuilles.webp") center top / 100vw auto repeat-y;
   pointer-events: none;
   z-index: -1;
+  animation: vao-leaves-fall 90s linear infinite;
+  will-change: transform;
+}
+@keyframes vao-leaves-fall {
+  from { transform: translateY(calc(-1 * var(--leaf-tile))); }
+  to { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::after { animation: none; transform: translateY(calc(-1 * var(--leaf-tile))); }
 }
 body.page-template-template-chargement::after { display: none; }
 @media (max-width: 767px) {
@@ -411,7 +425,9 @@ button { font: inherit; }
 
 /* ============== PIED DE PAGE ============== */
 /* Mesures relevées sur la maquette à 1440 px : colonnes à 120 / 484 / 1132 px, bandeau du bas 70 px. */
-.site-footer { position: relative; margin-top: 3rem; color: #fff; background: #925dda; }
+/* La vague (hauteur 95/1920 de la largeur) dépasse au-dessus du footer : la marge la contient entièrement,
+   sinon elle recouvrait le bas des images et des logos en fin de page sur grand écran. */
+.site-footer { position: relative; margin-top: calc(100vw * 95 / 1920 + 2rem); color: #fff; background: #925dda; }
 /* Vague de la maquette (BG_BDP Wave), 1px de recouvrement pour éviter un liseré au raccord. */
 .footer-wave {
   position: absolute; bottom: calc(100% - 1px); left: 0;
@@ -486,9 +502,6 @@ button { font: inherit; }
 .footer-contact { display: flex; gap: 1.5rem; flex-wrap: wrap; }
 .footer-contact a { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; }
 .footer-contact svg { width: 20px; height: 20px; }
-.footer-legal span { margin: 0 0.3rem; }
-/* Sur mobile le retour à la ligne se fait entre les deux liens, pas au milieu d'un intitulé (plus longs en malagasy). */
-.footer-legal a { white-space: nowrap; }
 
 @media (max-width: 1260px) {
   .footer-main { padding-left: 1.5rem; padding-right: 1.5rem; grid-template-columns: minmax(200px, 257px) minmax(320px, 473px) auto; column-gap: 3vw; }

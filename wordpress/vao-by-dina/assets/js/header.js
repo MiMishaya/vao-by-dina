@@ -77,19 +77,4 @@
       window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
     });
   }
-
-  // Écran de chargement « Nos produits » déjà vu : les liens vont directement à leur destination.
-  var loading = window.VAO_HEADER && window.VAO_HEADER.loading;
-  var seen = false;
-  try { seen = window.localStorage.getItem('vao_loading_seen') === '1'; } catch (e) { /* stockage indisponible */ }
-  if (loading && seen) {
-    var loadingPath = new URL(loading, window.location.href).pathname;
-    document.querySelectorAll('a[href*="to="]').forEach(function (link) {
-      var url = new URL(link.href, window.location.href);
-      var to = url.searchParams.get('to');
-      if (url.pathname !== loadingPath || !to) return;
-      var dest = new URL(to, window.location.href);
-      if (dest.origin === window.location.origin) link.href = dest.href;
-    });
-  }
 })();

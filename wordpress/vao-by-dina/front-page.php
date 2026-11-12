@@ -12,10 +12,10 @@ $vao_allowed = array( 'strong' => array() );
 // Frise : array( année, titre, texte, liste à puces, icône ). Positions : classes tl-s1..tl-s5 de home.css.
 $vao_steps = array(
 	array( '2006', 'Naissance', 'Naissance de SDOI, une aventure familiale malgache.', array(), 'bulb' ),
-	array( '2008', 'Essor', 'Essor de la marque VAO et des savons de ménage (Fotsy, Mavo, Marron, Or).', array(), 'rocket' ),
+	array( '2008', 'Essor', 'Essor de la marque VAO et des savons de ménage (Blanc, Jaune, Marron, Or).', array(), 'rocket' ),
 	array( '2012', 'Expansion', 'Extension de la gamme :', array( 'détergents en poudre', 'savons de toilette', 'détergents en barres' ), 'box' ),
 	array( '2021', 'Label', 'Obtention du label «Malagasy Ny Antsika» (SIM / BNM).', array(), 'label' ),
-	array( '2026', 'Expertise', 'Plus de 10 marques, 60 références, une présence partout à Madagascar.', array(), '20' ),
+	array( '2026', 'Expertise', '20 ans : +10 marques, +60 références, +3 000 épiceries et +100 distributeurs partenaires.', array(), '20' ),
 );
 
 $vao_icons = array(
@@ -104,7 +104,7 @@ $vao_reviews      = vao_items( 'vao_avis' );
 				<path class="tl-c4" d="M922 30H939V160"/>
 				<path class="tl-c5" d="M1220 28V224H1203"/>
 			</g>
-			<path class="timeline-wave" d="M32 127C70 160 100 178 130 178C240 178 290 76 400 76C510 76 560 180 670 180C780 180 830 77 940 77C1055 77 1105 180 1220 180C1290 180 1340 155 1370 127"/>
+			<path class="timeline-wave" pathLength="1" d="M32 127C70 160 100 178 130 178C240 178 290 76 400 76C510 76 560 180 670 180C780 180 830 77 940 77C1055 77 1105 180 1220 180C1290 180 1340 155 1370 127"/>
 			<g class="tl-dots">
 				<circle class="tl-c1" cx="128" cy="33" r="3.5"/><circle class="tl-c1" cx="112" cy="229" r="3.5"/>
 				<circle class="tl-c2" cx="384" cy="36" r="3.5"/><circle class="tl-c2" cx="401" cy="166" r="3.5"/>
