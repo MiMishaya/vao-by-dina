@@ -8,3 +8,5 @@
 
 ## Patterns validés
 - [Pattern] — [Contexte d'approbation, par qui] (date)
+
+- Ne pas faire : modifier une traduction MG déjà présente dans inc/strings/*.php sans incrémenter VAO_MG_REVISION (inc/i18n.php) — sinon Polylang garde l'ancienne valeur en base

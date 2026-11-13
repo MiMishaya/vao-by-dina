@@ -463,9 +463,10 @@
 @media (min-width: 1024px) {
   .timeline:lang(mg) { --h: 420; --oy: 85; }
   .tl-s1:lang(mg) { --tw: 180; }
-  .tl-s2:lang(mg) { --tw: 170; }
+  /* Étapes du bas : +18 (titre, trait et point, cf. $vao_tl_low dans front-page.php) pour dégager la vague. */
+  .tl-s2:lang(mg) { --tw: 170; --y: 184; --ty: 201; }
   .tl-s3:lang(mg) { --tw: 176; }
-  .tl-s4:lang(mg) { --tw: 175; }
+  .tl-s4:lang(mg) { --tw: 175; --y: 178; --ty: 195; }
   .tl-s5:lang(mg) { --tw: 200; }
   .tl-s1 .tl-text:lang(mg), .tl-s3 .tl-text:lang(mg), .tl-s5 .tl-text:lang(mg) {
     top: auto;

@@ -85,6 +85,10 @@ $vao_reviews      = vao_items( 'vao_avis' );
 		<h2 class="section-title"><?php vao_e( 'Notre histoire' ); ?></h2>
 	</div>
 
+	<?php
+	// Titres malagasy des étapes du bas plus longs : descendus pour ne pas toucher la vague (même valeur dans home.css).
+	$vao_tl_low = vao_is_mg() ? 18 : 0;
+	?>
 	<div class="timeline" role="list" aria-label="<?php echo esc_attr( vao_t( 'Les grandes étapes' ) ); ?>">
 		<svg class="timeline-art" viewBox="0 0 1440 260" aria-hidden="true" focusable="false">
 			<defs>
@@ -99,17 +103,17 @@ $vao_reviews      = vao_items( 'vao_avis' );
 			</defs>
 			<g class="tl-links" fill="none">
 				<path class="tl-c1" d="M128 33V229H112"/>
-				<path class="tl-c2" d="M384 36H401V166"/>
+				<path class="tl-c2" d="M384 36H401V<?php echo (int) ( 166 + $vao_tl_low ); ?>"/>
 				<path class="tl-c3" d="M664 35V232H648"/>
-				<path class="tl-c4" d="M922 30H939V160"/>
+				<path class="tl-c4" d="M922 30H939V<?php echo (int) ( 160 + $vao_tl_low ); ?>"/>
 				<path class="tl-c5" d="M1220 28V224H1203"/>
 			</g>
 			<path class="timeline-wave" pathLength="1" d="M32 127C70 160 100 178 130 178C240 178 290 76 400 76C510 76 560 180 670 180C780 180 830 77 940 77C1055 77 1105 180 1220 180C1290 180 1340 155 1370 127"/>
 			<g class="tl-dots">
 				<circle class="tl-c1" cx="128" cy="33" r="3.5"/><circle class="tl-c1" cx="112" cy="229" r="3.5"/>
-				<circle class="tl-c2" cx="384" cy="36" r="3.5"/><circle class="tl-c2" cx="401" cy="166" r="3.5"/>
+				<circle class="tl-c2" cx="384" cy="36" r="3.5"/><circle class="tl-c2" cx="401" cy="<?php echo (int) ( 166 + $vao_tl_low ); ?>" r="3.5"/>
 				<circle class="tl-c3" cx="664" cy="35" r="3.5"/><circle class="tl-c3" cx="648" cy="232" r="3.5"/>
-				<circle class="tl-c4" cx="922" cy="30" r="3.5"/><circle class="tl-c4" cx="939" cy="160" r="3.5"/>
+				<circle class="tl-c4" cx="922" cy="30" r="3.5"/><circle class="tl-c4" cx="939" cy="<?php echo (int) ( 160 + $vao_tl_low ); ?>" r="3.5"/>
 				<circle class="tl-c5" cx="1220" cy="28" r="3.5"/><circle class="tl-c5" cx="1203" cy="224" r="3.5"/>
 			</g>
 		</svg>

@@ -230,3 +230,10 @@
 - En attente client : liste distributeurs, page produits complète ; recherche toujours à tester (site local arrêté)
 - Recherche sans page de résultats (demande client) : vao_search_redirect() (template_redirect) → gamme trouvée, sinon 1er produit (#produit-ID, rangée « + » dépliée et halo par gammes.js), sinon 1re page WP ; page « Aucun résultat » seulement si rien ; VAO_VERSION 2.5.2
 - Pages « Politique de confidentialité » / « Conditions générales » retirées de vao_pages() (plus créées ni signalées manquantes) ; case newsletter en texte simple sans lien ; pages existantes à mettre à la corbeille dans wp-admin (FR + MG)
+
+## 2026-11-13 — Liste complète des distributeurs
+- Liste client complète dans vao_distributeurs_liste() (inc/install.php) : Tana passe à 25 points de vente, ajout MAHAJANGA (9) et TOAMASINA (3)
+- Site déjà installé : vao_maybe_upgrade_v4() (admin_init, une fois, option vao_content_v4) ajoute les points/villes manquants sans écraser la saisie admin ni recréer une ville mise à la corbeille
+- Titres MAHAJANGA / TOAMASINA identiques en MG (pas de chaîne à traduire)
+- Bouton accueil MG « Hijery bebe kokoa » → « Ny vokatra rehetra » : dictionnaire déjà à jour (0ed88fd) mais Polylang gardait l'ancienne valeur → VAO_MG_REVISION 'client-2026-11-13' (réécriture forcée une fois)
+- Frise MG : titres des étapes du bas (2008, 2021) descendus de 18 (home.css --y/--ty + $vao_tl_low dans front-page.php pour trait et point) pour ne plus toucher la vague ; VAO_VERSION 2.5.3 — à vérifier en local (site arrêté)

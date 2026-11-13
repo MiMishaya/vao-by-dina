@@ -464,7 +464,7 @@ add_action( 'admin_init', 'vao_pll_setup' );
  * Version des traductions malagasy validées par le client. La changer réécrit une fois dans Polylang
  * toutes les chaînes du dictionnaire, y compris celles déjà remplies (propositions antérieures).
  */
-const VAO_MG_REVISION = 'client-2026-11-08';
+const VAO_MG_REVISION = 'client-2026-11-13';
 
 /**
  * Pré-remplit les traductions malagasy encore vides (Langues > Traductions des chaînes).

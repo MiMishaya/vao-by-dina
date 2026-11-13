@@ -494,16 +494,75 @@ function vao_install_content_v2() {
 		}
 	}
 
-	// Distributeurs : uniquement les villes lisibles en entier sur la maquette (liste complète à fournir par le client).
-	$distributeurs = array(
-		'ANTANANARIVO ET ENVIRONS' => array( 'MITSINJO : Ampasampito', 'VALIHAJA : Itaosy Ambinisoa', 'AINA : Andoharanofotsy', 'HANTASOA : Andohatapenaka', 'TT HAJATIANA : Sabotsy Namehana', 'VONY : Talatamaty', 'MIHAJA : 67 Ha', 'TRANOMBAROTRA NIRINA : Anosibe', 'LISA DISTRIBUTION : Anosizato', 'ZOLY : 67 Ha', 'TRANOMBAROTRA HN : Andavamamba', 'TRANOMBAROTRA VOLA : Andohatapenaka', 'TRANOMBAROTRA AVOTRA : Ambodivona', 'TRANOMBAROTRA NGAMA : Andravoahangy' ),
+	$order = 0;
+	foreach ( vao_distributeurs_liste() as $ville => $points ) {
+		vao_insert_post( 'vao_distributeur', $ville, ++$order, '', array( '_vao_points' => implode( "\n", $points ) ) );
+	}
+}
+
+/**
+ * Liste complète des distributeurs fournie par le client (novembre 2026).
+ */
+function vao_distributeurs_liste() {
+	return array(
+		'ANTANANARIVO ET ENVIRONS' => array( 'MITSINJO : Ampasampito', 'VALIHAJA : Itaosy Ambinisoa', 'AINA : Andoharanofotsy', 'HANTASOA : Andohatapenaka', 'TT HAJATIANA : Sabotsy Namehana', 'VONY : Talatamaty', 'MIHAJA : 67 Ha', 'TRANOMBAROTRA NIRINA : Anosibe', 'LISA DISTRIBUTION : Anosizato', 'ZOLY : 67 Ha', 'TRANOMBAROTRA HN : Andavamamba', 'TRANOMBAROTRA VOLA : Andohatapenaka', 'TRANOMBAROTRA AVOTRA : Ambodivona', 'TRANOMBAROTRA NGAMA : Andravoahangy', 'TRANOMBAROTRA RAVO : Alakamisy Fenoarivo', 'TSARA DISTRIBUTION : Isotry (RMB)', 'SOCIÉTÉ MITIA : Mandrosoa', 'TRANOMBAROTRA FANANTENANA : Andriampamaky', 'ZARA DISTRIBUTION : Andavamamba', 'ZELINE : Sabotsy Namehana', 'NJANAHARY : Itaosy', 'Tr MEVA : Anosipatrana', 'CASIMIR : Anosibe', 'BANI : Ankazomanga', 'LANDRY : Anosibe' ),
 		'ANTSIRABE'                => array( 'Centre Ankaratra', 'TSODRANO', 'DALLY' ),
 		'AMBATOLAMPY'              => array( 'TB VELO : Tsena Ambatolampy' ),
 		'AMBATONDRAZAKA'           => array( 'MAGASIN ANNA' ),
 		'AMBILOBE'                 => array( 'DOKANY IMPORTÉ' ),
+		'MAHAJANGA'                => array( 'Jaintital : Majunga B', 'Haria Store : en face de BOA Majunga B', 'Zara Store : en face de Leader Price', 'Mouniraly Asgaraly : à côté de la Boulangerie Abad', 'Rahim : en face de l’Hôtel de Ville', 'Chez Ba : pavillon à Tsaramandroso', 'Younouss Yaly Madad : Mahabibo', 'Sheilla Yaly Madad : Mahabibo', 'Central Shop : Manga' ),
+		'TOAMASINA'                => array( 'FETYS', 'Tranombarotra HARY', 'Tranombarotra HERY' ),
 	);
-	$order = 0;
-	foreach ( $distributeurs as $ville => $points ) {
-		vao_insert_post( 'vao_distributeur', $ville, ++$order, '', array( '_vao_points' => implode( "\n", $points ) ) );
-	}
 }
+
+/**
+ * Liste complète des distributeurs sur un site déjà installé : ajoute les points de vente et villes
+ * manquants sans toucher à ce qui a déjà été saisi dans l'admin. Une seule fois.
+ */
+function vao_maybe_upgrade_v4() {
+	if ( ! get_option( 'vao_content_v2' ) || get_option( 'vao_content_v4' ) || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	// Comparaison insensible aux tirets saisis, aux espaces et à la casse, pour ne pas créer de doublons.
+	$key = function ( $line ) {
+		return mb_strtoupper( preg_replace( '/\s+/u', ' ', trim( preg_replace( '/^[\s\-–•]+/u', '', $line ) ) ) );
+	};
+	$posts = get_posts(
+		array(
+			'post_type'   => 'vao_distributeur',
+			'post_status' => array( 'publish', 'draft', 'pending', 'private', 'trash' ),
+			'numberposts' => -1,
+			'lang'        => '',
+		)
+	);
+	$by_title  = array();
+	$max_order = 0;
+	foreach ( $posts as $post ) {
+		$by_title[ $key( $post->post_title ) ] = $post;
+		$max_order                             = max( $max_order, (int) $post->menu_order );
+	}
+	foreach ( vao_distributeurs_liste() as $ville => $points ) {
+		$post = isset( $by_title[ $key( $ville ) ] ) ? $by_title[ $key( $ville ) ] : null;
+		if ( ! $post ) {
+			vao_insert_post( 'vao_distributeur', $ville, ++$max_order, '', array( '_vao_points' => implode( "\n", $points ) ) );
+			continue;
+		}
+		// Ville mise à la corbeille dans l'admin : volontairement retirée, on ne la complète pas.
+		if ( 'trash' === $post->post_status ) {
+			continue;
+		}
+		$current  = (string) get_post_meta( $post->ID, '_vao_points', true );
+		$existing = array_map( $key, preg_split( '/\r\n|\r|\n/', $current ) );
+		$missing  = array();
+		foreach ( $points as $point ) {
+			if ( ! in_array( $key( $point ), $existing, true ) ) {
+				$missing[] = $point;
+			}
+		}
+		if ( $missing ) {
+			update_post_meta( $post->ID, '_vao_points', wp_slash( rtrim( $current ) . ( '' !== trim( $current ) ? "\n" : '' ) . implode( "\n", $missing ) ) );
+		}
+	}
+	update_option( 'vao_content_v4', VAO_VERSION );
+}
+add_action( 'admin_init', 'vao_maybe_upgrade_v4', 15 );
